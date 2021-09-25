@@ -3,7 +3,7 @@ layout: page
 title: User Guide
 ---
 
-AddressBook Level 3 (AB3) is a **desktop app for managing contacts, optimized for use via a Command Line Interface** (CLI) while still having the benefits of a Graphical User Interface (GUI). If you can type fast, AB3 can get your contact management tasks done faster than traditional GUI apps.
+Academy Directory (AD) is a **desktop app for CS1101S tutors to manage students’ contact, grades, tutorial attendance, and assignment completion**. It is optimized for use via a Command Line Interface (CLI) while still having the benefits of a Graphical User Interface (GUI). AD is developed as an evolution of the Address Book 3 application, primarily for usage in teaching CS1101S - Programming Methodology I at the National University of Singapore.
 
 * Table of Contents
 {:toc}
@@ -73,19 +73,27 @@ Shows a message explaning how to access the help page.
 Format: `help`
 
 
-### Adding a person: `add`
+### Adding a student: `add`
 
-Adds a person to the address book.
+Tutors will be able to add their tutees.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `add n/NAME e/EMAIL t/TELE_HANDLE [p/PHONE_NUMBER]`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-A person can have any number of tags (including 0)
+A student can have no phone number due to privacy concern.
 </div>
 
+* `PHONE_NUMBER` is an optional field.
+* `EMAIL` entry **must end with @u.nus.edu**. Else, a warning message will be shown.\
+`Students outside of NUS cannot be added`
+* If newly inputted students have `NAME`, `EMAIL`, `TELE_HANDLE` matching exactly
+with an already existing entry, the program will output a warning message and show the existing entry.\
+`This student already exists and thus cannot be added again`\
+`Existing student: Name: NAME, Email: EMAIL , Telegram: TELE_HANDLE`
+
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `add n/Aaron Tan t/@sausage e/e0123456@u.nus.edu p/90312311`
+* `add n/Betsy Lim t/@unislave e/e0123456@u.nus.edu`
 
 ### Listing all persons : `list`
 
@@ -93,22 +101,19 @@ Shows a list of all persons in the address book.
 
 Format: `list`
 
-### Editing a person : `edit`
+### Editing a student : `edit`
 
-Edits an existing person in the address book.
+Tutors will be able to edit their tutees.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `edit INDEX [n/NAME] [e/EMAIL] [t/TELE_HANDLE] [p/PHONE_NUMBER]`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+* Edits the tutee at the specified `INDEX`. The index refers to the index number shown in the displayed student list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
-* When editing tags, the existing tags of the person will be removed i.e adding of tags is not cumulative.
-* You can remove all the person’s tags by typing `t/` without
-    specifying any tags after it.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+* `edit 1 p/91234567 e/e0425205@u.nus.com`  Edits the phone number and email address of the 1st student to be `91234567` and `e0425205@u.nus.edu` respectively.
+* `edit 2 n/Aaron Tan`  Edits the name of the 2nd student to be Aaron Tan.
 
 ### Locating persons by name: `find`
 
@@ -128,19 +133,19 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`<br>
   ![result for 'find alex david'](images/findAlexDavidResult.png)
 
-### Deleting a person : `delete`
+### Deleting a student: `delete`
 
-Deletes the specified person from the address book.
+Tutors will be able to delete their tutees.
 
 Format: `delete INDEX`
 
-* Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
+* `INDEX` is an unique id assigned to each student in the system.
+* Deletes the student at the specified `INDEX`
+* The index refers to the index number shown in the displayed student list.
 * The index **must be a positive integer** 1, 2, 3, …​
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `delete 2` deletes the 2nd student in the list.
 
 ### Clearing all entries : `clear`
 
