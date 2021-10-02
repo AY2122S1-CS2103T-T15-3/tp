@@ -2,6 +2,8 @@ package seedu.academydirectory.logic.parser;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +15,8 @@ import seedu.academydirectory.model.person.Address;
 import seedu.academydirectory.model.person.Email;
 import seedu.academydirectory.model.person.Name;
 import seedu.academydirectory.model.person.Phone;
+import seedu.academydirectory.model.studio.Studio;
+import seedu.academydirectory.model.studio.StudioSlot;
 import seedu.academydirectory.model.tag.Tag;
 
 /**
@@ -93,6 +97,17 @@ public class ParserUtil {
             throw new ParseException(Email.MESSAGE_CONSTRAINTS);
         }
         return new Email(trimmedEmail);
+    }
+
+    public static StudioSlot parseStudioSlot(String studioSlotStr) throws ParseException {
+        requireNonNull(studioSlotStr);
+        LocalDateTime studioSlot;
+        try {
+            studioSlot = StudioSlot.stringToDateTime(studioSlotStr);
+        } catch (DateTimeException e) {
+            throw new ParseException(StudioSlot.MESSAGE_CONSTRAINTS);
+        }
+        return new StudioSlot(studioSlot);
     }
 
     /**
