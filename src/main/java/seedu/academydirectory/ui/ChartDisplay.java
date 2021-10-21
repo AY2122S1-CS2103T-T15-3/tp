@@ -1,5 +1,9 @@
 package seedu.academydirectory.ui;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.CategoryAxis;
@@ -15,14 +19,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-
-
-
 /**
- * A ui for the status bar that is displayed at the header of the application.
+ * A ui for the chart displayed.
  */
 public class ChartDisplay extends UiPart<Region> {
 
