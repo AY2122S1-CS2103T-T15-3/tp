@@ -8,14 +8,14 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.academydirectory.logic.commands.RetrieveCommand;
+import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.model.student.InformationWantedFunction;
 
 @SuppressWarnings("checkstyle:Regexp")
-public class RetrieveCommandParserTest {
+public class GetCommandParserTest {
 
     private static final String MESSAGE_INVALID_FORMAT =
-            String.format(MESSAGE_INVALID_COMMAND_FORMAT, RetrieveCommand.MESSAGE_USAGE);
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, GetCommand.MESSAGE_USAGE);
 
     private final RetrieveCommandParser parser = new RetrieveCommandParser();
 
@@ -41,7 +41,7 @@ public class RetrieveCommandParserTest {
                 .parallel();
         relevantPrefixes.forEach(prefix -> {
             String userInput = " " + prefix.getPrefix();
-            RetrieveCommand expectedCommand = new RetrieveCommand(new InformationWantedFunction(prefix));
+            GetCommand expectedCommand = new GetCommand(new InformationWantedFunction(prefix));
             assertParseSuccess(parser, userInput, expectedCommand);
         });
     }

@@ -37,7 +37,7 @@ public class InformationWantedFunction implements Function<Student, Optional<Inf
 
     @Override
     public Optional<Information> apply(Student student) {
-        if (name.isPresent() && name.filter(x -> x.equals(student.getName())).isEmpty()) {
+        if (name.isPresent() && name.filter(x -> student.getName().fullName.contains(x.fullName)).isEmpty()) {
             return Optional.empty();
         }
 

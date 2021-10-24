@@ -239,6 +239,18 @@ as the average score.
 Examples:
 * `show RA1`
 
+### Visualizing assessments' grades of the entire class: `vis`
+Avengers will be able to view the grades and the average score of all the students
+for a particular assessment.
+
+Format: `vis`
+
+* Visualize assessment grades of the class with Box & Whisker plot
+* Any grade of any student that is not yet entered will be counted as `0`
+
+Examples:
+* `vis`
+
 ### Seeking help : `help`
 
 ![help message](images/helpMessage.png)

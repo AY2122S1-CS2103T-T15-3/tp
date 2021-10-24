@@ -10,24 +10,24 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import seedu.academydirectory.logic.commands.RetrieveCommand;
+import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.logic.parser.exceptions.ParseException;
 import seedu.academydirectory.model.student.InformationWantedFunction;
 import seedu.academydirectory.model.student.Name;
 
 /**
- * Parses input arguments and creates a new RetrieveCommand object
+ * Parses input arguments and creates a new GetCommand object
  */
-public class RetrieveCommandParser implements Parser<RetrieveCommand> {
+public class RetrieveCommandParser implements Parser<GetCommand> {
     private static final Supplier<Stream<Prefix>> RELEVANT_PREFIXES_SUPPLIER = () ->
             Stream.of(InformationWantedFunction.SUPPORTED_PREFIX.toArray(Prefix[]::new));
 
     /**
-     * Parses the given {@code String} of arguments in the context of the RetrieveCommand
-     * and returns a RetrieveCommand object for execution.
+     * Parses the given {@code String} of arguments in the context of the GetCommand
+     * and returns a GetCommand object for execution.
      * @throws ParseException if the user input does not conform the expected format
      */
-    public RetrieveCommand parse(String args) throws ParseException {
+    public GetCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args,
@@ -41,7 +41,7 @@ public class RetrieveCommandParser implements Parser<RetrieveCommand> {
 
         if (noPrefix) {
             throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, RetrieveCommand.MESSAGE_USAGE));
+                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, GetCommand.MESSAGE_USAGE));
         }
 
         Optional<Name> nameOptional = argMultimap.getValue(PREFIX_NAME).map(Name::new);
@@ -52,7 +52,7 @@ public class RetrieveCommandParser implements Parser<RetrieveCommand> {
                         : new InformationWantedFunction(x, nameOptional.get())))
                 .collect(Collectors.toList());
 
-        return new RetrieveCommand(filters);
+        return new GetCommand(filters);
     }
 
 }

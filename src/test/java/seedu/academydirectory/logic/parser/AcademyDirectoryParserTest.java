@@ -21,9 +21,9 @@ import seedu.academydirectory.logic.commands.EditCommand;
 import seedu.academydirectory.logic.commands.EditCommand.EditStudentDescriptor;
 import seedu.academydirectory.logic.commands.ExitCommand;
 import seedu.academydirectory.logic.commands.FindCommand;
+import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.logic.commands.HelpCommand;
 import seedu.academydirectory.logic.commands.ListCommand;
-import seedu.academydirectory.logic.commands.RetrieveCommand;
 import seedu.academydirectory.logic.parser.exceptions.ParseException;
 import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
 import seedu.academydirectory.model.student.Student;
@@ -86,8 +86,8 @@ public class AcademyDirectoryParserTest {
 
     @Test
     public void parseCommand_retrieve() throws Exception {
-        assertTrue(parser.parseCommand(RetrieveCommand.COMMAND_WORD + " " + PREFIX_EMAIL)
-                instanceof RetrieveCommand);
+        assertTrue(parser.parseCommand(GetCommand.COMMAND_WORD + " " + PREFIX_EMAIL)
+                instanceof GetCommand);
     }
 
     @Test

@@ -28,7 +28,7 @@ import seedu.academydirectory.model.student.Name;
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
  */
-public class RetrieveCommandTest {
+public class GetCommandTest {
     private final Model model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
     private final Model expectedModel = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
 
@@ -37,27 +37,27 @@ public class RetrieveCommandTest {
         InformationWantedFunction emailRetrieveFunction = new InformationWantedFunction(PREFIX_EMAIL);
         InformationWantedFunction telegramRetrieveFunction = new InformationWantedFunction(PREFIX_TELEGRAM);
 
-        RetrieveCommand emailRetrieveCommand = new RetrieveCommand(emailRetrieveFunction);
-        RetrieveCommand telegramRetrieveCommand = new RetrieveCommand(telegramRetrieveFunction);
+        GetCommand emailGetCommand = new GetCommand(emailRetrieveFunction);
+        GetCommand telegramGetCommand = new GetCommand(telegramRetrieveFunction);
 
         // same object -> returns true
-        assertEquals(emailRetrieveCommand, emailRetrieveCommand);
-        assertEquals(telegramRetrieveCommand, telegramRetrieveCommand);
+        assertEquals(emailGetCommand, emailGetCommand);
+        assertEquals(telegramGetCommand, telegramGetCommand);
 
         // same values -> returns true
-        RetrieveCommand emailRetrieveCommandCopy = new RetrieveCommand(emailRetrieveFunction);
-        assertEquals(emailRetrieveCommand, emailRetrieveCommandCopy);
+        GetCommand emailGetCommandCopy = new GetCommand(emailRetrieveFunction);
+        assertEquals(emailGetCommand, emailGetCommandCopy);
 
         // different types -> returns false
-        assertNotEquals(1, emailRetrieveCommand);
-        assertNotEquals(0, telegramRetrieveCommand);
+        assertNotEquals(1, emailGetCommand);
+        assertNotEquals(0, telegramGetCommand);
 
         // null -> returns false
-        assertFalse(emailRetrieveCommand.equals(null));
-        assertFalse(telegramRetrieveCommand.equals(null));
+        assertFalse(emailGetCommand.equals(null));
+        assertFalse(telegramGetCommand.equals(null));
 
         // different student -> returns false
-        assertNotEquals(emailRetrieveCommand, telegramRetrieveCommand);
+        assertNotEquals(emailGetCommand, telegramGetCommand);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class RetrieveCommandTest {
                 .map(Object::toString)
                 .collect(Collectors.joining("\n"));
 
-        RetrieveCommand command = new RetrieveCommand(function);
+        GetCommand command = new GetCommand(function);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
     }
 
@@ -106,7 +106,7 @@ public class RetrieveCommandTest {
         InformationWantedFunction.SUPPORTED_PREFIX.forEach(prefix -> {
             InformationWantedFunction function = new InformationWantedFunction(prefix);
 
-            RetrieveCommand command = new RetrieveCommand(function);
+            GetCommand command = new GetCommand(function);
             assertCommandSuccess(command, emptyModel, expectedMessage, emptyModel);
         });
     }
