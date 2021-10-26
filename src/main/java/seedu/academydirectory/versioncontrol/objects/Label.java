@@ -1,5 +1,6 @@
 package seedu.academydirectory.versioncontrol.objects;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class Label extends VcObject {
@@ -24,5 +25,13 @@ public class Label extends VcObject {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        if (this.equals(Label.NULL)) {
+            return "NULL";
+        }
+        return Arrays.toString(new String[]{getHash(), name});
     }
 }

@@ -42,28 +42,30 @@ public class HistoryCommand extends Command {
     }
 
     private List<String> retrieveHistory(VersionedModel model) {
-        Commit headCommit = model.getHeadCommit();;
-        Commit latestCommit = model.fetchCommitByLabel(VersionControl.OLD_LABEL_STRING);
+        Commit headCommit = model.getHeadCommit();
+        Commit currLatestCommit = model.fetchCommitByLabel(VersionControl.CURRENT_LABEL_STRING);
+        Commit oldLatestCommit = model.fetchCommitByLabel(VersionControl.OLD_LABEL_STRING);
 
-        Commit lca = headCommit.findLca(latestCommit);
+        Commit lca = currLatestCommit.findLca(oldLatestCommit);
 
-        Commit latestAncestor = latestCommit.getHighestAncestor(lca);
-        Commit headAncestor = headCommit.getHighestAncestor(lca);
-        assert !headAncestor.equals(latestAncestor); // Violates LCA definition
+        Commit currLatestAncestor = currLatestCommit.getHighestAncestor(lca);
+        Commit oldLatestAncestor = oldLatestCommit.getHighestAncestor(lca);
+        assert !currLatestAncestor.equals(oldLatestAncestor); // Violates LCA definition
 
         List<Commit> earlyHistory = lca.getHistory();
-        List<Commit> latestToEarly = latestCommit.getHistory(lca);
-        List<Commit> headToEarly = headCommit.getHistory(lca);
+        List<Commit> currLatestToEarly = currLatestCommit.getHistory(lca);
+        List<Commit> oldLatestToEarly = oldLatestCommit.getHistory(lca);
 
-        List<Commit> sortedBranch = Stream.concat(latestToEarly.stream(), headToEarly.stream())
+        List<Commit> sortedBranch = Stream.concat(oldLatestToEarly.stream(), currLatestToEarly.stream())
                 .sorted(Comparator.comparing(Commit::getDate)).collect(Collectors.toList());
         List<Commit> sortedEarlyHistory = earlyHistory.stream().sorted(Comparator.comparing(Commit::getDate))
                 .collect(Collectors.toList());
 
         List<String> result = new ArrayList<>();
         for (Commit commit : sortedEarlyHistory) {
-            result.add("| " + getPresentableHistory(commit, 1, ""));
-            result.add("* " + getPresentableHistory(commit, 0, commit.equals(headCommit) ? "(HEAD)" : ""));
+            String label = getLabel(commit, currLatestCommit, oldLatestCommit, headCommit);
+            result.add("| " + getPresentableHistory(commit, 1, label));
+            result.add("* " + getPresentableHistory(commit, 0, label));
         }
 
         if (sortedBranch.size() == 0) {
@@ -75,12 +77,13 @@ public class HistoryCommand extends Command {
 
         // Latest on left lane
         for (Commit commit : sortedBranch) {
-            if (latestToEarly.contains(commit)) {
-                result.add("| | " + getPresentableHistory(commit, 1, ""));
-                result.add("* | " + getPresentableHistory(commit, 0, commit.equals(latestCommit) ? "(PRIOR)" : ""));
+            String label = getLabel(commit, currLatestCommit, oldLatestCommit, headCommit);
+            if (oldLatestToEarly.contains(commit)) {
+                result.add("| | " + getPresentableHistory(commit, 1, label));
+                result.add("* | " + getPresentableHistory(commit, 0, label));
             } else {
-                result.add("| | " + getPresentableHistory(commit, 1, ""));
-                result.add("| * " + getPresentableHistory(commit, 0, commit.equals(headCommit) ? "(HEAD)" : ""));
+                result.add("| | " + getPresentableHistory(commit, 1, label));
+                result.add("| * " + getPresentableHistory(commit, 0, label));
             }
         }
         Collections.reverse(result);
@@ -94,5 +97,19 @@ public class HistoryCommand extends Command {
         } else {
             return "\t\t" + commit.getMessage();
         }
+    }
+
+    private String getLabel(Commit commit, Commit currLatestCommit, Commit oldLatestCommit, Commit headCommit) {
+        List<String> result = new ArrayList<>();
+        if (commit.equals(headCommit)) {
+            result.add("(HEAD)");
+        }
+        if (commit.equals(currLatestCommit)) {
+            result.add("(MAIN)");
+        }
+        if (commit.equals(oldLatestCommit)) {
+            result.add("(OLD)");
+        }
+        return String.join(" ", result);
     }
 }

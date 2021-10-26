@@ -20,7 +20,8 @@ import seedu.academydirectory.versioncontrol.utils.HashMethod;
 
 public class VersionControl {
     public static final String HEAD_LABEL_STRING = "HEAD";
-    public static final String OLD_LABEL_STRING = "temp_LATEST";
+    public static final String OLD_LABEL_STRING = "OLD";
+    public static final String CURRENT_LABEL_STRING = "CURRENT";
 
     private Commit headCommit = Commit.NULL;
 
@@ -67,8 +68,21 @@ public class VersionControl {
         this.headCommit = versionControlReader.createNewCommit(message, () -> blobTree, () -> parentCommit);
         Label headLabel = versionControlReader.createNewLabel(HEAD_LABEL_STRING, headCommit);
 
+        // Handling branching
+        Label oldLabel = versionControlReader.fetchLabelByName(OLD_LABEL_STRING);
+        Label currLabel = versionControlReader.fetchLabelByName(CURRENT_LABEL_STRING);
+        Commit currCommit = currLabel.getCommitSupplier().get();
+        if (!currCommit.equals(Commit.NULL) && !currCommit.equals(parentCommit)) {
+            // Branching occurs => oldLabel points to parentCommit and currLabel points to new commit (HEAD commit)
+            oldLabel = versionControlReader.createNewLabel(OLD_LABEL_STRING, currCommit);
+        }
+
+        currLabel = versionControlReader.createNewLabel(CURRENT_LABEL_STRING, this.headCommit);
+
         stageArea.resetStage();
         stageArea.stage(headLabel);
+        stageArea.stage(oldLabel);
+        stageArea.stage(currLabel);
         stageArea.stage(this.headCommit);
         stageArea.stage(blobTree);
     }
@@ -81,9 +95,9 @@ public class VersionControl {
      */
     public Commit revert(String fiveCharHash) throws IOException {
         Commit relevantCommit = versionControlReader.fetchCommitByHash(fiveCharHash);
-        if (relevantCommit.equals(Commit.NULL)) {
+        if (relevantCommit.equals(Commit.NULL)) { // Error in commit fetching => return null
             return Commit.NULL;
-        } else if (relevantCommit.equals(headCommit)) {
+        } else if (relevantCommit.equals(headCommit)) { // Disallowed operation => return null
             return Commit.NULL;
         }
 
@@ -91,13 +105,10 @@ public class VersionControl {
         Tree relevantTree = relevantCommit.getTreeSupplier().get();
         regenerateBlobs(relevantTree);
 
-        Label oldLabel = versionControlReader.createNewLabel(OLD_LABEL_STRING, headCommit);
-
         this.headCommit = relevantCommit;
         Label headLabel = versionControlReader.createNewLabel(HEAD_LABEL_STRING, headCommit);
 
         stageArea.resetStage();
-        stageArea.stage(oldLabel);
         stageArea.stage(headLabel);
         return relevantCommit;
     }

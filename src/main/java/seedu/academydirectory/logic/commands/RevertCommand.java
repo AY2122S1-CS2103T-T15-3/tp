@@ -25,7 +25,7 @@ public class RevertCommand extends Command {
             + "\n"
             + "Format: `revert KEYWORD`";
 
-    public static final String REVERT_SUCCESSFUL_ACKNOWLEDGEMENT = "Successfully reverted Academy"
+    public static final String MESSAGE_SUCCESS = "Successfully reverted Academy"
             + " Directory as requested!";
 
     public static final String REVERT_REQUEST_REJECTED = "Unable to revert Academy Directory as requested ...";
@@ -68,6 +68,6 @@ public class RevertCommand extends Command {
         }
 
         model.setAcademyDirectory(initialData);
-        return new CommandResult(REVERT_SUCCESSFUL_ACKNOWLEDGEMENT, false, false);
+        return new CommandResult(MESSAGE_SUCCESS, false, false);
     }
 }
