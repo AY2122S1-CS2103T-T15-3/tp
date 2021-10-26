@@ -43,7 +43,6 @@ public class VisualizerDisplay extends UiPart<Region> {
      * @param additionalViewModel additional View model
      */
     public void handleAdditionalInfo(AdditionalViewModel additionalViewModel) {
-        System.out.println(additionalViewModel.getAdditionalViewType());
         switch (additionalViewModel.getAdditionalViewType()) {
         case VIEW:
             setVisualizer(new ViewCreator(additionalViewModel.getAdditionalInfo()));
