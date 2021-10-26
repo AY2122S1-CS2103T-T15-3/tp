@@ -33,7 +33,7 @@ public class GetCommand extends Command {
             + " Currently supported personal details includes: \n"
             + "- Email\n"
             + "- Telegram Handle\n"
-            + "- Contact Number\n"
+            + "- Phone Number\n"
             + "\n"
             + "Format: `get INFORMATION [MORE INFORMATION] [STUDENT_NAME]`";
 

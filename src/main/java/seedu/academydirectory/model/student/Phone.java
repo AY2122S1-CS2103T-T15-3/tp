@@ -3,6 +3,8 @@ package seedu.academydirectory.model.student;
 import static java.util.Objects.requireNonNull;
 import static seedu.academydirectory.commons.util.AppUtil.checkArgument;
 
+import java.util.Optional;
+
 /**
  * Represents a Student's phone number in the academy directory.
  * Guarantees: immutable; is valid as declared in {@link #isValidPhone(String)}
@@ -16,7 +18,7 @@ public class Phone implements Information {
     public static final String PHONE_REGEX = "\\d{3,}";
     public static final String NA_REGEX = "^NA$";
     public static final String VALIDATION_REGEX = PHONE_REGEX + "|" + NA_REGEX;
-    public final String value;
+    public final Optional<String> value;
 
     /**
      * Constructs a {@code Phone}.
@@ -26,7 +28,11 @@ public class Phone implements Information {
     public Phone(String phone) {
         requireNonNull(phone);
         checkArgument(isValidPhone(phone), MESSAGE_CONSTRAINTS);
-        value = phone;
+        if (isEmpty(phone)) {
+            value = Optional.empty();
+        } else {
+            value = Optional.of(phone);
+        }
     }
 
     /**
@@ -36,16 +42,20 @@ public class Phone implements Information {
         return test.matches(VALIDATION_REGEX);
     }
 
+    private static boolean isEmpty(String test) {
+        return test.matches(NA_REGEX);
+    }
+
     @Override
     public String toString() {
-        return value;
+        return value.orElse("NA");
     }
 
     @Override
     public boolean equals(Object other) {
         return other == this // short circuit if same object
                 || (other instanceof Phone // instanceof handles nulls
-                && value.equals(((Phone) other).value)); // state check
+                && this.toString().equals(other.toString())); // state check
     }
 
     @Override

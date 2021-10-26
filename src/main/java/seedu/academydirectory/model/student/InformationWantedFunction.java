@@ -46,7 +46,7 @@ public class InformationWantedFunction implements Function<Student, Optional<Inf
         } else if (PREFIX_TELEGRAM.equals(prefix)) {
             return Optional.of(student.getTelegram());
         } else if (PREFIX_PHONE.equals(prefix)) {
-            return Optional.of(student.getPhone());
+            return student.getPhone().value.isEmpty() ? Optional.empty() : Optional.of(student.getPhone());
         }
         return Optional.empty();
     }

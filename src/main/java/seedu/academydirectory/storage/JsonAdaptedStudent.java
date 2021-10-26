@@ -61,7 +61,7 @@ class JsonAdaptedStudent {
      */
     public JsonAdaptedStudent(Student source) {
         name = source.getName().fullName;
-        phone = source.getPhone().value;
+        phone = source.getPhone().toString();
         email = source.getEmail().value;
         telegram = source.getTelegram().value;
         attendance = source.getAttendance().getAttendanceArray();
