@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import seedu.academydirectory.logic.AdditionalViewType;
 import seedu.academydirectory.logic.commands.exceptions.CommandException;
+import seedu.academydirectory.model.AdditionalInfo;
 import seedu.academydirectory.model.VersionControl;
 import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.versioncontrol.objects.Commit;
@@ -20,6 +22,7 @@ import seedu.academydirectory.versioncontrol.objects.Commit;
  */
 public class HistoryCommand extends Command {
     public static final String COMMAND_WORD = "history";
+    public static final String MESSAGE_SUCCESS = "Commit history shown";
     public static final String HELP_MESSAGE = "### Listing all history : `history`\n"
             + "\n"
             + "Shows a list of all command history in the academy directory.\n"
@@ -31,7 +34,11 @@ public class HistoryCommand extends Command {
     @Override
     public CommandResult execute(VersionedModel model) throws CommandException {
         requireNonNull(model);
-        return new CommandResult(String.join("\n", retrieveHistory(model)));
+        String result = String.join("\n", retrieveHistory(model));
+
+        model.setAdditionalViewType(AdditionalViewType.HISTORY);
+        model.setAdditionalInfo(AdditionalInfo.of(result));
+        return new CommandResult(MESSAGE_SUCCESS);
     }
 
     private List<String> retrieveHistory(VersionedModel model) {

@@ -7,6 +7,7 @@ import seedu.academydirectory.model.AdditionalViewModel;
 import seedu.academydirectory.ui.creator.Creator;
 import seedu.academydirectory.ui.creator.DefaultCreator;
 import seedu.academydirectory.ui.creator.GraphCreator;
+import seedu.academydirectory.ui.creator.HistoryCreator;
 import seedu.academydirectory.ui.creator.ViewCreator;
 
 /**
@@ -32,12 +33,16 @@ public class VisualiserDisplay extends UiPart<Region> {
      * @param additionalViewModel additional View model
      */
     public void handleAdditionalInfo(AdditionalViewModel additionalViewModel) {
+        System.out.println(additionalViewModel.getAdditionalViewType());
         switch (additionalViewModel.getAdditionalViewType()) {
         case VIEW:
             setVisualizer(new ViewCreator(additionalViewModel.getAdditionalInfo()));
             break;
         case VISUALISE:
             setVisualizer(new GraphCreator(additionalViewModel.getAdditionalInfo()));
+            break;
+        case HISTORY:
+            setVisualizer(new HistoryCreator(additionalViewModel.getAdditionalInfo()));
             break;
         default:
             setVisualizer(new DefaultCreator(additionalViewModel.getAdditionalInfo()));
