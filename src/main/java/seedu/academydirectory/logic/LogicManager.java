@@ -45,7 +45,6 @@ public class LogicManager implements Logic {
 
         Command command = academyDirectoryParser.parseCommand(commandText);
         CommandResult commandResult = command.execute(model);
-        model.setAdditionalViewType(AdditionalViewType.parse(command));
 
         try {
             storage.saveAcademyDirectory(model.getAcademyDirectory());

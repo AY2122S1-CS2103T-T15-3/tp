@@ -147,15 +147,6 @@ public class ModelManager implements VersionedModel {
     }
 
     @Override
-    public <T> ObservableList<T> getFilteredStudentListView(Function<? super Student, ? extends T> function) {
-        requireNonNull(function);
-        return filteredStudents
-                .stream()
-                .map(function)
-                .collect(Collectors.toCollection(FXCollections::observableArrayList));
-    }
-
-    @Override
     public boolean equals(Object obj) {
         // short circuit if same object
         if (obj == this) {

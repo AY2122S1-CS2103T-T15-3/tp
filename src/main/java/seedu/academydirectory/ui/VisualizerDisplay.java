@@ -50,9 +50,7 @@ public class VisualizerDisplay extends UiPart<Region> {
         case VISUALIZE:
             setVisualizer(new GraphCreator(additionalViewModel.getAdditionalInfo()));
             break;
-        case HISTORY:
-        case GET:
-        case SHOW:
+        case TEXT:
             setVisualizer(new TextAreaCreator(additionalViewModel.getAdditionalInfo()));
             break;
         default:

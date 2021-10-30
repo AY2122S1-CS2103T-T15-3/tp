@@ -71,7 +71,7 @@ public class ShowCommand extends Command {
         requireNonNull(model);
         ObservableList<Student> students = model.getFilteredStudentList();
         String result = displayResult(students, this.assessment);
-        model.setAdditionalViewType(AdditionalViewType.SHOW);
+        model.setAdditionalViewType(AdditionalViewType.TEXT);
         model.setAdditionalInfo(AdditionalInfo.of(result));
         return new CommandResult(String.format(MESSAGE_SUCCESS, assessment));
     }

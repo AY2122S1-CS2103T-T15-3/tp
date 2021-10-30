@@ -161,11 +161,6 @@ public class AddCommandTest {
         }
 
         @Override
-        public <T> ObservableList<T> getFilteredStudentListView(Function<? super Student, ? extends T> function) {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
         public void commit(String message) {
         }
 

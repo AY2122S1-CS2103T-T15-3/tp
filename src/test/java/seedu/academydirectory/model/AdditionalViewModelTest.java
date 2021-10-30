@@ -19,13 +19,13 @@ public class AdditionalViewModelTest {
         assertNotEquals(additionalViewModel1, null);
 
         AdditionalViewModel additionalViewModel2 = new AdditionalViewModel(
-                AdditionalViewType.SHOW, AdditionalInfo.of(3.5)
+                AdditionalViewType.TEXT, AdditionalInfo.of(3.5)
         );
 
         // two additional view models are equal if
         // the view type and info are equal
         assertEquals(additionalViewModel2, new AdditionalViewModel(
-                AdditionalViewType.SHOW, AdditionalInfo.of(3.5)
+                AdditionalViewType.TEXT, AdditionalInfo.of(3.5)
         ));
 
         // they are not equal otherwise
@@ -47,7 +47,7 @@ public class AdditionalViewModelTest {
 
         // same type of additional info but different view
         assertNotEquals(additionalViewModel3, new AdditionalViewModel(
-                AdditionalViewType.SHOW, AdditionalInfo.empty()
+                AdditionalViewType.TEXT, AdditionalInfo.empty()
         ));
     }
 

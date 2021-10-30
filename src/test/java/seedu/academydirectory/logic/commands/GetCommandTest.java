@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static seedu.academydirectory.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.academydirectory.logic.commands.GetCommand.MESSAGE_NOTHING_TO_SHOW;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TELEGRAM;
@@ -98,21 +99,23 @@ public class GetCommandTest {
         String content = expectedResponse.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining("\n"));
-        String expectedMessage = (GetCommand.MESSAGE_SUCCESS);
         GetCommand command = new GetCommand(function);
-        assertCommandSuccess(command, model, expectedMessage, expectedModel);
+        command.execute(model);
+        assertEquals(model.getAdditionalViewModel().getAdditionalInfo().get(), content);
+        assertCommandSuccess(command, model, GetCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
     @Test
     public void execute_singlePrefixEmptyModel() {
         VersionedModel emptyModel = new ModelManager();
-        String expectedMessage = (GetCommand.MESSAGE_SUCCESS);
 
         InformationWantedFunction.SUPPORTED_PREFIX.forEach(prefix -> {
             InformationWantedFunction function = new InformationWantedFunction(prefix);
 
             GetCommand command = new GetCommand(function);
-            assertCommandSuccess(command, emptyModel, expectedMessage, emptyModel);
+            command.execute(emptyModel);
+            assertEquals(emptyModel.getAdditionalViewModel().getAdditionalInfo().get(), MESSAGE_NOTHING_TO_SHOW);
+            assertCommandSuccess(command, emptyModel, GetCommand.MESSAGE_FAILED, emptyModel);
         });
     }
 }

@@ -88,12 +88,6 @@ public interface Model {
      */
     void updateFilteredStudentList(Predicate<Student> predicate);
 
-    /**
-     * Returns an unmodifiable slice of the filtered person list according to the given {@code function}.
-     * @throws NullPointerException if {@code function} is null.
-     */
-    <T> ObservableList<T> getFilteredStudentListView(Function<? super Student, ? extends T> function);
-
     AdditionalViewModel getAdditionalViewModel();
 
     void setAdditionalViewType(AdditionalViewType additionalViewType);

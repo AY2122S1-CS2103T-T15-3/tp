@@ -8,12 +8,12 @@ import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TELEGRAM;
 import static seedu.academydirectory.model.Model.PREDICATE_SHOW_ALL_STUDENTS;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import seedu.academydirectory.commons.core.Messages;
 import seedu.academydirectory.logic.AdditionalViewType;
 import seedu.academydirectory.model.AdditionalInfo;
 import seedu.academydirectory.model.Model;
@@ -44,39 +44,46 @@ public class GetCommand extends Command {
             + "Parameters: " + PREFIX_EMAIL + " | "
             + PREFIX_TELEGRAM + " | " + PREFIX_PHONE + "\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_PHONE + " " + PREFIX_NAME + "Alex";
+    public static final String MESSAGE_SUCCESS = "Personal details retrieval is successful";
+    public static final String MESSAGE_FAILED = "Failed to receive one or more personal details. Showing what I can...";
+    public static final String MESSAGE_NOTHING_TO_SHOW = "Nothing to show...";
 
-    public static final String MESSAGE_SUCCESS = "Retrieved information successfully";
+    private final List<InformationWantedFunction> functionList;
 
-    private final List<InformationWantedFunction> filterList;
-
-    public GetCommand(List<InformationWantedFunction> filterList) {
-        this.filterList = filterList;
+    public GetCommand(List<InformationWantedFunction> functionList) {
+        this.functionList = functionList;
     }
 
     public GetCommand(InformationWantedFunction filter) {
         this(List.of(filter));
     }
 
-    private String executeFilter(Model model, InformationWantedFunction filter) {
+    private String executeFilter(Model model, InformationWantedFunction function) {
         model.updateFilteredStudentList(PREDICATE_SHOW_ALL_STUDENTS);
-        ObservableList<Information> view = model.getFilteredStudentListView(filter)
-                .stream()
+        ObservableList<Information> view = model.getFilteredStudentList()
+                .stream().map(function)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
         return view.size() == 0
-                ? String.format(Messages.MESSAGE_STUDENTS_LISTED_OVERVIEW, 0)
+                ? null
                 : view.stream().map(Object::toString).collect(Collectors.joining("\n"));
     }
 
     @Override
     public CommandResult execute(VersionedModel model) {
         requireNonNull(model);
-        model.setAdditionalViewType(AdditionalViewType.GET);
-        model.setAdditionalInfo(AdditionalInfo.of(filterList.stream().parallel().map(x -> executeFilter(model, x))
-                .collect(Collectors.joining("\n"))));
-        return new CommandResult(MESSAGE_SUCCESS);
+        List<String> result = functionList.stream().parallel().map(x -> executeFilter(model, x))
+                .collect(Collectors.toList());
+        String feedbackMessage = result.contains(null) ? MESSAGE_FAILED : MESSAGE_SUCCESS;
+        String resultString = result.stream().allMatch(Objects::isNull)
+                ? MESSAGE_NOTHING_TO_SHOW
+                : result.stream().filter(x -> !Objects.isNull(x)).collect(Collectors.joining("\n"));
+
+        model.setAdditionalViewType(AdditionalViewType.TEXT);
+        model.setAdditionalInfo(AdditionalInfo.of(resultString));
+        return new CommandResult(feedbackMessage);
     }
 
     @Override
@@ -84,8 +91,8 @@ public class GetCommand extends Command {
         if (other == this) {
             return true;
         } else if (other instanceof GetCommand) {
-            List<InformationWantedFunction> otherList = ((GetCommand) other).filterList;
-            List<InformationWantedFunction> thisList = this.filterList;
+            List<InformationWantedFunction> otherList = ((GetCommand) other).functionList;
+            List<InformationWantedFunction> thisList = this.functionList;
 
             return thisList.stream().map(otherList::contains).reduce(true, (x, y) -> x && y)
                     &&

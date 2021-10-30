@@ -36,7 +36,7 @@ public class HistoryCommand extends Command {
         requireNonNull(model);
         String result = String.join("\n", retrieveHistory(model));
 
-        model.setAdditionalViewType(AdditionalViewType.HISTORY);
+        model.setAdditionalViewType(AdditionalViewType.TEXT);
         model.setAdditionalInfo(AdditionalInfo.of(result));
         return new CommandResult(MESSAGE_SUCCESS);
     }
