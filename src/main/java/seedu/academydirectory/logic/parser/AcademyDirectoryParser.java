@@ -80,7 +80,7 @@ public class AcademyDirectoryParser {
             return new FilterCommandParser().parse(arguments);
 
         case GetCommand.COMMAND_WORD:
-            return new RetrieveCommandParser().parse(arguments);
+            return new GetCommandParser().parse(arguments);
 
         case ListCommand.COMMAND_WORD:
             return new ListCommand();

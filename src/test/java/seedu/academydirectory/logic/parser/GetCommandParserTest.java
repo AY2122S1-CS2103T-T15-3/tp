@@ -6,6 +6,7 @@ import static seedu.academydirectory.logic.parser.CommandParserTestUtil.assertPa
 import static seedu.academydirectory.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.academydirectory.testutil.TypicalStudents.getTypicalStudents;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.model.student.InformationWantedFunction;
 import seedu.academydirectory.model.student.Name;
+import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
 
 @SuppressWarnings("checkstyle:Regexp")
 public class GetCommandParserTest {
@@ -20,7 +22,7 @@ public class GetCommandParserTest {
     private static final String MESSAGE_INVALID_FORMAT =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, GetCommand.MESSAGE_USAGE);
 
-    private final RetrieveCommandParser parser = new RetrieveCommandParser();
+    private final GetCommandParser parser = new GetCommandParser();
 
     @Test
     public void parse_missingParts_failure() {
@@ -57,7 +59,8 @@ public class GetCommandParserTest {
                 .parallel();
         relevantPrefixes.forEach(prefix -> {
             String userInput = " " + prefix.getPrefix() + " " + PREFIX_NAME + name.fullName;
-            GetCommand expectedCommand = new GetCommand(new InformationWantedFunction(prefix, name));
+            NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(List.of(name.fullName));
+            GetCommand expectedCommand = new GetCommand(new InformationWantedFunction(prefix, predicate));
             assertParseSuccess(parser, userInput, expectedCommand);
         });
     }

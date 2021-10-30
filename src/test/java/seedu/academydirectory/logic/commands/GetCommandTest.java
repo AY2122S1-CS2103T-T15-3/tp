@@ -10,6 +10,7 @@ import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TELEGRAM;
 import static seedu.academydirectory.testutil.TypicalStudents.getTypicalAcademyDirectory;
 import static seedu.academydirectory.testutil.TypicalStudents.getTypicalStudents;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.model.student.Information;
 import seedu.academydirectory.model.student.InformationWantedFunction;
 import seedu.academydirectory.model.student.Name;
+import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -73,11 +75,15 @@ public class GetCommandTest {
     }
 
     private void execute_singlePrefix(Prefix prefix, VersionedModel model, Name name) {
-        InformationWantedFunction function = new InformationWantedFunction(prefix, name);
+        NameContainsKeywordsPredicate predicate = name == null
+                ? null
+                : new NameContainsKeywordsPredicate(List.of(name.fullName.split("\\s")));
+
+        InformationWantedFunction function = new InformationWantedFunction(prefix, predicate);
 
         ObservableList<Information> expectedResponse = model.getAcademyDirectory()
                 .getStudentList().stream()
-                .filter(x -> name == null || x.getName().equals(name))
+                .filter(x -> predicate == null || predicate.test(x))
                 .map(x -> {
                     if (PREFIX_EMAIL.equals(prefix)) {
                         return x.getEmail();

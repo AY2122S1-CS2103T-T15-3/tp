@@ -5,7 +5,6 @@ import static seedu.academydirectory.commons.core.Messages.MESSAGE_INVALID_COMMA
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_NAME;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,12 +12,12 @@ import java.util.stream.Stream;
 import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.logic.parser.exceptions.ParseException;
 import seedu.academydirectory.model.student.InformationWantedFunction;
-import seedu.academydirectory.model.student.Name;
+import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
 
 /**
  * Parses input arguments and creates a new GetCommand object
  */
-public class RetrieveCommandParser implements Parser<GetCommand> {
+public class GetCommandParser implements Parser<GetCommand> {
     private static final Supplier<Stream<Prefix>> RELEVANT_PREFIXES_SUPPLIER = () ->
             Stream.of(InformationWantedFunction.SUPPORTED_PREFIX.toArray(Prefix[]::new));
 
@@ -44,15 +43,19 @@ public class RetrieveCommandParser implements Parser<GetCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, GetCommand.MESSAGE_USAGE));
         }
 
-        Optional<Name> nameOptional = argMultimap.getValue(PREFIX_NAME).map(Name::new);
+        List<String> nameList = argMultimap.getAllValues(PREFIX_NAME).stream()
+                .flatMap(name -> Stream.of(name.split("\\s")))
+                .collect(Collectors.toList());
+        NameContainsKeywordsPredicate nameContainsKeywordsPredicate = nameList.isEmpty()
+                ? null
+                : new NameContainsKeywordsPredicate(nameList);
 
-        List<InformationWantedFunction> filters = RELEVANT_PREFIXES_SUPPLIER.get()
+        List<InformationWantedFunction> functions = RELEVANT_PREFIXES_SUPPLIER.get()
                 .filter(x -> !argMultimap.getAllValues(x).isEmpty())
-                .map(x -> (nameOptional.isEmpty() ? new InformationWantedFunction(x)
-                        : new InformationWantedFunction(x, nameOptional.get())))
+                .map(x -> new InformationWantedFunction(x, nameContainsKeywordsPredicate))
                 .collect(Collectors.toList());
 
-        return new GetCommand(filters);
+        return new GetCommand(functions);
     }
 
 }
