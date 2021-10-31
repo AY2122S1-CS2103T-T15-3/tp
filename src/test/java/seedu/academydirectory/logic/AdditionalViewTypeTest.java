@@ -7,7 +7,6 @@ import static seedu.academydirectory.testutil.TypicalIndexes.INDEX_FIRST_STUDENT
 
 import org.junit.jupiter.api.Test;
 
-import seedu.academydirectory.logic.commands.AddCommand;
 import seedu.academydirectory.logic.commands.Command;
 import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.logic.commands.HelpCommand;
