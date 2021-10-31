@@ -8,16 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.academydirectory.testutil.TypicalCommits.COMMIT1;
 import static seedu.academydirectory.testutil.TypicalTrees.TREE1;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import seedu.academydirectory.versioncontrol.objects.Commit;
 import seedu.academydirectory.versioncontrol.objects.Label;
@@ -26,26 +24,23 @@ import seedu.academydirectory.versioncontrol.utils.HashGenerator;
 import seedu.academydirectory.versioncontrol.utils.HashMethod;
 
 public class VersionControlReaderTest {
+    @TempDir
+    public static Path testingDir;
+
     private static final Path DATA_DIR = Paths.get("src", "test",
             "data", "VersionControlTest");
     private static final Path BLOB_DIR = DATA_DIR.resolve(Paths.get("BlobStorage"));
-    private static final Path TESTING_DIR = Paths.get("src", "test", "temp");
     private static final HashMethod hashMethod = HashMethod.SHA1;
     private static final HashGenerator hashGenerator = new HashGenerator(hashMethod);
 
     @Test
     public void createNewCommit() {
-        if (TESTING_DIR.toFile().exists()) {
-            assertTrue(TESTING_DIR.toFile().delete());
-        }
-        assertTrue(TESTING_DIR.toFile().mkdir());
-
-        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, TESTING_DIR);
+        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, testingDir);
 
         // Null Tree and Null Commit
         String message = "Initial Commit";
-        Supplier<Tree> nullTreeSupplier = () -> Tree.NULL;
-        Supplier<Commit> nullCommitSupplier = () -> Commit.NULL;
+        Supplier<Tree> nullTreeSupplier = Tree::emptyTree;
+        Supplier<Commit> nullCommitSupplier = Commit::emptyCommit;
         Commit currentCommit = assertDoesNotThrow(() -> versionControlReader.createNewCommit(message,
                 nullTreeSupplier,
                 nullCommitSupplier));
@@ -57,7 +52,7 @@ public class VersionControlReaderTest {
         assertEquals(nullTreeSupplier, currentCommit.getTreeSupplier());
 
         // Non-Null Tree and Non-Null Commit
-        Supplier<Tree> treeSupplier = () -> new Tree("Test", "TEst", "TEST");
+        Supplier<Tree> treeSupplier = () -> Tree.of("Test", "TEst", "TEST");
         Supplier<Commit> commitSupplier = () -> COMMIT1;
         currentCommit = assertDoesNotThrow(() -> versionControlReader.createNewCommit(message,
                 treeSupplier,
@@ -68,17 +63,10 @@ public class VersionControlReaderTest {
         assertEquals(message, currentCommit.getMessage());
         assertEquals(commitSupplier, currentCommit.getParentSupplier());
         assertEquals(treeSupplier, currentCommit.getTreeSupplier());
-
-        assertTrue(TESTING_DIR.toFile().delete());
     }
 
     @Test
     public void fetchCommitByHash() throws IOException {
-        if (TESTING_DIR.toFile().exists()) {
-            assertTrue(TESTING_DIR.toFile().delete());
-        }
-        assertTrue(TESTING_DIR.toFile().mkdir());
-
         Path dataPath = DATA_DIR.resolve(Paths.get("CommitControllerTest"));
         VersionControlReader versionControlReader = new VersionControlReader(hashMethod, dataPath);
 
@@ -98,24 +86,17 @@ public class VersionControlReaderTest {
         // given hash not present in disk -> Commit.NULL returned
         commitHash = "Testing123";
         actualCommit = versionControlReader.fetchCommitByHash(commitHash);
-        assertEquals(Commit.NULL, actualCommit);
+        assertTrue(actualCommit.isEmpty());
 
         // given corrupt commit file -> Commit.NULL returned
         commitHash = "corrupted";
         actualCommit = versionControlReader.fetchCommitByHash(commitHash);
-        assertEquals(Commit.NULL, actualCommit);
-
-        assertTrue(TESTING_DIR.toFile().delete());
+        assertTrue(actualCommit.isEmpty());
     }
 
     @Test
-    public void createNewTree_blobsPresent_correctlyDuplicated() throws IOException {
-        if (TESTING_DIR.toFile().exists()) {
-            assertTrue(TESTING_DIR.toFile().delete());
-        }
-        assertTrue(TESTING_DIR.toFile().mkdir());
-
-        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, TESTING_DIR);
+    public void createNewTree_blobsPresent_correctlyDuplicated() {
+        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, testingDir);
 
         // Blobs present -> Correctly Duplicated
         String blobName = "HEAD";
@@ -140,42 +121,22 @@ public class VersionControlReaderTest {
                     hashGenerator.generateHashFromFile(actualPath));
             assertEquals(actualHash, vcHash);
         }
-
-        Files.walk(TESTING_DIR).sorted(Comparator.reverseOrder()).map(Path::toFile)
-                .forEach(File::delete);
-
-        assertFalse(Files.exists(TESTING_DIR), "Directory still exists");
     }
 
     @Test
-    public void createNewTree_blobsAbsent_nullTree() throws IOException {
-        if (TESTING_DIR.toFile().exists()) {
-            assertTrue(TESTING_DIR.toFile().delete());
-        }
-        assertTrue(TESTING_DIR.toFile().mkdir());
-
-        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, TESTING_DIR);
+    public void createNewTree_blobsAbsent_nullTree() {
+        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, testingDir);
 
         String blobName = "TAIL";
         Path blobPath = BLOB_DIR.resolve(Paths.get(blobName));
         assertFalse(blobPath.toFile().exists()); // Check if blob does not exist
 
         Tree actualTree = versionControlReader.createNewTree(blobPath);
-        assertEquals(Tree.NULL, actualTree);
-
-        Files.walk(TESTING_DIR).sorted(Comparator.reverseOrder()).map(Path::toFile)
-                .forEach(File::delete);
-
-        assertFalse(Files.exists(TESTING_DIR), "Directory still exists");
+        assertEquals(Tree.emptyTree(), actualTree);
     }
 
     @Test
     public void fetchTreeByHash() throws IOException {
-        if (TESTING_DIR.toFile().exists()) {
-            assertTrue(TESTING_DIR.toFile().delete());
-        }
-        assertTrue(TESTING_DIR.toFile().mkdir());
-
         Path dataPath = DATA_DIR.resolve(Paths.get("TreeControllerTest"));
         VersionControlReader versionControlReader = new VersionControlReader(hashMethod, dataPath);
 
@@ -198,37 +159,29 @@ public class VersionControlReaderTest {
         // given hash not present in disk -> Commit.NULL returned
         treeHash = "Testing123";
         actualTree = versionControlReader.fetchTreeByHash(treeHash);
-        assertEquals(Tree.NULL, actualTree);
+        assertEquals(Tree.emptyTree(), actualTree);
 
         // given corrupt commit file -> Commit.NULL returned
         treeHash = "corrupted";
         actualTree = versionControlReader.fetchTreeByHash(treeHash);
-        assertEquals(Tree.NULL, actualTree);
-
-        assertTrue(TESTING_DIR.toFile().delete());
+        assertEquals(Tree.emptyTree(), actualTree);
     }
 
     @Test
     public void createLabel() {
-        if (TESTING_DIR.toFile().exists()) {
-            assertTrue(TESTING_DIR.toFile().delete());
-        }
-        assertTrue(TESTING_DIR.toFile().mkdir());
-        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, TESTING_DIR);
+        VersionControlReader versionControlReader = new VersionControlReader(hashMethod, testingDir);
 
         // null passed in -> exception thrown
-        assertThrows(NullPointerException.class, () -> versionControlReader.createNewLabel(null, null));
         assertThrows(NullPointerException.class, () -> versionControlReader.createNewLabel("NULL", null));
+        assertThrows(NullPointerException.class, () -> versionControlReader.createNewLabel(null, null));
 
         // Commit1 passed in -> Commit1 labelled
         Label labelledCommit = versionControlReader.createNewLabel("temp", COMMIT1);
         assertEquals(labelledCommit.getCommitSupplier().get(), COMMIT1);
 
         // Commit.NULL passed in -> Commit.NULL labelled
-        Label labelledNullCommit = versionControlReader.createNewLabel("temp", Commit.NULL);
-        assertEquals(labelledNullCommit.getCommitSupplier().get(), Commit.NULL);
-
-        assertTrue(TESTING_DIR.toFile().delete());
+        Label labelledNullCommit = versionControlReader.createNewLabel("temp", Commit.emptyCommit());
+        assertTrue(labelledNullCommit.getCommitSupplier().get().isEmpty());
     }
 
     @Test
@@ -246,6 +199,6 @@ public class VersionControlReaderTest {
 
         // given name not present in disk -> Label.NULL returned
         actualLabel = versionControlReader.fetchLabelByName("MISSING");
-        assertEquals(Label.NULL, actualLabel);
+        assertTrue(actualLabel.isEmpty());
     }
 }

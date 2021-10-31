@@ -3,6 +3,7 @@ package seedu.academydirectory.model;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -149,7 +150,7 @@ class VersionControlTest {
 
         // Tree is Null
         Tree blobTree = fetchedHeadCommit.getTreeSupplier().get();
-        assertEquals(Tree.NULL, blobTree);
+        assertEquals(Tree.emptyTree(), blobTree);
     }
 
     @Test
@@ -162,12 +163,10 @@ class VersionControlTest {
         VersionControl versionControl = new VersionControl(HashMethod.SHA1, tempPath, dataDir);
 
         // Reverting to current hash -> Returns null commit
-        assertEquals(Commit.NULL,
-                assertDoesNotThrow(() -> versionControl.revert(versionControl.getHeadCommit().getHash())));
+        assertTrue(assertDoesNotThrow(() -> versionControl.revert(versionControl.getHeadCommit().getHash())).isEmpty());
 
         // Reverting to a commit that is not present -> Returns null commit
-        assertEquals(Commit.NULL,
-                assertDoesNotThrow(() -> versionControl.revert("MISSING")));
+        assertTrue(assertDoesNotThrow(() -> versionControl.revert("MISSING")).isEmpty());
     }
 
     @Test
@@ -189,7 +188,7 @@ class VersionControlTest {
         String correctHash = "6b8dca90ac26ec6f2f4fc3b7f820bc57f462fcf9";
         Commit revertedCommit = assertDoesNotThrow(() -> versionControl.revert(correctHash));
 
-        assertNotEquals(Commit.NULL, revertedCommit);
+        assertFalse(revertedCommit.isEmpty());
         assertNotEquals(currHead, revertedCommit);
         assertEquals(revertedCommit, versionControl.getHeadCommit());
 

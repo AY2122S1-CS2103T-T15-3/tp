@@ -28,6 +28,10 @@ public class CommitStorageManager extends StorageManager<Commit> {
 
     @Override
     protected List<String> getWriteableFormat(Commit commit) {
+        if (commit.isEmpty()) {
+            throw new IllegalArgumentException("Cannot get writeable format of NULL!");
+        }
+
         String author = "Author: " + System.getProperty("user.name");
         String date = "Date: " + df.format(commit.getDate());
         String message = "Message: " + commit.getMessage();
@@ -50,17 +54,17 @@ public class CommitStorageManager extends StorageManager<Commit> {
         }
 
         if (fields.size() != 5) {
-            return Commit.NULL;
+            return Commit.emptyCommit();
         }
 
         Date date;
         try {
             date = df.parse(fields.get(1));
         } catch (ParseException e) {
-            return Commit.NULL;
+            return Commit.emptyCommit();
         }
 
-        return new Commit(hash, fields.get(0), date,
+        return Commit.of(hash, fields.get(0), date,
                 fields.get(2), () -> this.read(fields.get(3)), () -> treeStorageManager.read(fields.get(4)));
     }
 

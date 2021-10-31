@@ -54,13 +54,13 @@ public class StageAreaStorage {
     }
 
     private void write(VcObject vcObject) throws IOException {
-        if (vcObject instanceof Commit && !((Commit) vcObject).equals(Commit.NULL)) {
+        if (vcObject instanceof Commit && !((Commit) vcObject).isEmpty()) {
             Commit commit = (Commit) vcObject;
             commitStorageManager.write(commit.getHash(), commit);
-        } else if (vcObject instanceof Tree && !((Tree) vcObject).equals(Tree.NULL)) {
+        } else if (vcObject instanceof Tree && !((Tree) vcObject).isEmpty()) {
             Tree tree = (Tree) vcObject;
             treeStorageManager.write(tree.getHash(), tree);
-        } else if (vcObject instanceof Label && !((Label) vcObject).equals(Label.NULL)) {
+        } else if (vcObject instanceof Label && !((Label) vcObject).isEmpty()) {
             Label label = (Label) vcObject;
             labelStorageManager.write(label.getName(), label);
         } else {

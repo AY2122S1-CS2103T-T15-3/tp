@@ -13,6 +13,13 @@ public abstract class VcObject {
         return hash;
     }
 
+    public abstract boolean isEmpty();
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(hash);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -24,11 +31,10 @@ public abstract class VcObject {
         }
 
         VcObject vcObject = (VcObject) o;
-        return hash.equals(vcObject.hash);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(hash);
+        if (this.isEmpty() || vcObject.isEmpty()) {
+            return false;
+        } else {
+            return getHash().equals(vcObject.getHash());
+        }
     }
 }

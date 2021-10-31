@@ -165,7 +165,7 @@ public class AddCommandTest {
 
         @Override
         public Commit revert(String fiveCharHash) throws IOException {
-            return Commit.NULL;
+            return Commit.emptyCommit();
         }
 
         @Override

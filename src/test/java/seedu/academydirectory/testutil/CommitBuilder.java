@@ -20,8 +20,8 @@ public class CommitBuilder {
     public static final Date DEFAULT_DATE = assertDoesNotThrow(() -> new SimpleDateFormat("dd/MM/yyyy")
             .parse("31/12/1998"));
     public static final String DEFAULT_MESSAGE = "Hello, World!";
-    public static final Supplier<Commit> DEFAULT_PARENT_SUPPLIER = () -> Commit.NULL;
-    public static final Supplier<Tree> DEFAULT_TREE_SUPPLIER = () -> Tree.NULL;
+    public static final Supplier<Commit> DEFAULT_PARENT_SUPPLIER = Commit::emptyCommit;
+    public static final Supplier<Tree> DEFAULT_TREE_SUPPLIER = Tree::emptyTree;
 
     private String hash;
     private String author;
@@ -106,6 +106,6 @@ public class CommitBuilder {
      * Builds the Commit object for testing.
      */
     public Commit build() {
-        return new Commit(hash, author, date, message, parentSupplier, treeSupplier);
+        return Commit.of(hash, author, date, message, parentSupplier, treeSupplier);
     }
 }

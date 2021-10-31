@@ -19,7 +19,7 @@ public class VersionControl {
     public static final String OLD_LABEL_STRING = "OLD";
     public static final String CURRENT_LABEL_STRING = "CURRENT";
 
-    private Commit headCommit = Commit.NULL;
+    private Commit headCommit = Commit.emptyCommit();
 
     private final Path storagePath;
     private final VersionControlReader versionControlReader;
@@ -43,7 +43,7 @@ public class VersionControl {
                 this.headCommit = this.fetchCommitByLabel(HEAD_LABEL_STRING);
             } else {
                 // Create initial commit
-                this.headCommit = Commit.NULL;
+                this.headCommit = Commit.emptyCommit();
                 this.commit("Initial Commit");
             }
         } catch (IOException e) {
@@ -79,7 +79,7 @@ public class VersionControl {
 
     private Label handleCommitBranch(Label oldLabel, Label currLabel) {
         Commit currCommit = currLabel.getCommitSupplier().get();
-        if (!currCommit.equals(Commit.NULL) && !currCommit.equals(this.headCommit)) {
+        if (!currCommit.isEmpty() && !currCommit.equals(this.headCommit)) {
             // Branching occurs => label currCommit as "old"
             return versionControlReader.createNewLabel(OLD_LABEL_STRING, currCommit);
         }
@@ -94,10 +94,10 @@ public class VersionControl {
      */
     public Commit revert(String fiveCharHash) throws IOException {
         Commit relevantCommit = versionControlReader.fetchCommitByHash(fiveCharHash);
-        if (relevantCommit.equals(Commit.NULL)) { // Error in commit fetching => return null
-            return Commit.NULL;
+        if (relevantCommit.equals(Commit.emptyCommit())) { // Error in commit fetching => return null
+            return Commit.emptyCommit();
         } else if (relevantCommit.equals(headCommit)) { // Disallowed operation => return null
-            return Commit.NULL;
+            return Commit.emptyCommit();
         }
 
         // Regenerate files

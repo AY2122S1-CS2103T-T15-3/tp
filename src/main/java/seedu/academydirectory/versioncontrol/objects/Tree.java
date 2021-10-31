@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Tree extends VcObject {
-    public static final Tree NULL = new Tree("NULL", "null", "null");
+    private static final Tree NULL = new Tree(null);
 
     private final HashMap<String, String> hashMap;
 
@@ -20,14 +20,28 @@ public class Tree extends VcObject {
         hashMap = new HashMap<>();
     }
 
+    private Tree(String hash, List<String> fileNames, List<String> vcNames) {
+        this(hash);
+        for (int i = 0; i < fileNames.size(); i++) {
+            hashMap.putIfAbsent(vcNames.get(i), fileNames.get(i));
+        }
+    }
+
+    private Tree(String hash, String fileName, String vcName) {
+        this(hash, List.of(fileName), List.of(vcName));
+    }
+
     /**
      * Creates a Tree object to work with programmatically. A Tree object SHOULD NOT be instantiated directly.
      * Instead, use a BlobFactory object to ensure all Tree objects follow the established contract
      * @param fileName name of file to be version controlled
      * @param vcName version controlled name of the file
      */
-    public Tree(String hash, String fileName, String vcName) {
-        this(hash, List.of(fileName), List.of(vcName));
+    public static Tree of(String hash, String fileName, String vcName) {
+        requireNonNull(hash);
+        requireNonNull(fileName);
+        requireNonNull(vcName);
+        return new Tree(hash, fileName, vcName);
     }
 
     /**
@@ -35,22 +49,26 @@ public class Tree extends VcObject {
      * Instead, use a BlobFactory object to ensure all Tree objects follow the established contract
      * @param hash hash of the resultant tree object
      */
-    public Tree(String hash, List<String> fileNames, List<String> vcNames) {
-        this(hash);
+    public static Tree of(String hash, List<String> fileNames, List<String> vcNames) {
+        requireNonNull(hash);
         requireNonNull(fileNames);
         requireNonNull(vcNames);
-
         if (fileNames.size() != vcNames.size()) {
             throw new IllegalArgumentException("Different list sizes");
         }
-
-        for (int i = 0; i < fileNames.size(); i++) {
-            hashMap.putIfAbsent(vcNames.get(i), fileNames.get(i));
-        }
+        return new Tree(hash, fileNames, vcNames);
     }
 
     public HashMap<String, String> getHashMap() {
         return hashMap;
+    }
+
+    public static Tree emptyTree() {
+        return NULL;
+    }
+
+    public boolean isEmpty() {
+        return this == NULL;
     }
 
     @Override

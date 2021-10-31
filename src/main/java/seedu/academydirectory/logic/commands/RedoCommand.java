@@ -34,7 +34,7 @@ public class RedoCommand extends Command {
     public CommandResult execute(VersionedModel model) throws CommandException {
         Commit currLatest = model.fetchCommitByLabel(CURRENT_LABEL_STRING);
         Commit nextCommit = currLatest.getHighestAncestor(model.getHeadCommit());
-        if (nextCommit.equals(Commit.NULL)) {
+        if (nextCommit.equals(Commit.emptyCommit())) {
             throw new CommandException(REDO_REQUEST_REJECTED + " Is there anything to redo?");
         }
 

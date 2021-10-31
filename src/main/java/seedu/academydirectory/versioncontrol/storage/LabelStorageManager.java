@@ -21,7 +21,10 @@ public class LabelStorageManager extends StorageManager<Label> {
     }
 
     @Override
-    public List<String> getWriteableFormat(Label label) {
+    public List<String> getWriteableFormat(Label label) throws IllegalArgumentException {
+        if (label.equals(Label.emptyLabel())) {
+            throw new IllegalArgumentException("Cannot get writeable format of NULL!");
+        }
         return List.of("ref: " + label.getCommitSupplier().get().getHash());
     }
 
@@ -38,9 +41,9 @@ public class LabelStorageManager extends StorageManager<Label> {
         }
 
         if (fields.size() != 1) {
-            return Label.NULL;
+            return Label.emptyLabel();
         }
 
-        return new Label(name, name, () -> commitStorageManager.read(fields.get(0)));
+        return Label.of(name, name, () -> commitStorageManager.read(fields.get(0)));
     }
 }

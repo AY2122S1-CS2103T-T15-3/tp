@@ -3,7 +3,9 @@ package seedu.academydirectory.versioncontrol.objects;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.academydirectory.testutil.TypicalCommits.COMMIT1;
 import static seedu.academydirectory.testutil.TypicalCommits.COMMIT2;
 import static seedu.academydirectory.testutil.TypicalCommits.COMMIT3;
@@ -34,29 +36,36 @@ public class CommitTest {
         // null -> returns false
         assertNotEquals(COMMIT1, null);
 
+        assertEquals(Commit.emptyCommit(), Commit.emptyCommit());
+
+        assertNotEquals(COMMIT1, Commit.emptyCommit());
+
         // same hash, all other attributes different -> returns true
         Commit editedCommitSameHash = new CommitBuilder(COMMIT1)
                 .withAuthor(COMMIT1.getAuthor() + "Hi")
                 .withDate(new Date())
                 .withMessage(COMMIT1.getMessage() + "Hi")
                 .withParentSupplier(() -> COMMIT1)
-                .withTreeSupplier(() -> new Tree("testing", "1", "2"))
+                .withTreeSupplier(() -> Tree.of("testing", "1", "2"))
                 .build();
         assertEquals(COMMIT1, editedCommitSameHash);
 
         // different hash, all other attributes same -> returns false
-        String filename = "CommitParserTest";
-        Path filepath = Paths.get("src", "test", "data", "VersionControlTest", "ParserTest", filename);
+        String filename = "CommitStorageManagerTest";
+        Path filepath = Paths.get("src", "test", "data", "VersionControlTest", "StorageManagerTest", filename);
         String newHash = assertDoesNotThrow(() -> new HashGenerator(HashMethod.SHA1).generateHashFromFile(filepath));
 
         Commit editedCommitDiffHash = new CommitBuilder(COMMIT1).withHash(newHash).build();
         assertNotEquals(COMMIT1, editedCommitDiffHash);
+    }
 
+    @Test
+    public void isEmpty() {
         // null commits -> returns false
-        assertNotEquals(COMMIT1, Commit.NULL);
+        assertFalse(COMMIT1.isEmpty());
 
         // null commits and null commits -> return true
-        assertEquals(Commit.NULL, Commit.NULL);
+        assertTrue(Commit.emptyCommit().isEmpty());
     }
 
     @Test
@@ -82,7 +91,7 @@ public class CommitTest {
         assertEquals(0, actualCommitHistory.length);
 
         // Start at Commit.Null -> Empty array
-        actualCommitHistory = Commit.NULL.getHistory(childCommit).toArray(Commit[]::new);
+        actualCommitHistory = Commit.emptyCommit().getHistory(childCommit).toArray(Commit[]::new);
         assertEquals(0, actualCommitHistory.length);
     }
 
@@ -92,8 +101,8 @@ public class CommitTest {
         assertEquals(COMMIT2, COMMIT2.findLca(COMMIT2));
 
         // LCA to Null commit is Null Commit
-        assertEquals(Commit.NULL, COMMIT5.findLca(Commit.NULL));
-        assertEquals(Commit.NULL, Commit.NULL.findLca(COMMIT5));
+        assertTrue(COMMIT5.findLca(Commit.emptyCommit()).isEmpty());
+        assertTrue(Commit.emptyCommit().findLca(COMMIT5).isEmpty());
 
         // start with same depth
         Commit leftChildCommit = TypicalCommits.COMMIT3;
@@ -112,7 +121,7 @@ public class CommitTest {
     @Test
     public void getHighestAncestor() {
         // No ancestor in range -> Commit.NULL
-        assertEquals(Commit.NULL, COMMIT2.getHighestAncestor(COMMIT2));
+        assertTrue(COMMIT2.getHighestAncestor(COMMIT2).isEmpty());
 
         // No nodes between start Commit and endExclusive -> return start Commit
         assertEquals(COMMIT3, COMMIT3.getHighestAncestor(COMMIT2));

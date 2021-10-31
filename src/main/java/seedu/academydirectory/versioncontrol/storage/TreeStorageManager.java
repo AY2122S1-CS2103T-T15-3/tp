@@ -16,6 +16,10 @@ public class TreeStorageManager extends StorageManager<Tree> {
 
     @Override
     public List<String> getWriteableFormat(Tree tree) {
+        if (tree.isEmpty()) {
+            throw new IllegalArgumentException("Cannot get writeable format of NULL!");
+        }
+
         HashMap<String, String> hashMap = tree.getHashMap();
         return hashMap.keySet().stream()
                 .map(key -> key + " " + hashMap.get(key))
@@ -24,7 +28,10 @@ public class TreeStorageManager extends StorageManager<Tree> {
 
     @Override
     protected Tree getProgrammableFormat(List<String> responseArr) {
-        assert responseArr.size() >= 1; // Will contain at least filename
+        assert responseArr.size() >= 1; // Guaranteed by write() function
+        if (responseArr.size() == 1) {
+            return Tree.emptyTree(); // Corrupted read => return null tree
+        }
         String hash = responseArr.get(0);
         Iterator<String> args = responseArr.listIterator(1);
 
@@ -33,12 +40,12 @@ public class TreeStorageManager extends StorageManager<Tree> {
         while (args.hasNext()) {
             String[] arg = args.next().split(" ");
             if (arg.length != 2) {
-                return Tree.NULL;
+                return Tree.emptyTree();
             }
             vcNames.add(arg[0]);
             realNames.add(arg[1]);
         }
 
-        return new Tree(hash, realNames, vcNames);
+        return Tree.of(hash, realNames, vcNames);
     }
 }

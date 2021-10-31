@@ -45,7 +45,7 @@ public class RevertCommand extends Command {
         requireNonNull(model);
         try {
             Commit relevantCommit = model.revert(this.fiveDigitHash);
-            if (relevantCommit.equals(Commit.NULL)) {
+            if (relevantCommit.isEmpty()) {
                 throw new CommandException(REVERT_REQUEST_REJECTED + "Hash value correct (and not current state) ?");
             }
         } catch (IOException e) {

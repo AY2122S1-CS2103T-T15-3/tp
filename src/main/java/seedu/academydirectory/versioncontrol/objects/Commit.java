@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class Commit extends VcObject {
-    public static final Commit NULL = new Commit("NULL", null, null,
-            null, () -> Commit.NULL, () -> Tree.NULL);
+    private static final Commit NULL = new Commit(null, null, null,
+            "", Commit::emptyCommit, Tree::emptyTree);
 
     // Commit specific objects
     private final String author;
@@ -21,6 +21,16 @@ public class Commit extends VcObject {
     private final Supplier<Commit> parentSupplier;
     private final Supplier<Tree> treeSupplier;
 
+    private Commit(String hash, String author, Date date, String message, Supplier<Commit> parentSupplier,
+                  Supplier<Tree> treeSupplier) {
+        super(hash);
+        this.author = author;
+        this.date = date;
+        this.message = message.substring(0, Math.min(message.length(), 128));
+        this.parentSupplier = parentSupplier;
+        this.treeSupplier = treeSupplier;
+    }
+
     /**
      * Creates a Commit object to work with programmatically. A Commit object SHOULD NOT be instantiated directly.
      * Instead, use a CommitController object to ensure all Commit objects follow the established contract
@@ -30,28 +40,36 @@ public class Commit extends VcObject {
      * @param parentSupplier  supplier to parent Commit that current Commit object is pointing to
      * @param treeSupplier supplier to Tree referenced by current Commit object
      */
-    public Commit(String hash, String author, Date date, String message, Supplier<Commit> parentSupplier,
-                  Supplier<Tree> treeSupplier) {
-        super(hash);
-        this.author = author;
-        this.date = date;
-        this.message = message == null ? "" : message.substring(0, Math.min(message.length(), 128));
-        this.parentSupplier = parentSupplier;
-        this.treeSupplier = treeSupplier;
+    public static Commit of(String hash, String author, Date date, String message, Supplier<Commit> parentSupplier,
+                            Supplier<Tree> treeSupplier) {
+        requireNonNull(hash);
+        requireNonNull(author);
+        requireNonNull(date);
+        requireNonNull(message);
+        requireNonNull(parentSupplier);
+        requireNonNull(treeSupplier);
+        return new Commit(hash, author, date, message, parentSupplier, treeSupplier);
     }
 
-    private Commit(Commit otherCommit) {
-        super(otherCommit.getHash());
-        this.author = otherCommit.getAuthor();
-        this.date = otherCommit.getDate();
-        this.message = otherCommit.getMessage();
-        this.parentSupplier = () -> otherCommit.getParentSupplier().get();
-        this.treeSupplier = () -> otherCommit.getTreeSupplier().get();
+    private Commit copy() {
+        if (this.isEmpty()) {
+            return emptyCommit();
+        }
+        return new Commit(this.getHash(), this.getAuthor(), this.getDate(), this.getMessage(),
+                this.parentSupplier, this.treeSupplier);
+    }
+
+    public static Commit emptyCommit() {
+        return NULL;
+    }
+
+    public boolean isEmpty() {
+        return this == Commit.NULL;
     }
 
     @Override
     public String toString() {
-        if (this.equals(Commit.NULL)) {
+        if (this.isEmpty()) {
             return "NULL";
         }
         return Arrays.toString(new String[]{getHash(), author, date.toString(), message});
@@ -93,13 +111,16 @@ public class Commit extends VcObject {
      * @return ancestors of the current commit object, including current Commit object but excluding the end Commit
      */
     public List<Commit> getHistory(Commit endExclusive) {
-        return new Commit(this).getHistoryNoCopy(endExclusive);
+        if (this.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return this.copy().getHistoryNoCopy(endExclusive);
     }
 
     private List<Commit> getHistoryNoCopy(Commit endExclusive) {
         Commit commit = this;
         List<Commit> history = new ArrayList<>();
-        if (commit.equals(endExclusive) || commit.equals(Commit.NULL)) {
+        if (commit.isEmpty() || commit.equals(endExclusive)) {
             return new ArrayList<>();
         }
 
@@ -119,13 +140,13 @@ public class Commit extends VcObject {
      * @return Lowest common ancestor of both commit objects.
      */
     public Commit findLca(Commit otherCommit) {
-        return new Commit(this).findLcaNoCopy(new Commit(otherCommit));
+        return this.copy().findLcaNoCopy(otherCommit.copy());
     }
 
     private Commit findLcaNoCopy(Commit otherCommit) {
         requireNonNull(otherCommit);
 
-        if (this.equals(Commit.NULL) || otherCommit.equals(Commit.NULL)) {
+        if (this.isEmpty() || otherCommit.isEmpty()) {
             return Commit.NULL;
         }
 
@@ -151,22 +172,22 @@ public class Commit extends VcObject {
      * @return furthest ancestor of queriedCommit but is child of endExclusive
      */
     public Commit getHighestAncestor(Commit endExclusive) {
-        return new Commit(this).getHighestAncestorNoCopy(endExclusive);
+        return this.copy().getHighestAncestorNoCopy(endExclusive);
     }
 
-    public Commit getHighestAncestorNoCopy(Commit endExclusive) {
-        if (this.equals(Commit.NULL) || this.getParentSupplier().get().equals(endExclusive)) {
+    private Commit getHighestAncestorNoCopy(Commit endExclusive) {
+        if (this.isEmpty() || this.getParentSupplier().get().equals(endExclusive)) {
             return this;
         }
         return this.getParentSupplier().get().getHighestAncestorNoCopy(endExclusive);
     }
 
     private Commit move(int numStep) {
-        return new Commit(this).moveNoCopy(numStep);
+        return this.copy().moveNoCopy(numStep);
     }
 
     private Commit moveNoCopy(int numStep) {
-        if (this.equals(Commit.NULL) || numStep == 0) {
+        if (this.isEmpty() || numStep == 0) {
             return this;
         }
         return this.getParentSupplier().get().moveNoCopy(numStep - 1);

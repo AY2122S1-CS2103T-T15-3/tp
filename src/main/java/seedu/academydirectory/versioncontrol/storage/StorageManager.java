@@ -25,7 +25,7 @@ public abstract class StorageManager<T extends VcObject> {
         this.vcPath = vcPath;
     }
 
-    protected abstract List<String> getWriteableFormat(T vcObject);
+    protected abstract List<String> getWriteableFormat(T vcObject) throws IllegalArgumentException;
     protected abstract T getProgrammableFormat(List<String> vcObject);
 
     /**
@@ -69,9 +69,5 @@ public abstract class StorageManager<T extends VcObject> {
             return Optional.empty();
         }
         return Optional.of(result);
-    }
-
-    public Path getVcPath() {
-        return vcPath;
     }
 }

@@ -13,7 +13,7 @@
 //public class HashGeneratorTest {
 //    private static final HashMethod[] supportedMethods = {HashMethod.SHA1, HashMethod.SHA256};
 //    private static final HashMap<HashMethod, String> expectedHash = new HashMap<>();
-//    private static final String filename = "CommitParserTest";
+//    private static final String filename = "CommitStorageManagerTest";
 //
 //    @Test
 //    public void hashGenerator_correctHash() {

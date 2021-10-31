@@ -68,19 +68,19 @@ public class JsonAcademyDirectoryStorageTest {
         AcademyDirectory original = getTypicalAcademyDirectory();
         JsonAcademyDirectoryStorage jsonAcademyDirectoryStorage = new JsonAcademyDirectoryStorage(filePath);
 
-        // Save in new file and read back
+        // Save in new file and read_fileExist_correctTree back
         jsonAcademyDirectoryStorage.saveAcademyDirectory(original, filePath);
         ReadOnlyAcademyDirectory readBack = jsonAcademyDirectoryStorage.readAcademyDirectory(filePath).get();
         assertEquals(original, new AcademyDirectory(readBack));
 
-        // Modify data, overwrite exiting file, and read back
+        // Modify data, overwrite exiting file, and read_fileExist_correctTree back
         original.addStudent(HOON);
         original.removeStudent(ALICE);
         jsonAcademyDirectoryStorage.saveAcademyDirectory(original, filePath);
         readBack = jsonAcademyDirectoryStorage.readAcademyDirectory(filePath).get();
         assertEquals(original, new AcademyDirectory(readBack));
 
-        // Save and read without specifying file path
+        // Save and read_fileExist_correctTree without specifying file path
         original.addStudent(IDA);
         jsonAcademyDirectoryStorage.saveAcademyDirectory(original); // file path not specified
         readBack = jsonAcademyDirectoryStorage.readAcademyDirectory().get(); // file path not specified

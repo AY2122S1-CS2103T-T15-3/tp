@@ -36,7 +36,7 @@ public class StageAreaStorageTest {
 
         // Negative Testing
         testSaveStageArea_negativeTesting(stageAreaStorage, null);
-        testSaveStageArea_negativeTesting(stageAreaStorage, Commit.NULL);
+        testSaveStageArea_negativeTesting(stageAreaStorage, Commit.emptyCommit());
     }
 
     @Test
@@ -46,7 +46,7 @@ public class StageAreaStorageTest {
 
         // Negative Testing
         testSaveStageArea_negativeTesting(stageAreaStorage, null);
-        testSaveStageArea_negativeTesting(stageAreaStorage, Tree.NULL);
+        testSaveStageArea_negativeTesting(stageAreaStorage, Tree.emptyTree());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class StageAreaStorageTest {
 
         // Negative Testing
         testSaveStageArea_negativeTesting(stageAreaStorage, null);
-        testSaveStageArea_negativeTesting(stageAreaStorage, Label.NULL);
+        testSaveStageArea_negativeTesting(stageAreaStorage, Label.emptyLabel());
     }
 
     private void testSaveStageArea(StageAreaStorage stageAreaStorage, List<? extends VcObject> vcObjectsList) {

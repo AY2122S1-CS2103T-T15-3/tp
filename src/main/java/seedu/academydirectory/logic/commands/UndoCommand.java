@@ -31,7 +31,7 @@ public class UndoCommand extends Command {
     @Override
     public CommandResult execute(VersionedModel model) throws CommandException {
         Commit prevCommit = model.getHeadCommit().getParentSupplier().get();
-        if (prevCommit.equals(Commit.NULL)) {
+        if (prevCommit.isEmpty()) {
             throw new CommandException(UNDO_REQUEST_REJECTED + " Is there anything to undo?");
         }
 

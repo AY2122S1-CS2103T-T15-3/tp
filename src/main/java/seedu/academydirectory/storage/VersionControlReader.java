@@ -58,7 +58,7 @@ public class VersionControlReader {
         String commitFileName = "temp";
         String author = System.getProperty("user.name");
         Date date = new Date();
-        Commit temp = new Commit(commitFileName, author, date, message, parentCommitSupplier, treeSupplier);
+        Commit temp = Commit.of(commitFileName, author, date, message, parentCommitSupplier, treeSupplier);
         Path commitPath = vcPath.resolve(Paths.get(commitFileName));
 
         try {
@@ -70,9 +70,9 @@ public class VersionControlReader {
             boolean deletedSuccessfully = commitPath.toFile().delete();
 
             // Return final commit
-            return new Commit(commitHash, author, date, message, parentCommitSupplier, treeSupplier);
+            return Commit.of(commitHash, author, date, message, parentCommitSupplier, treeSupplier);
         } catch (IOException e) {
-            return Commit.NULL;
+            return Commit.emptyCommit();
         }
     }
 
@@ -87,7 +87,7 @@ public class VersionControlReader {
         requireNonNull(commit);
 
         String labelFileName = "temp";
-        Label temp = new Label(labelFileName, name, () -> commit);
+        Label temp = Label.of(labelFileName, name, () -> commit);
 
         Path labelPath = this.vcPath.resolve(Path.of(labelFileName));
         try {
@@ -96,9 +96,9 @@ public class VersionControlReader {
             String labelHash = hashGenerator.generateHashFromFile(labelPath);
             assert labelPath.toFile().delete();
 
-            return new Label(labelHash, name, () -> commit);
+            return Label.of(labelHash, name, () -> commit);
         } catch (IOException e) {
-            return Label.NULL;
+            return Label.emptyLabel();
         }
     }
 
@@ -115,21 +115,21 @@ public class VersionControlReader {
             try {
                 blobHash = hashGenerator.generateHashFromFile(blobPath);
             } catch (IOException e) {
-                return Tree.NULL;
+                return Tree.emptyTree();
             }
             Path blobTargetPath = this.vcPath.resolve(Path.of(blobHash));
 
             try {
                 Files.copy(blobPath, blobTargetPath, REPLACE_EXISTING);
             } catch (IOException e) {
-                return Tree.NULL;
+                return Tree.emptyTree();
             }
             blobTargetPaths.add(blobTargetPath);
         }
 
         // Write a temporary tree to disk
         String treeFileName = "temp";
-        Tree temp = new Tree(treeFileName,
+        Tree temp = Tree.of(treeFileName,
                 blobPaths.stream().map(String::valueOf).collect(Collectors.toList()),
                 blobTargetPaths.stream().map(String::valueOf).collect(Collectors.toList()));
         Path treePath = this.vcPath.resolve(Path.of(treeFileName));
@@ -141,11 +141,11 @@ public class VersionControlReader {
             assert treePath.toFile().delete();
 
             // Return final tree
-            return new Tree(treeHash,
+            return Tree.of(treeHash,
                     blobPaths.stream().map(String::valueOf).collect(Collectors.toList()),
                     blobTargetPaths.stream().map(String::valueOf).collect(Collectors.toList()));
         } catch (IOException e) {
-            return Tree.NULL;
+            return Tree.emptyTree();
         }
     }
 
@@ -164,7 +164,7 @@ public class VersionControlReader {
         String finalHash = hash.trim();
         File[] matchingFiles = requireNonNull(f.listFiles((x, name) -> name.startsWith(finalHash)));
         if (matchingFiles.length == 0) {
-            return Commit.NULL;
+            return Commit.emptyCommit();
         }
 
         // Pick first match
@@ -181,7 +181,7 @@ public class VersionControlReader {
         File f = new File(String.valueOf(vcPath));
         File[] matchingFiles = requireNonNull(f.listFiles((x, name) -> name.startsWith(labelName)));
         if (matchingFiles.length == 0) {
-            return Label.NULL;
+            return Label.emptyLabel();
         }
 
         // Pick first match
@@ -199,7 +199,7 @@ public class VersionControlReader {
         File f = new File(String.valueOf(vcPath));
         File[] matchingFiles = requireNonNull(f.listFiles((x, name) -> name.startsWith(hash)));
         if (matchingFiles.length == 0) {
-            return Tree.NULL;
+            return Tree.emptyTree();
         }
 
         // Pick first match
