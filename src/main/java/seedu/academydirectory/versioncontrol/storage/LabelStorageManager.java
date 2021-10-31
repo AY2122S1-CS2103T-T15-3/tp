@@ -37,7 +37,9 @@ public class LabelStorageManager extends StorageManager<Label> {
         List<String> fields = new ArrayList<>();
         while (args.hasNext()) {
             String[] arg = args.next().split(": ");
-            fields.add(arg.length == 2 ? arg[1] : "");
+            if (arg.length == 2) {
+                fields.add(arg[1]);
+            }
         }
 
         if (fields.size() != 1) {
