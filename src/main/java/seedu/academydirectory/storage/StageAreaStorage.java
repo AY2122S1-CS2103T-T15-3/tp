@@ -34,13 +34,23 @@ public class StageAreaStorage {
      * @throws IOException Unable to write to disk
      */
     public void saveStageArea(StageArea stageArea) throws IOException {
-        stageArea.saveToDisk(x -> {
+        boolean nothingWrong = true;
+        if (stageArea.getVcObjectList().size() == 0) {
+            return;
+        }
+        for (VcObject vcObject : stageArea.getVcObjectList()) {
             try {
-                write(x);
+                write(vcObject);
             } catch (IOException e) {
                 e.printStackTrace();
+                nothingWrong = false;
             }
-        });
+        }
+
+        stageArea.resetStage();
+        if (!nothingWrong) {
+            throw new IOException("Unable to save one or more VcObject");
+        }
     }
 
     private void write(VcObject vcObject) throws IOException {
@@ -53,6 +63,8 @@ public class StageAreaStorage {
         } else if (vcObject instanceof Label && !((Label) vcObject).equals(Label.NULL)) {
             Label label = (Label) vcObject;
             labelStorageManager.write(label.getName(), label);
+        } else {
+            throw new IOException("Unable to write given VcObject");
         }
     }
 }

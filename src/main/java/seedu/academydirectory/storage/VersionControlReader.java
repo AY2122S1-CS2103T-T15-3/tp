@@ -193,7 +193,6 @@ public class VersionControlReader {
      * Constructs a tree based on hash. Will find the tree object with the same hash in disk
      * @param hash Hash of the tree saved in disk
      * @return Commit object of the given hash
-     * @throws IOException if no tree of the same hash can be found in disk
      */
     public Tree fetchTreeByHash(String hash) {
         // Allow for 5 digit hash to be used

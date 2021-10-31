@@ -2,7 +2,6 @@ package seedu.academydirectory.versioncontrol.objects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class StageArea {
     private List<VcObject> stageArea;
@@ -24,12 +23,11 @@ public class StageArea {
         stageArea = new ArrayList<>();
     }
 
-    /**
-     * Writes all staged objects to disk according to the given writeFunction
-     * @param writeFunction Consumer of VcObject which dictates how a VcObject should be saved
-     */
-    public void saveToDisk(Consumer<VcObject> writeFunction) {
-        stageArea.forEach(writeFunction);
-        resetStage();
+    public List<VcObject> getVcObjectList() {
+        return stageArea;
+    }
+
+    public boolean isEmpty() {
+        return stageArea.isEmpty();
     }
 }

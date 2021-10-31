@@ -51,8 +51,8 @@ public class LogicManager implements Logic {
             if (commandResult.getCommitMessage().isPresent()) {
                 String commitMessage = commandResult.getCommitMessage().get();
                 model.commit(commitMessage);
+                storage.saveStageArea(model.getStageArea());
             }
-            storage.saveStageArea(model.getStageArea());
         } catch (IOException ioe) {
             throw new CommandException(FILE_OPS_ERROR_MESSAGE + ioe, ioe);
         }

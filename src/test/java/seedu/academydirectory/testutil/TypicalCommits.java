@@ -5,8 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import seedu.academydirectory.versioncontrol.objects.Commit;
+import seedu.academydirectory.versioncontrol.objects.Label;
 import seedu.academydirectory.versioncontrol.objects.Tree;
 
 /**
@@ -26,6 +28,7 @@ public class TypicalCommits {
         date = date1;
     }
 
+    // Standalone Commit with no child
     public static final Commit COMMIT1 = new CommitBuilder()
             .withHash("1d83638a25901e76c8e3882afca2347f8352cd06")
             .withAuthor("Alice Pauline")
@@ -35,7 +38,7 @@ public class TypicalCommits {
             .withTreeSupplier(() -> Tree.NULL)
             .build();
 
-    // Commit Chain
+    // Commit Chain: Tree form
     public static final Commit COMMIT2 = new CommitBuilder()
             .withHash("1")
             .withAuthor("Alice")
@@ -72,7 +75,61 @@ public class TypicalCommits {
             .withTreeSupplier(() -> Tree.NULL)
             .build();
 
+    // Commit Chain: LinkedList form
+    public static final Commit COMMIT6 = new CommitBuilder()
+            .withHash("6")
+            .withAuthor("Bob")
+            .withDate(date)
+            .withMessage("This is root of linked list")
+            .withParentSupplier(() -> Commit.NULL)
+            .withTreeSupplier(() -> Tree.NULL)
+            .build();
+
+    public static final Commit COMMIT7 = new CommitBuilder()
+            .withHash("7")
+            .withAuthor("Bob")
+            .withDate(date)
+            .withMessage("This is first element of linked list")
+            .withParentSupplier(() -> COMMIT6)
+            .withTreeSupplier(() -> Tree.NULL)
+            .build();
+
+    public static final Commit COMMIT8 = new CommitBuilder()
+            .withHash("6")
+            .withAuthor("Bob")
+            .withDate(date)
+            .withMessage("This is second element of linked list")
+            .withParentSupplier(() -> COMMIT7)
+            .withTreeSupplier(() -> Tree.NULL)
+            .build();
+
     public static List<Commit> getTypicalCommits() {
         return new ArrayList<>(List.of(COMMIT1, COMMIT2, COMMIT3));
+    }
+
+    public static List<Commit> getTypicalCommitList() {
+        return new ArrayList<>(List.of(COMMIT8, COMMIT7, COMMIT6));
+    }
+
+    public static List<Commit> getTypicalCommitTree() {
+        return new ArrayList<>(List.of(COMMIT5, COMMIT2));
+    }
+
+    public static List<Label> getTypicalLabels() {
+        return getTypicalCommits().stream()
+                .map(x -> new Label("Label" + x.getHash(), "Label" + x.getHash(), () -> x))
+                .collect(Collectors.toList());
+    }
+
+    public static List<Label> getTypicalLabelList() {
+        return getTypicalCommitList().stream()
+                .map(x -> new Label("Label" + x.getHash(), "Label" + x.getHash(), () -> x))
+                .collect(Collectors.toList());
+    }
+
+    public static List<Label> getTypicalLabelTree() {
+        return getTypicalCommitTree().stream()
+                .map(x -> new Label("Label" + x.getHash(), "Label" + x.getHash(), () -> x))
+                .collect(Collectors.toList());
     }
 }

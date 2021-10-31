@@ -1,7 +1,12 @@
 package seedu.academydirectory.versioncontrol.objects;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Objects.requireNonNull;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
@@ -51,5 +56,20 @@ public class Tree extends VcObject {
     @Override
     public String toString() {
         return getHash();
+    }
+
+    /**
+     * Regenerate the files following the mapping defined in the current Tree object. Will overwrite destination file
+     * if it exists.
+     * @throws IOException if unable to regenerate files
+     */
+    public void regenerateBlobs() throws IOException {
+        HashMap<String, String> hashMap = this.getHashMap();
+        for (String vcFilename : hashMap.keySet()) {
+            String actualFilename = hashMap.get(vcFilename);
+            Path actualFilepath = Paths.get(actualFilename);
+            Path vcFilepath = Paths.get(vcFilename);
+            Files.copy(vcFilepath, actualFilepath, REPLACE_EXISTING);
+        }
     }
 }

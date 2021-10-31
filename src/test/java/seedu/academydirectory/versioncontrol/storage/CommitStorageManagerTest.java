@@ -18,8 +18,8 @@ class CommitStorageManagerTest {
 
     @Test
     public void read_allFilesPresent() {
-        TreeStorageManager treeStorageManager = new TreeStorageManager(DATA_DIR);
-        CommitStorageManager commitStorageManager = new CommitStorageManager(DATA_DIR, treeStorageManager);
+        CommitStorageManager commitStorageManager = new CommitStorageManager(DATA_DIR,
+                new TreeStorageManager(DATA_DIR));
 
         String filename = "CommitParserTest";
         Path filepath = DATA_DIR.resolve(Paths.get(filename));
@@ -35,8 +35,8 @@ class CommitStorageManagerTest {
 
     @Test
     public void read_corruptedFiles_nullCommit() {
-        TreeStorageManager treeStorageManager = new TreeStorageManager(DATA_DIR);
-        CommitStorageManager commitStorageManager = new CommitStorageManager(DATA_DIR, treeStorageManager);
+        CommitStorageManager commitStorageManager = new CommitStorageManager(DATA_DIR,
+                new TreeStorageManager(DATA_DIR));
 
         String filename = "TreeParserTest";
         Path filepath = DATA_DIR.resolve(Paths.get(filename));
@@ -48,8 +48,8 @@ class CommitStorageManagerTest {
 
     @Test
     public void read_missingFile_nullCommit() {
-        TreeStorageManager treeStorageManager = new TreeStorageManager(DATA_DIR);
-        CommitStorageManager commitStorageManager = new CommitStorageManager(DATA_DIR, treeStorageManager);
+        CommitStorageManager commitStorageManager = new CommitStorageManager(DATA_DIR,
+                new TreeStorageManager(DATA_DIR));
 
         String filename = "IMMISSING!";
         Path filepath = DATA_DIR.resolve(Paths.get(filename));
