@@ -29,7 +29,6 @@ public class VersionControlReaderTest {
     private static final Path DATA_DIR = Paths.get("src", "test",
             "data", "VersionControlTest");
     private static final Path FETCH_OBJECT_DIR = DATA_DIR.resolve("FetchObjectTest");
-    private static final Path BLOB_DIR = DATA_DIR.resolve(Paths.get("BlobStorage"));
     private static final HashMethod hashMethod = HashMethod.SHA1;
     private static final HashGenerator hashGenerator = new HashGenerator(hashMethod);
 
@@ -128,7 +127,7 @@ public class VersionControlReaderTest {
 
         // Blobs present -> Correctly Duplicated
         String blobName = "HEAD";
-        Path blobPath = BLOB_DIR.resolve(Paths.get(blobName));
+        Path blobPath = FETCH_OBJECT_DIR.resolve(Paths.get(blobName));
         assertTrue(blobPath.toFile().exists()); // Check if blob exists first
 
         Tree actualTree = versionControlReader.createNewTree(blobPath);
@@ -156,7 +155,7 @@ public class VersionControlReaderTest {
         VersionControlReader versionControlReader = new VersionControlReader(hashMethod, testingDir);
 
         String blobName = "TAIL";
-        Path blobPath = BLOB_DIR.resolve(Paths.get(blobName));
+        Path blobPath = FETCH_OBJECT_DIR.resolve(Paths.get(blobName));
         assertFalse(blobPath.toFile().exists()); // Check if blob does not exist
 
         Tree actualTree = versionControlReader.createNewTree(blobPath);

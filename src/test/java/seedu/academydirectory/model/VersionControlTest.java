@@ -1,6 +1,5 @@
 package seedu.academydirectory.model;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -191,14 +190,6 @@ class VersionControlTest {
         assertFalse(revertedCommit.isEmpty());
         assertNotEquals(currHead, revertedCommit);
         assertEquals(revertedCommit, versionControl.getHeadCommit());
-
-        // Blob regenerated correctly
-        Path path = assertDoesNotThrow(() -> Paths.get(Objects.requireNonNull(revertedCommit.getTreeSupplier().get()
-                .getHashMap().keySet().stream().findFirst().orElse(null))));
-        assertTrue(FileUtil.isFileExists(path));
-        byte[] regeneratedData = assertDoesNotThrow(() -> Files.readAllBytes(path));
-        byte[] expectedData = assertDoesNotThrow(() -> Files.readAllBytes(REVERT_DIR.resolve("academydirectory.json")));
-        assertArrayEquals(expectedData, regeneratedData);
 
         // HEAD label is staged
         List<VcObject> vcObjectList = versionControl.getStageArea().getVcObjectList();
