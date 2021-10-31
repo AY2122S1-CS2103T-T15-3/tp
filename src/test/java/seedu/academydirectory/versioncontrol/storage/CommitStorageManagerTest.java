@@ -12,6 +12,7 @@ import static seedu.academydirectory.testutil.TypicalCommits.COMMIT9;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -63,22 +64,30 @@ class CommitStorageManagerTest {
     @Test
     public void getWriteableFormat_positiveTests() {
         // Missing Parent and TreeRef
-        assertEquals(List.of("Author: amadeus", "Date: 31/12/1998 00:00:00", "Message: Hello, World!", "Parent: null",
-                "TreeRef: null"),
-                commitStorageManager.getWriteableFormat(COMMIT1));
+        List<String> writeableForm = commitStorageManager.getWriteableFormat(COMMIT1);
+        assertEquals("Author: " + System.getProperty("user.name"), writeableForm.stream().limit(1)
+                .reduce((a, b) -> a + b).orElse(null));
+        assertEquals(List.of("Date: 31/12/1998 00:00:00", "Message: Hello, World!", "Parent: null",
+                "TreeRef: null"), writeableForm.stream().skip(1).collect(Collectors.toList()));
 
         // Parent present but missing TreeRef
-        assertEquals(List.of("Author: amadeus", "Date: 31/12/1998 00:00:00", "Message: This is Second Commit",
+        writeableForm = commitStorageManager.getWriteableFormat(COMMIT3);
+        assertEquals("Author: " + System.getProperty("user.name"), writeableForm.stream().limit(1)
+                .reduce((a, b) -> a + b).orElse(null));
+        assertEquals(List.of("Date: 31/12/1998 00:00:00", "Message: This is Second Commit",
                         "Parent: 1",
                         "TreeRef: null"),
-                commitStorageManager.getWriteableFormat(COMMIT3));
+                writeableForm.stream().skip(1).collect(Collectors.toList()));
 
         // Parent present and TreeRef present
-        assertEquals(List.of("Author: amadeus", "Date: 31/12/1998 00:00:00",
+        writeableForm = commitStorageManager.getWriteableFormat(COMMIT9);
+        assertEquals("Author: " + System.getProperty("user.name"), writeableForm.stream().limit(1)
+                .reduce((a, b) -> a + b).orElse(null));
+        assertEquals(List.of("Date: 31/12/1998 00:00:00",
                         "Message: This is second element of linked list",
                         "Parent: 1",
                         "TreeRef: 9d34f3e9ada5ae7cc5c063b905a5d7893f792497"),
-                commitStorageManager.getWriteableFormat(COMMIT9));
+                writeableForm.stream().skip(1).collect(Collectors.toList()));
     }
 
     @Test
