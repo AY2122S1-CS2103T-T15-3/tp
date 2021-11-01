@@ -82,24 +82,24 @@ public class Assessment extends SortableInformation {
     public int getTotalGrade() {
         int total = 0;
         for (String assessmentStr : ASSESSMENT_LIST) {
-            total += assessment.get(assessmentStr);
+            total += assessment.get(assessmentStr) < 0 ? 0 : assessment.get(assessmentStr);
         }
         return total;
     }
 
     public String getVisualizerDisplay() {
         StringBuilder displayedInfo = new StringBuilder();
-        displayedInfo.append("- Reading Assessment 1 score: ")
+        displayedInfo.append("- Reading Assessment 1: ")
                 .append(getAssessmentGrade("RA1")).append("\n")
-                .append("- Midterm Examination score: ")
+                .append("- Midterm Examination: ")
                 .append(getAssessmentGrade("MIDTERM")).append("\n")
-                .append("- Reading Assessment 2 score: ")
+                .append("- Reading Assessment 2: ")
                 .append(getAssessmentGrade("RA2")).append("\n")
-                .append("- Practical Examination score: ")
+                .append("- Practical Examination: ")
                 .append(getAssessmentGrade("PE")).append("\n")
-                .append("- Final Examination score: ")
+                .append("- Final Examination: ")
                 .append(getAssessmentGrade("FINAL")).append("\n")
-                .append("- Total grade: ").append(getTotalGrade());
+                .append("Total score: ").append(getTotalGrade());
         return displayedInfo.toString();
     }
 
