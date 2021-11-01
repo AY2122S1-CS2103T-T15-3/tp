@@ -263,11 +263,12 @@ Adds a student’s grade for a particular assessment.
 Format: `grade INDEX as/ASSESSMENT g/GRADE`
 
 * Record the student’s `GRADE` for the `ASSESSMENT`.
-* The input `GRADE` must be a positive integer.
+* The input `ASSESSMENT` must be one of the following: RA1, MIDTERM, RA2, PE, FINAL.
+* The input `GRADE` must be a non-negative integer from 0 to 100 inclusive.
 
 Example:
 * `grade 1 as/RA1 g/15`
-* 
+
 #### Editing a student's Studio attendance: `attendance`
 Edits the attendance status of their students.
 
