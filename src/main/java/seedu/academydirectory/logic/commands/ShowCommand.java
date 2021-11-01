@@ -55,14 +55,17 @@ public class ShowCommand extends Command {
         StringBuilder result = new StringBuilder();
         result.append("Results for ").append(assessment).append("\n");
         double totalMarks = 0;
+        int numOfValidGrades = 0;
         for (Student student : students) {
             String name = student.getName().fullName;
             String grade = student.getAssessment().getAssessmentGrade(assessment);
             totalMarks += grade.equals("NA") ? 0 : Integer.parseInt(grade);
+            numOfValidGrades += grade.equals("NA") ? 0 : 1;
             result.append(name).append(": ").append(grade).append("\n");
         }
-        String average = String.format("%.2f", totalMarks / (students.toArray().length));
-        result.append("\n").append("Average: ").append(average);
+        String average = String.format("%.2f", totalMarks / numOfValidGrades);
+        result.append("\n").append("Number of students recorded: ").append(numOfValidGrades)
+                .append("\n").append("Average: ").append(average);
         return result.toString();
     }
 
