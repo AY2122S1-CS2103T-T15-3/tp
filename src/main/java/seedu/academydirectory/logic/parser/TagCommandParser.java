@@ -4,6 +4,8 @@ import static java.util.Objects.requireNonNull;
 import static seedu.academydirectory.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TAG;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -29,7 +31,9 @@ public class TagCommandParser implements Parser<TagCommand> {
         }
 
         Index index = ParserUtil.parseIndex(argMultimap.getPreamble());
-        Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        Collection<String> tags = argMultimap.getAllValues(PREFIX_TAG);
+        Collection<String> tagSet = tags.size() == 1 && tags.contains("") ? Collections.emptySet() : tags;
+        Set<Tag> tagList = ParserUtil.parseTags(tagSet);
 
         return new TagCommand(index, tagList);
     }
