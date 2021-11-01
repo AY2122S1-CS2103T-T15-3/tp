@@ -13,7 +13,7 @@ title: Developer Guide
   * [Storage Component](#storage-component)
   * [Common Classes](#common-classes)
 * [Implementation](#implementation)
-  * [RetrieveCommand](#retrievecommand)
+  * [GetCommand](#getcommand)
   * [SortCommand](#sortcommand)
   * [AttendanceCommand](#attendancecommand)
   * [ParticipationCommand](#participationcommand)
@@ -169,23 +169,23 @@ Classes used by multiple components are in the `seedu.academydirectory.commons` 
 
 This section describes some noteworthy details on how certain features are implemented.
 
-### RetrieveCommand
+### GetCommand
 This command serves to retrieve a specific `Information` of students.
 
 #### Implementation
-`RetrieveCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
+`GetCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
 
 All fields of `Student` class which implements the `Information` interface and whose prefix is present in the `InformationWantedFunction` class
-can be queried by `RetrieveCommand`. Hence, for an `Information` to be query-able, it _must_ implement the `Information` interface and its prefix needs
+can be queried by `GetCommand`. Hence, for an `Information` to be query-able, it _must_ implement the `Information` interface and its prefix needs
 to be added to the list of supported prefix under `InformationWantedFunction`. If at least one of the two conditions are not fulfilled, compile errors
-will be thrown. The following is the class diagram for `RetrieveCommand`.
+will be thrown. The following is the class diagram for `GetCommand`.
 
-![RetrieveCommandClassDiagram](images/logic/commands/retrievecommand/RetrieveCommandClassDiagram.png)
+![GetCommandClassDiagram](images/logic/commands/getcommand/GetCommandClassDiagram.png)
 
-A `RetrieveCommand` is initialized with a list of `InformationWantedFunction` objects to retrieve the necessary information. Obtaining the queried information
+A `GetCommand` is initialized with a list of `InformationWantedFunction` objects to retrieve the necessary information. Obtaining the queried information
 is done by using the `InformationWantedFunction` objects on all `Student` objects in the model. The specific is shown in the sequence diagram below:
 
-![RetrieveCommandSequenceDiagram](images/logic/commands/retrievecommand/RetrieveCommandSequenceDiagram.png)
+![GetCommandSequenceDiagram](images/logic/commands/getcommand/GetCommandSequenceDiagram.png)
 
 Exactly which field of `Student` should be retrieved is determined by the `Prefix` passed into `InformationWantedFunction` during its creation.
 

@@ -1,6 +1,6 @@
 @startuml
 !include ../../../style.puml
-Participant ":RetrieveCommand" as rc LOGIC_COLOR
+Participant ":GetCommand" as rc LOGIC_COLOR
 Participant ":Model" as mm LOGIC_COLOR
 Participant ":CommandResult" as result LOGIC_COLOR
 

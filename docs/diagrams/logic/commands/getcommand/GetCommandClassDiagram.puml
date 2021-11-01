@@ -1,0 +1,25 @@
+@startuml
+!include ../../../style.puml
+show method
+skinparam defaultFontColor #FFFFFF
+skinparam classAttributeIconSize 0
+skinparam arrowThickness 1.1
+skinparam arrowColor UI_COLOR_T4
+skinparam classBackgroundColor UI_COLOR
+skinparam genericDisplay old
+
+class InformationWantedFunction {
++  {static} List<Prefix> SUPPORTED_PREFIX
++ apply()
+}
+class GetCommand {
++ execute(Model)
+- executeFilter(Model, InformationWantedFunction)
+}
+
+class Function<Student, Optional<Information>> <<Interface>>{
+}
+
+InformationWantedFunction ..|> Function
+GetCommand --> "*" InformationWantedFunction
+@enduml
