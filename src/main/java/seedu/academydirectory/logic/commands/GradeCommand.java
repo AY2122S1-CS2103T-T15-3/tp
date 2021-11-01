@@ -25,13 +25,13 @@ public class GradeCommand extends Command {
     public static final String HELP_MESSAGE = "### Adding grades for an assessment:  `grade`\n"
             + "Avengers will be able to add a student’s grade for a particular assessment.\n"
             + "\n"
-            + "Format: `grade INDEX a/ASSESSMENT g/GRADE`\n"
+            + "Format: `grade INDEX as/ASSESSMENT g/GRADE`\n"
             + "\n"
-            + "Record the student’s `GRADE` for the `ASSESSMENT`.\n"
-            + "The input `GRADE` must be a positive integer.\n"
+            + "The input `ASSESSMENT` must be one of the following: RA1, MIDTERM, RA2, PE, FINAL.\n"
+            + "The input `GRADE` must be a non-negative integer from 0 to 100 inclusive.\n"
             + "\n"
             + "Example:\n"
-            + "* `grade 1 a/RA1 g/15`";
+            + "* `grade 1 as/RA1 g/15`";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Record the Student's grade for an assessment. "
             + "Parameters: "

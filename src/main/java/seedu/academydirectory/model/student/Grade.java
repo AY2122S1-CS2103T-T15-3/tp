@@ -10,7 +10,7 @@ import static seedu.academydirectory.commons.util.AppUtil.checkArgument;
 public class Grade implements Information {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Grade should only contain numbers, and it should range from 0 to 100.";
+            "Grade should only contain non-negative integers, and it should range from 0 to 100.";
     public static final String VALIDATION_REGEX = "^(100|[1-9]?[0-9])$";
     private final String value;
 
