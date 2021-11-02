@@ -23,12 +23,16 @@ public class TagCommand extends Command {
 
     public static final String HELP_MESSAGE = "### Assigns tag(s) to a student: `tag`\\\n"
             + "Tutors will be able to tag a student with relevant information.\\\n"
-            + "Format: `tag INDEX t/tag`\\\n"
+            + "Format: `tag INDEX t/tag [t/tag] . . . `\\\n"
             + "Recommended use of tags:\n"
             + "- Set a reminder to mark the student's mission with a `mission` tag\n"
             + "- Note down the topics that the student needs help with\\\n"
-            + "Multiple tags can be assigned in a single command.\n"
+            + "Entering the tag command with a single empty tag `t/` will remove all tags assigned to the student.\n"
+            + "Tags names should be alphanumeric and consist of only one word.\n"
+            + "For multiple tag entries, none of the tags should be empty.\n"
+            + "All existing tags will be replaced by the new tags.\n"
             + "Example:\n"
+            + "tag 1 t/\n"
             + "tag 1 t/mission\n"
             + "tag 1 t/streams t/envModel";
 

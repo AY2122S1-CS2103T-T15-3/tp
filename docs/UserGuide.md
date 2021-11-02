@@ -214,10 +214,13 @@ Format: `tag INDEX t/TAG [t/TAG]...`
 * `INDEX` refers to the index number shown in the displayed student list.
 * `INDEX` **must be a positive integer** 1, 2, 3, …​
 * Assigns a `Tag` to the student at the specified `INDEX`.
-* At least one tag must be provided
-* Existing tags will be replaced by the new tags
+* Entering the tag command with a single empty tag `t/` will remove all tags assigned to the student.
+* Tags names should be alphanumeric and consist of only one word.
+* For multiple tag entries, none of the tags should be empty.
+* All existing tags will be replaced by the new tags.
 
 Examples:
+* `tag 1 t/` removes all tags from the student specified at index 1.
 * `tag 1 t/mission` sets `mission` tag to the student specified at index 1.
 * `tag 2 t/streams t/envmodel` sets `streams` and `envmodel` tags to the student specified at index 2.
 
