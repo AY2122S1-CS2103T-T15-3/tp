@@ -198,6 +198,8 @@ class VersionControlTest {
         for (File file : Objects.requireNonNull(REVERT_DIR.toFile().listFiles())) {
             assertDoesNotThrow(() -> Files.copy(file.toPath(), tempPath.resolve(file.toPath().getFileName())));
         }
+
+        // Tree will regenerate blob to the following path:
         Path regeneratePath = RELEVANT_DIR.resolve("temp").resolve("academydirectory.json");
         if (FileUtil.isFileExists(regeneratePath)) {
             assertTrue(regeneratePath.toFile().delete());

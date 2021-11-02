@@ -13,7 +13,7 @@
       "MIDTERM" : 26,
       "PE" : 47
     },
-    "tagged" : [ "friends" ]
+    "tagged" : [ "MCE" ]
   }, {
     "name" : "Bernice Yu",
     "phone" : "99272758",
@@ -28,7 +28,7 @@
       "MIDTERM" : 13,
       "PE" : 59
     },
-    "tagged" : [ "colleagues", "friends" ]
+    "tagged" : [ "MCE", "streams" ]
   }, {
     "name" : "Charlotte Oliveiro",
     "phone" : "93210283",
@@ -43,7 +43,7 @@
       "MIDTERM" : 24,
       "PE" : 12
     },
-    "tagged" : [ "neighbours" ]
+    "tagged" : [ "recursion" ]
   }, {
     "name" : "David Li",
     "phone" : "91031282",
@@ -58,7 +58,7 @@
       "MIDTERM" : 5,
       "PE" : 57
     },
-    "tagged" : [ "family" ]
+    "tagged" : [ "MCE" ]
   }, {
     "name" : "Irfan Ibrahim",
     "phone" : "92492021",
@@ -73,7 +73,7 @@
       "PE" : -1,
       "FINAL" : -1
     },
-    "tagged" : [ "classmates" ]
+    "tagged" : [  ]
   }, {
     "name" : "Roy Balakrishnan",
     "phone" : "92624417",
@@ -88,6 +88,6 @@
       "PE" : -1,
       "FINAL" : -1
     },
-    "tagged" : [ "colleagues" ]
+    "tagged" : [  ]
   } ]
 }
