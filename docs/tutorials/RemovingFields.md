@@ -31,11 +31,11 @@ IntelliJ IDEA provides a refactoring tool that can identify *most* parts of a re
 The `address` field in `Student` is actually an instance of the `seedu.academydirectory.model.student.Address` class. Since removing the `Address` class will break the application, we start by identifying `Address`'s usages. This allows us to see code that depends on `Address` to function properly and edit them on a case-by-case basis. Right-click the `Address` class and select `Refactor` \> `Safe Delete` through the menu.
 * :bulb: To make things simpler, you can unselect the options `Search in comments and strings` and `Search for text occurrences`
 
-![Usages detected](../images/remove/UnsafeDelete.png)
+![Usages detected](../images/tutorial/remove/UnsafeDelete.png)
 
 Choose to `View Usages` and you should be presented with a list of `Safe Delete Conflicts`. These conflicts describe locations in which the `Address` class is used.
 
-![List of conflicts](../images/remove/SafeDeleteConflicts.png)
+![List of conflicts](../images/tutorial/remove/SafeDeleteConflicts.png)
 
 Remove usages of `Address` by performing `Safe Delete`s on each entry i.e., double-click on the entry (which takes you to the code in concern, right-click on that entity, and choose `Refactor` -> `Safe delete` as before). You will need to exercise discretion when removing usages of `Address`. Functions like `ParserUtil#parseAddress()` can be safely removed but its usages must be removed as well. Other usages like in `EditStudentDescriptor` may require more careful inspection.
 
@@ -46,7 +46,7 @@ Let’s try removing references to `Address` in `EditStudentDescriptor`.
 1. Select `Yes` when prompted to remove getters and setters.
 
 1. Select `View Usages` again.<br>
-   ![UnsafeDeleteOnField](../images/remove/UnsafeDeleteOnField.png)
+   ![UnsafeDeleteOnField](../images/tutorial/remove/UnsafeDeleteOnField.png)
 
 1. Remove the usages of `address` and select `Do refactor` when you are done.
 
@@ -65,7 +65,7 @@ Unfortunately, there are usages of `Address` that IntelliJ IDEA cannot identify.
 
 Places of interest to look out for would be resources used by the application. `main/resources` contains images and `fxml` files used by the application and `test/resources` contains test data. For example, there is a `$address` in each `StudentCard` that has not been removed nor identified.
 
-![$address](../images/remove/$address.png)
+![$address](../images/tutorial/remove/$address.png)
 
 A quick look at the `StudentCard` class and its `fxml` file quickly reveals why it slipped past the automated refactoring.
 

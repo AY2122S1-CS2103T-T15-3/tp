@@ -16,7 +16,7 @@ When trying to understand an unfamiliar code base, one common strategy used is t
 
 Before we jump into the code, it is useful to get an idea of the overall structure and the high-level behavior of the application. This is provided in the 'Architecture' section of the developer guide. In particular, the architecture diagram (reproduced below), tells us that the App consists of several components.
 
-![ArchitectureDiagram](../images/ArchitectureDiagram.png)
+![ArchitectureDiagram](../images/dg/architecture/ArchitectureDiagram.png)
 
 It also has a sequence diagram (reproduced below) that tells us how a command propagates through the App.
 
@@ -76,12 +76,12 @@ Next, let's find out which statement(s) in the `UI` code is calling this method,
 :bulb: **Intellij Tip:** The ['**Find Usages**' feature](https://www.jetbrains.com/help/idea/find-highlight-usages.html#find-usages) can find from which parts of the code a class/method/variable is being used.
 </div>
 
-![`Find Usages` tool window. `Edit` \> `Find` \> `Find Usages`.](../images/tracing/FindUsages.png)
+![`Find Usages` tool window. `Edit` \> `Find` \> `Find Usages`.](../images/tutorial/tracing/FindUsages.png)
 
 Bingo\! `MainWindow#executeCommand()` seems to be exactly what we’re looking for\!
 
 Now let’s set the breakpoint. First, double-click the item to reach the corresponding code. Once there, click on the left gutter to set a breakpoint, as shown below.
- ![LeftGutter](../images/tracing/LeftGutter.png)
+ ![LeftGutter](../images/tutorial/tracing/LeftGutter.png)
 
 ## Tracing the execution path
 
@@ -97,14 +97,14 @@ Recall from the User Guide that the `edit` command has the format: `edit INDEX [
 1. When the GUI appears, enter `edit 1 n/Alice Yeoh` into the command box and press `Enter`.
 
 1. The Debugger tool window should show up and show something like this:<br>
-   ![DebuggerStep1](../images/tracing/DebuggerStep1.png)
+   ![DebuggerStep1](../images/tutorial/tracing/DebuggerStep1.png)
 
 1. Use the _Show execution point_ feature to jump to the line of code that we stopped at:<br>
-   ![ShowExecutionPoint](../images/tracing/ShowExecutionPoint.png)<br>
+   ![ShowExecutionPoint](../images/tutorial/tracing/ShowExecutionPoint.png)<br>
    `CommandResult commandResult = logic.execute(commandText);` is the line that you end up at (i.e., the place where we put the breakpoint).
 
 1. We are interested in the `logic.execute(commandText)` portion of that line so let’s _Step in_ into that method call:<br>
-    ![StepInto](../images/tracing/StepInto.png)
+    ![StepInto](../images/tutorial/tracing/StepInto.png)
 
 1. We end up in `LogicManager#execute()` (not `Logic#execute` -- but this is expected because we know the `execute()` method in the `Logic` interface is actually implemented by the `LogicManager` class). Let’s take a look at the body of the method. Given below is the same code, with additional explanatory comments.
 
@@ -139,7 +139,7 @@ Recall from the User Guide that the `edit` command has the format: `edit INDEX [
 1. `LogicManager#execute()` appears to delegate most of the heavy lifting to other components. Let’s take a closer look at each one.
 
 1. _Step over_ the logging code since it is of no interest to us now.
-   ![StepOver](../images/tracing/StepOver.png)
+   ![StepOver](../images/tutorial/tracing/StepOver.png)
 
 1. _Step into_ the line where user input in parsed from a String to a Command, which should bring you to the `AddressBookParser#parseCommand()` method (partial code given below):
    ``` java
@@ -151,7 +151,7 @@ Recall from the User Guide that the `edit` command has the format: `edit INDEX [
    ```
 
 1. _Step over_ the statements in that method until you reach the `switch` statement. The 'Variables' window now shows the value of both `commandWord` and `arguments`:<br>
-    ![Variables](../images/tracing/Variables.png)
+    ![Variables](../images/tutorial/tracing/Variables.png)
 
 1. We see that the value of `commandWord` is now `edit` but `arguments` is still not processed in any meaningful way.
 
@@ -172,7 +172,7 @@ Recall from the User Guide that the `edit` command has the format: `edit INDEX [
 1. Stepping through the method shows that it calls `ArgumentTokenizer#tokenize()` and `ParserUtil#parseIndex()` to obtain the arguments and index required.
 
 1. The rest of the method seems to exhaustively check for the existence of each possible parameter of the `edit` command and store any possible changes in an `EditStudentDescriptor`. Recall that we can verify the contents of `editStudentDesciptor` through the 'Variables' window.<br>
-   ![EditCommand](../images/tracing/EditCommand.png)
+   ![EditCommand](../images/tutorial/tracing/EditCommand.png)
 
 1. As you just traced through some code involved in parsing a command, you can take a look at this class diagram to see where the various parsing-related classes you encountered fit into the design of the `Logic` component.
    <img src="../images/ParserClasses.png" width="600"/>
@@ -180,7 +180,7 @@ Recall from the User Guide that the `edit` command has the format: `edit INDEX [
 1. Let’s continue stepping through until we return to `LogicManager#execute()`.
 
     The sequence diagram below shows the details of the execution path through the Logic component. Does the execution path you traced in the code so far match the diagram?<br>
-    ![Tracing an `edit` command through the Logic component](../images/tracing/LogicSequenceDiagram.png)
+    ![Tracing an `edit` command through the Logic component](../images/tutorial/tracing/LogicSequenceDiagram.png)
 
 1. Now, step over until you read the statement that calls the `execute()` method of the `EditCommand` object received, and step into that `execute()` method (partial code given below):
 

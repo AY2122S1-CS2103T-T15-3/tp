@@ -1,5 +1,5 @@
 @startuml
-!include style.puml
+!include ../../../style.puml
 
 participant "h:HelpCommand" as HelpCommand LOGIC_COLOR
 participant ":CommandException" as CommandException LOGIC_COLOR

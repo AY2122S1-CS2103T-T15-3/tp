@@ -9,7 +9,7 @@ title: Developer Guide
   * [Architecture](#architecture)
   * [UI Component](#ui-component)
   * [Logic Component](#logic-component)
-  * [Model Component](#model-component)
+  * [VersionedModel Component](#versionedmodel-component)
   * [Storage Component](#storage-component)
   * [Common Classes](#common-classes)
 * [Implementation](#implementation)
@@ -33,7 +33,6 @@ title: Developer Guide
     * [ListCommand](#listcommand)
     * [ClearCommand](#clearcommand)
     * [UndoCommand](#undocommand)
-      * [[Proposed] Undo/Redo](#proposed-undoredo-feature)
     * [RedoCommand](#redocommand)
     * [HelpCommand](#helpcommand)
 * [Guides](#guides)
@@ -58,7 +57,7 @@ Refer to the guide [_Setting up and getting started_](SettingUp.md).
 
 ### Architecture
 
-<img src="images/ArchitectureDiagram.png" width="280" />
+<img src="images/architecture/ArchitectureDiagram.png" width="280" />
 
 The ***Architecture Diagram*** given above explains the high-level design of the App.
 
@@ -76,7 +75,7 @@ The rest of the App consists of four components.
 
 * [**`UI`**](#ui-component): The UI of the App.
 * [**`Logic`**](#logic-component): The command executor.
-* [**`Model`**](#model-component): Holds the data of the App in memory.
+* [**`VersionedModel`**](#versionedmodel-component): Holds the data of the App in memory.
 * [**`Storage`**](#storage-component): Reads data from, and writes data to, the hard disk.
 
 
@@ -84,7 +83,7 @@ The rest of the App consists of four components.
 
 The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
 
-<img src="images/ArchitectureSequenceDiagram.png" width="574" />
+<img src="images/architecture/ArchitectureSequenceDiagram.png" width="574" />
 
 Each of the four main components (also shown in the diagram above),
 
@@ -93,7 +92,7 @@ Each of the four main components (also shown in the diagram above),
 
 For example, the `Logic` component defines its API in the `Logic.java` interface and implements its functionality using the `LogicManager.java` class which follows the `Logic` interface. Other components interact with a given component through its interface rather than the concrete class (reason: to prevent outside component's being coupled to the implementation of a component), as illustrated in the (partial) class diagram below.
 
-<img src="images/ComponentManagers.png" width="300" />
+<img src="images/architecture/ComponentManagers.png" width="300" />
 
 The sections below give more details of each component.
 
@@ -101,7 +100,7 @@ The sections below give more details of each component.
 
 The **API** of this component is specified in [`Ui.java`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/ui/Ui.java)
 
-![Structure of the UI Component](images/UiClassDiagram.png)
+![Structure of the UI Component](images/dg/architecture/ui/UiClassDiagram.png)
 
 The UI consists of a `MainWindow` that is made up of parts e.g.`CommandBox`, `ResultDisplay`, `ChartDisplay`, `StudentListPanel`, `StatusBarFooter` etc. All these, including the `MainWindow`, inherit from the abstract `UiPart` class which captures the commonalities between classes that represent parts of the visible GUI.
 
@@ -143,11 +142,14 @@ How the parsing works:
 * When called upon to parse a user command, the `AcademyDirectoryParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AcademyDirectoryParser` returns back as a `Command` object.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
-### Model component
+### VersionedModel component
+The `VersionedModel` API is a (disjoint) union of two interfaces: `Model` and `Version`. The `Model` API defines
+methods to interface with domain data entities such as `Student` and user preference data i.e. `UserPref`. The `Version`
+API defines methods to interface with version control entities such as `Commit`.
+
+#### Model API
 **API** : [`Model.java`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/model/Model.java)
-
-<img src="images/ModelClassDiagram.png" width="450" />
-
+<img src="images/architecture/model/ModelClassDiagram.png" width="450" />
 
 The `Model` component,
 
@@ -155,13 +157,22 @@ The `Model` component,
 * stores the currently 'selected' `Student` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Student>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
-
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AcademyDirectory`, which `Student` references. This allows `AcademyDirectory` to only require one `Tag` object per unique tag, instead of each `Student` needing their own `Tag` objects.<br>
 
-<img src="images/BetterModelClassDiagram.png" width="450" />
+<img src="images/architecture/model/BetterModelClassDiagram.png" width="450" />
 
 </div>
 
+#### Version API
+**API** : [`Version.java`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/model/Version.java)
+
+The `Version` component,
+
+* stores version control entities such as current HEAD commit and `StageArea`
+* depends on `VersionControlReader`, because the `Version` API requires frequent read access from disk to read
+version control objects
+
+Here's a (partial) class diagram of the Version component
 
 ### Storage component
 
@@ -177,6 +188,9 @@ The `Storage` component,
 ### Common classes
 
 Classes used by multiple components are in the `seedu.academydirectory.commons` package.
+
+### More Design Details of Version
+
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -219,12 +233,10 @@ can be queried by `GetCommand`. Hence, for an `Information` to be query-able, it
 to be added to the list of supported prefix under `InformationWantedFunction`. If at least one of the two conditions are not fulfilled, compile errors
 will be thrown. The following is the class diagram for `GetCommand`.
 
-![GetCommandClassDiagram](images/logic/commands/getcommand/GetCommandClassDiagram.png)
-
 A `GetCommand` is initialized with a list of `InformationWantedFunction` objects to retrieve the necessary information. Obtaining the queried information
 is done by using the `InformationWantedFunction` objects on all `Student` objects in the model. The specific is shown in the sequence diagram below:
 
-![GetCommandSequenceDiagram](images/logic/commands/getcommand/GetCommandSequenceDiagram.png)
+![GetCommandSequenceDiagram](images/dg/logic/commands/getcommand/GetCommandSequenceDiagram.png)
 
 Exactly which field of `Student` should be retrieved is determined by the `Prefix` passed into `InformationWantedFunction` during its creation.
 
@@ -257,7 +269,7 @@ The `Assessment` is implemented with a HashMap that stores the String representa
 
 The following sequence diagram describes what happens when `GradeCommand` is executed:
 
-![GradeCommandSequenceDiagram](images/logic/commands/gradecommand/GradeCommandSequenceDiagram.png)
+![GradeCommandSequenceDiagram](images/dg/logic/commands/gradecommand/GradeCommandSequenceDiagram.png)
 
 ### AttendanceCommand
 
@@ -271,13 +283,13 @@ The attendance mechanism is facilitated by adding a `StudioRecord` parameter to 
 
 The following sequence diagram describes what happens when `AttendanceCommand` is executed:
 
-![AttendanceCommandSequenceDiagram](images/logic/commands/attendancecommand/AttendanceCommandSequenceDiagram.png)
+![AttendanceCommandSequenceDiagram](images/dg/logic/commands/attendancecommand/AttendanceCommandSequenceDiagram.png)
 
 As seen from the diagram, the `AttendanceCommand` involves two for loops. In each of the loops there is a reference frame.
 
 For `UpdateModelAttendanceSequenceDiagram`, the sequential diagrams can be found below:
 
-![UpdateModelAttendanceSequenceDiagram](images/logic/commands/attendancecommand/UpdateModelAttendanceSequenceDiagram.png)
+![UpdateModelAttendanceSequenceDiagram](images/dg/logic/commands/attendancecommand/UpdateModelAttendanceSequenceDiagram.png)
 
 ### ParticipationCommand
 
@@ -291,7 +303,7 @@ The implementation is similar to `AttendanceCommand`, with the same sequence dia
 
 `ParticipationCommand` has an additional section in the sequence diagram located above the loop in `AttendanceCommand`. The purpose of the logic below is to update a student's `Attendance` to be marked as present if the `participationUpdate` is greater than 0. This is because a student that has a positive `Participation` score would also count as having attended the `Studio`.
 
-![ParticipationCommandMarkAttendanceSequenceDiagram](images/logic/commands/participationcommand/ParticipationCommandMarkAttendanceSequenceDiagram.png)
+![ParticipationCommandMarkAttendanceSequenceDiagram](images/dg/logic/commands/participationcommand/ParticipationCommandMarkAttendanceSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The logic above is to update the `Attendance` and is only executed in the event that `participationUpdate` is more than 0. Otherwise, it will not run.
 
@@ -316,7 +328,7 @@ The information is formatted into a String and displayed in the AdditionalView. 
 
 The following sequence diagram describes what happens when `ShowCommand` is executed:
 
-![ShowCommandSequenceDiagram](images/logic/commands/showcommand/ShowCommandSequenceDiagram.png)
+![ShowCommandSequenceDiagram](images/dg/logic/commands/showcommand/ShowCommandSequenceDiagram.png)
 
 ### VisualizeCommand
 
@@ -336,11 +348,11 @@ This command sorts the `AcademyDirectory` student list based on their `Participa
 
 The sorting mechanism is based on the `List` interface as it sorts the various `FilteredList` instances using `Comparator`. Based on the `attribute` of the `SortCommand` being executed, the `Comparator` differs as shown by the sequential diagram below:
 
-![SortCommandSequenceDiagram](images/logic/commands/sortcommand/SortCommandSequenceDiagram.png)
+![SortCommandSequenceDiagram](images/dg/logic/commands/sortcommand/SortCommandSequenceDiagram.png)
 
 The reference frame for GetComparator can be found below. It details the selection process based on the `attribute` of the `SortCommand`.
 
-![GetComparatorSequenceDiagram](images/logic/commands/sortcommand/GetComparatorSequenceDiagram.png)
+![GetComparatorSequenceDiagram](images/dg/logic/commands/sortcommand/GetComparatorSequenceDiagram.png)
 
 ### Others
 
@@ -448,7 +460,7 @@ or a specific guide on how to use a particular command.
 The mechanism of the command is done by retrieving a `HELP_MESSAGE` field in each of the other command classes (other than HelpCommand itself). This help command will
 be displayed to the user on a separate window later on.
 
-![HelpCommandSequenceDiagram](images/logic/commands/helpcommand/HelpCommandSequenceDiagram.png)
+![HelpCommandSequenceDiagram](images/dg/logic/commands/helpcommand/HelpCommandSequenceDiagram.png)
 
 As seen from the diagram, the `HelpCommand` involves the use of conditional branches. If the optional condition is met, a `CommandException` is thrown to let
 users know that the input is invalid.

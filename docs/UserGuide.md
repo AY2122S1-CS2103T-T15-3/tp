@@ -404,7 +404,7 @@ Format: `redo`
 
 #### Seeking help : `help`
 
-![help message](images/helpMessage.png)
+![help message](images/ug/helpMessage.png)
 
 Provides in-depth assistance using AD with a `help` command, either generally or specifically.
 
