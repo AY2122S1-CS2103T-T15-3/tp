@@ -66,6 +66,9 @@ public class GetCommand extends Command {
         requireNonNull(prefixList);
         requireNonNull(keywordList);
 
+        // Checks done at GetCommandParser
+        assert !prefixList.isEmpty();
+
         this.nameContainsKeywordsPredicate = keywordList.isEmpty()
                 ? null
                 : new NameContainsKeywordsPredicate(keywordList);

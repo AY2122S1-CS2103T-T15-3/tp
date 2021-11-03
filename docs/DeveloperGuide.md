@@ -233,22 +233,22 @@ This command deletes a `Student` from `AcademyDirectory`.
 {Add implementation}
 
 ### GetCommand
-This command serves to retrieve a specific `Information` of students.
+This command serves to retrieve a specific `PersonalDetail` of students or a student.
 
 #### Implementation
 `GetCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
 
-All fields of `Student` class which implements the `Information` interface and whose prefix is present in the `InformationWantedFunction` class
-can be queried by `GetCommand`. Hence, for an `Information` to be query-able, it _must_ implement the `Information` interface and its prefix needs
-to be added to the list of supported prefix under `InformationWantedFunction`. If at least one of the two conditions are not fulfilled, compile errors
-will be thrown. The following is the class diagram for `GetCommand`.
+All fields of `Student` class which implements the `PersonalDetail` interface and whose prefix is present in
+the `GetCommand` class can be queried by `GetCommand`.
 
-A `GetCommand` is initialized with a list of `InformationWantedFunction` objects to retrieve the necessary information. Obtaining the queried information
-is done by using the `InformationWantedFunction` objects on all `Student` objects in the model. The specific is shown in the sequence diagram below:
+A `GetCommand` is initialized with a list of `Prefix` objects which represents the prefix of the `PersonalDetail`
+to be retrieved, and a list of `String` which represents the keywords that will be matched with 
+the names of students in Academy Directory. List of `Prefix` cannot be empty, but list of keywords can be.
+An empty list of keywords is interpreted as retrieving personal details of all students in the model.
+The specifics are shown in the sequence diagram below:
 
-![GetCommandSequenceDiagram](images/dg/logic/commands/getcommand/GetCommandSequenceDiagram.png)
-
-Exactly which field of `Student` should be retrieved is determined by the `Prefix` passed into `InformationWantedFunction` during its creation.
+A `PersonalDetailRetriever` object can be constructed by passing a `Prefix` and a `Name
+![GetCommandSequenceDiagram](images/logic/commands/getcommand/GetCommandSequenceDiagram.png)
 
 ### EditCommand
 

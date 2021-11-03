@@ -11,9 +11,9 @@ Participant ":Model" as mm MODEL_COLOR
 end box
 
 -> rc ++ :execute
-loop for all InformationWantedFilter
+loop for all Prefix
     rc -> rc ++ :executeFilter
-    rc -> mm ++  :getFilteredStudentListView(InformationWantedFilter)
+    rc -> mm ++  :getFilteredStudentList(NameContainsKeywordsPredicate)
     mm --> rc -- : FilteredList
     deactivate
 end
