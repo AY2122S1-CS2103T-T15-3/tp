@@ -9,7 +9,7 @@ import java.util.Optional;
  * Represents a Student's phone number in the academy directory.
  * Guarantees: immutable; is valid as declared in {@link #isValidPhone(String)}
  */
-public class Phone implements Information {
+public class Phone implements PersonalDetail {
 
 
     public static final String MESSAGE_CONSTRAINTS =

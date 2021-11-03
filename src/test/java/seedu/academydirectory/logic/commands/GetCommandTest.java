@@ -22,10 +22,10 @@ import seedu.academydirectory.logic.parser.Prefix;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.model.VersionedModelManager;
-import seedu.academydirectory.model.student.Information;
-import seedu.academydirectory.model.student.InformationWantedFunction;
 import seedu.academydirectory.model.student.Name;
 import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
+import seedu.academydirectory.model.student.PersonalDetail;
+import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -37,8 +37,8 @@ public class GetCommandTest {
 
     @Test
     public void equals() {
-        InformationWantedFunction emailRetrieveFunction = new InformationWantedFunction(PREFIX_EMAIL);
-        InformationWantedFunction telegramRetrieveFunction = new InformationWantedFunction(PREFIX_TELEGRAM);
+        PersonalDetailRetriever emailRetrieveFunction = new PersonalDetailRetriever(PREFIX_EMAIL);
+        PersonalDetailRetriever telegramRetrieveFunction = new PersonalDetailRetriever(PREFIX_TELEGRAM);
 
         GetCommand emailGetCommand = new GetCommand(emailRetrieveFunction);
         GetCommand telegramGetCommand = new GetCommand(telegramRetrieveFunction);
@@ -65,13 +65,13 @@ public class GetCommandTest {
 
     @Test
     public void execute_singlePrefixNoNameNonEmptyModel() {
-        InformationWantedFunction.SUPPORTED_PREFIX.forEach(prefix -> execute_singlePrefix(prefix, model, null));
+        PersonalDetailRetriever.SUPPORTED_PREFIX.forEach(prefix -> execute_singlePrefix(prefix, model, null));
     }
 
     @Test
     public void execute_singlePrefixWithNameNonEmptyModel() {
         getTypicalStudents()
-                .forEach(student -> InformationWantedFunction.SUPPORTED_PREFIX
+                .forEach(student -> PersonalDetailRetriever.SUPPORTED_PREFIX
                         .forEach(prefix -> execute_singlePrefix(prefix, model, student.getName())));
         ;
     }
@@ -81,9 +81,9 @@ public class GetCommandTest {
                 ? null
                 : new NameContainsKeywordsPredicate(List.of(name.fullName.split("\\s")));
 
-        InformationWantedFunction function = new InformationWantedFunction(prefix, predicate);
+        PersonalDetailRetriever function = new PersonalDetailRetriever(prefix, predicate);
 
-        ObservableList<Information> expectedResponse = model.getAcademyDirectory()
+        ObservableList<PersonalDetail> expectedResponse = model.getAcademyDirectory()
                 .getStudentList().stream()
                 .filter(x -> predicate == null || predicate.test(x))
                 .map(x -> {
@@ -110,8 +110,8 @@ public class GetCommandTest {
     public void execute_singlePrefixEmptyModel() {
         VersionedModel emptyModel = new VersionedModelManager();
 
-        InformationWantedFunction.SUPPORTED_PREFIX.forEach(prefix -> {
-            InformationWantedFunction function = new InformationWantedFunction(prefix);
+        PersonalDetailRetriever.SUPPORTED_PREFIX.forEach(prefix -> {
+            PersonalDetailRetriever function = new PersonalDetailRetriever(prefix);
 
             GetCommand command = new GetCommand(function);
             command.execute(emptyModel);

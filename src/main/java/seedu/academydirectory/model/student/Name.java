@@ -9,7 +9,7 @@ import java.util.Comparator;
  * Represents a Student's name in the academy directory.
  * Guarantees: immutable; is valid as declared in {@link #isValidName(String)}
  */
-public class Name extends SortableInformation {
+public class Name extends SortableInformation implements PersonalDetail {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Names should only contain alphanumeric characters and spaces, and it should not be blank";
@@ -70,5 +70,4 @@ public class Name extends SortableInformation {
             }
         };
     }
-
 }

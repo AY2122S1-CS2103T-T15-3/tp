@@ -7,7 +7,7 @@ import static seedu.academydirectory.commons.util.AppUtil.checkArgument;
  * Represents a Student's Telegram handle in the academy directory.
  * Guarantees: immutable; is valid as declared in {@link #isValidTelegram(String)}
  */
-public class Telegram implements Information {
+public class Telegram implements PersonalDetail {
 
     private static final String SPECIAL_CHARACTERS = "+_.-";
     public static final String MESSAGE_CONSTRAINTS = "Telegram handles should be of the format @handle "

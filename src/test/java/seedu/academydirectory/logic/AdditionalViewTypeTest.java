@@ -16,7 +16,7 @@ import seedu.academydirectory.logic.commands.RedoCommand;
 import seedu.academydirectory.logic.commands.ShowCommand;
 import seedu.academydirectory.logic.commands.ViewCommand;
 import seedu.academydirectory.logic.commands.VisualizeCommand;
-import seedu.academydirectory.model.student.InformationWantedFunction;
+import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 public class AdditionalViewTypeTest {
     @Test
@@ -25,7 +25,7 @@ public class AdditionalViewTypeTest {
         Command visualizeCommand = new VisualizeCommand();
         Command historyCommand = new HistoryCommand();
         Command helpCommand = new HelpCommand();
-        Command getCommand = new GetCommand(new InformationWantedFunction(PREFIX_EMAIL, null));
+        Command getCommand = new GetCommand(new PersonalDetailRetriever(PREFIX_EMAIL, null));
         Command showCommand = new ShowCommand("RA1");
         Command redoCommand = new RedoCommand();
         Command addCommand = new ListCommand();

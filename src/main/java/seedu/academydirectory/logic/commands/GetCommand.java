@@ -18,12 +18,11 @@ import seedu.academydirectory.logic.AdditionalViewType;
 import seedu.academydirectory.model.AdditionalInfo;
 import seedu.academydirectory.model.Model;
 import seedu.academydirectory.model.VersionedModel;
-import seedu.academydirectory.model.student.Information;
-import seedu.academydirectory.model.student.InformationWantedFunction;
+import seedu.academydirectory.model.student.PersonalDetail;
+import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 /**
- * Finds and lists all persons in Academy Directory whose name contains any of the argument keywords.
- * Keyword matching is case-insensitive.
+ * Get personal detail of a student or students.
  */
 public class GetCommand extends Command {
     public static final String COMMAND_WORD = "get";
@@ -48,20 +47,20 @@ public class GetCommand extends Command {
     public static final String MESSAGE_FAILED = "Failed to receive one or more personal details. Showing what I can...";
     public static final String MESSAGE_NOTHING_TO_SHOW = "Nothing to show...";
 
-    private final List<InformationWantedFunction> functionList;
+    private final List<PersonalDetailRetriever> functionList;
 
-    public GetCommand(List<InformationWantedFunction> functionList) {
+    public GetCommand(List<PersonalDetailRetriever> functionList) {
         this.functionList = functionList;
     }
 
-    public GetCommand(InformationWantedFunction filter) {
+    public GetCommand(PersonalDetailRetriever filter) {
         this(List.of(filter));
     }
 
-    private String executeFilter(Model model, InformationWantedFunction function) {
+    private String executeFilter(Model model, PersonalDetailRetriever personalDetailRetriever) {
         model.updateFilteredStudentList(PREDICATE_SHOW_ALL_STUDENTS);
-        ObservableList<Information> view = model.getFilteredStudentList()
-                .stream().map(function)
+        ObservableList<PersonalDetail> view = model.getFilteredStudentList()
+                .stream().map(personalDetailRetriever)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
@@ -91,8 +90,8 @@ public class GetCommand extends Command {
         if (other == this) {
             return true;
         } else if (other instanceof GetCommand) {
-            List<InformationWantedFunction> otherList = ((GetCommand) other).functionList;
-            List<InformationWantedFunction> thisList = this.functionList;
+            List<PersonalDetailRetriever> otherList = ((GetCommand) other).functionList;
+            List<PersonalDetailRetriever> thisList = this.functionList;
 
             return thisList.stream().map(otherList::contains).reduce(true, (x, y) -> x && y)
                     &&

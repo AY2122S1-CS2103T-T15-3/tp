@@ -7,7 +7,7 @@ import static seedu.academydirectory.commons.util.AppUtil.checkArgument;
  * Represents a Student's email in the academy directory.
  * Guarantees: immutable; is valid as declared in {@link #isValidEmail(String)}
  */
-public class Email implements Information {
+public class Email implements PersonalDetail {
 
     private static final String SPECIAL_CHARACTERS = "+_.-";
     public static final String MESSAGE_CONSTRAINTS = "Emails should be of the format local-part@domain "

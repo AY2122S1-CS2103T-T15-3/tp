@@ -11,15 +11,15 @@ import java.util.stream.Stream;
 
 import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.logic.parser.exceptions.ParseException;
-import seedu.academydirectory.model.student.InformationWantedFunction;
 import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
+import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 /**
  * Parses input arguments and creates a new GetCommand object
  */
 public class GetCommandParser implements Parser<GetCommand> {
     private static final Supplier<Stream<Prefix>> RELEVANT_PREFIXES_SUPPLIER = () ->
-            Stream.of(InformationWantedFunction.SUPPORTED_PREFIX.toArray(Prefix[]::new));
+            Stream.of(PersonalDetailRetriever.SUPPORTED_PREFIX.toArray(Prefix[]::new));
 
     /**
      * Parses the given {@code String} of arguments in the context of the GetCommand
@@ -50,9 +50,9 @@ public class GetCommandParser implements Parser<GetCommand> {
                 ? null
                 : new NameContainsKeywordsPredicate(nameList);
 
-        List<InformationWantedFunction> functions = RELEVANT_PREFIXES_SUPPLIER.get()
+        List<PersonalDetailRetriever> functions = RELEVANT_PREFIXES_SUPPLIER.get()
                 .filter(x -> !argMultimap.getAllValues(x).isEmpty())
-                .map(x -> new InformationWantedFunction(x, nameContainsKeywordsPredicate))
+                .map(x -> new PersonalDetailRetriever(x, nameContainsKeywordsPredicate))
                 .collect(Collectors.toList());
 
         return new GetCommand(functions);

@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 
 import seedu.academydirectory.logic.commands.GetCommand;
-import seedu.academydirectory.model.student.InformationWantedFunction;
 import seedu.academydirectory.model.student.Name;
 import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
+import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 @SuppressWarnings("checkstyle:Regexp")
 public class GetCommandParserTest {
@@ -42,11 +42,11 @@ public class GetCommandParserTest {
 
     @Test
     public void parse_validArgs_returnsRetrieveCommand() {
-        Stream<Prefix> relevantPrefixes = Stream.of(InformationWantedFunction.SUPPORTED_PREFIX.toArray(Prefix[]::new))
+        Stream<Prefix> relevantPrefixes = Stream.of(PersonalDetailRetriever.SUPPORTED_PREFIX.toArray(Prefix[]::new))
                 .parallel();
         relevantPrefixes.forEach(prefix -> {
             String userInput = " " + prefix.getPrefix();
-            GetCommand expectedCommand = new GetCommand(new InformationWantedFunction(prefix));
+            GetCommand expectedCommand = new GetCommand(new PersonalDetailRetriever(prefix));
             assertParseSuccess(parser, userInput, expectedCommand);
         });
     }
@@ -55,12 +55,12 @@ public class GetCommandParserTest {
     public void parse_validArgsWithName_returnsRetrieveCommand() {
         Name name = getTypicalStudents().get(0).getName();
 
-        Stream<Prefix> relevantPrefixes = Stream.of(InformationWantedFunction.SUPPORTED_PREFIX.toArray(Prefix[]::new))
+        Stream<Prefix> relevantPrefixes = Stream.of(PersonalDetailRetriever.SUPPORTED_PREFIX.toArray(Prefix[]::new))
                 .parallel();
         relevantPrefixes.forEach(prefix -> {
             String userInput = " " + prefix.getPrefix() + " " + PREFIX_NAME + name.fullName;
             NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(List.of(name.fullName));
-            GetCommand expectedCommand = new GetCommand(new InformationWantedFunction(prefix, predicate));
+            GetCommand expectedCommand = new GetCommand(new PersonalDetailRetriever(prefix, predicate));
             assertParseSuccess(parser, userInput, expectedCommand);
         });
     }
