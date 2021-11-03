@@ -25,7 +25,6 @@ import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Name;
 import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
 import seedu.academydirectory.model.student.PersonalDetail;
-import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -37,18 +36,15 @@ public class GetCommandTest {
 
     @Test
     public void equals() {
-        PersonalDetailRetriever emailRetrieveFunction = new PersonalDetailRetriever(PREFIX_EMAIL);
-        PersonalDetailRetriever telegramRetrieveFunction = new PersonalDetailRetriever(PREFIX_TELEGRAM);
-
-        GetCommand emailGetCommand = new GetCommand(emailRetrieveFunction);
-        GetCommand telegramGetCommand = new GetCommand(telegramRetrieveFunction);
+        GetCommand emailGetCommand = new GetCommand(List.of(PREFIX_EMAIL), List.of());
+        GetCommand telegramGetCommand = new GetCommand(List.of(PREFIX_TELEGRAM), List.of());
 
         // same object -> returns true
         assertEquals(emailGetCommand, emailGetCommand);
         assertEquals(telegramGetCommand, telegramGetCommand);
 
         // same values -> returns true
-        GetCommand emailGetCommandCopy = new GetCommand(emailRetrieveFunction);
+        GetCommand emailGetCommandCopy = new GetCommand(List.of(PREFIX_EMAIL), List.of());
         assertEquals(emailGetCommand, emailGetCommandCopy);
 
         // different types -> returns false
@@ -65,23 +61,25 @@ public class GetCommandTest {
 
     @Test
     public void execute_singlePrefixNoNameNonEmptyModel() {
-        PersonalDetailRetriever.SUPPORTED_PREFIX.forEach(prefix -> execute_singlePrefix(prefix, model, null));
+        GetCommand.SUPPORTED_PREFIX.forEach(prefix -> execute_singlePrefix(prefix, model, null));
     }
 
     @Test
     public void execute_singlePrefixWithNameNonEmptyModel() {
         getTypicalStudents()
-                .forEach(student -> PersonalDetailRetriever.SUPPORTED_PREFIX
+                .forEach(student -> GetCommand.SUPPORTED_PREFIX
                         .forEach(prefix -> execute_singlePrefix(prefix, model, student.getName())));
         ;
     }
 
     private void execute_singlePrefix(Prefix prefix, VersionedModel model, Name name) {
+        List<String> nameList = name == null
+                ? List.of()
+                : List.of(name.fullName.split("\\s"));
+
         NameContainsKeywordsPredicate predicate = name == null
                 ? null
-                : new NameContainsKeywordsPredicate(List.of(name.fullName.split("\\s")));
-
-        PersonalDetailRetriever function = new PersonalDetailRetriever(prefix, predicate);
+                : new NameContainsKeywordsPredicate(nameList);
 
         ObservableList<PersonalDetail> expectedResponse = model.getAcademyDirectory()
                 .getStudentList().stream()
@@ -100,7 +98,7 @@ public class GetCommandTest {
         String content = expectedResponse.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining("\n"));
-        GetCommand command = new GetCommand(function);
+        GetCommand command = new GetCommand(List.of(prefix), nameList);
         command.execute(model);
         assertEquals(model.getAdditionalViewModel().getAdditionalInfo().get(), content);
         assertCommandSuccess(command, model, GetCommand.MESSAGE_SUCCESS, expectedModel);
@@ -110,10 +108,8 @@ public class GetCommandTest {
     public void execute_singlePrefixEmptyModel() {
         VersionedModel emptyModel = new VersionedModelManager();
 
-        PersonalDetailRetriever.SUPPORTED_PREFIX.forEach(prefix -> {
-            PersonalDetailRetriever function = new PersonalDetailRetriever(prefix);
-
-            GetCommand command = new GetCommand(function);
+        GetCommand.SUPPORTED_PREFIX.forEach(prefix -> {
+            GetCommand command = new GetCommand(List.of(prefix), List.of());
             command.execute(emptyModel);
             assertEquals(emptyModel.getAdditionalViewModel().getAdditionalInfo().get(), MESSAGE_NOTHING_TO_SHOW);
             assertCommandSuccess(command, emptyModel, GetCommand.MESSAGE_FAILED, emptyModel);

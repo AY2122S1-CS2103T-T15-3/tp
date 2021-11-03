@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.academydirectory.testutil.TypicalIndexes.INDEX_FIRST_STUDENT;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.academydirectory.logic.commands.Command;
@@ -16,7 +18,6 @@ import seedu.academydirectory.logic.commands.RedoCommand;
 import seedu.academydirectory.logic.commands.ShowCommand;
 import seedu.academydirectory.logic.commands.ViewCommand;
 import seedu.academydirectory.logic.commands.VisualizeCommand;
-import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 public class AdditionalViewTypeTest {
     @Test
@@ -25,7 +26,7 @@ public class AdditionalViewTypeTest {
         Command visualizeCommand = new VisualizeCommand();
         Command historyCommand = new HistoryCommand();
         Command helpCommand = new HelpCommand();
-        Command getCommand = new GetCommand(new PersonalDetailRetriever(PREFIX_EMAIL, null));
+        Command getCommand = new GetCommand(List.of(PREFIX_EMAIL), List.of());
         Command showCommand = new ShowCommand("RA1");
         Command redoCommand = new RedoCommand();
         Command addCommand = new ListCommand();

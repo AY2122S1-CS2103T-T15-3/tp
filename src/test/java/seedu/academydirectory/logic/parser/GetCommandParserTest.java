@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import seedu.academydirectory.logic.commands.GetCommand;
 import seedu.academydirectory.model.student.Name;
 import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
-import seedu.academydirectory.model.student.PersonalDetailRetriever;
 
 @SuppressWarnings("checkstyle:Regexp")
 public class GetCommandParserTest {
@@ -41,26 +40,26 @@ public class GetCommandParserTest {
     }
 
     @Test
-    public void parse_validArgs_returnsRetrieveCommand() {
-        Stream<Prefix> relevantPrefixes = Stream.of(PersonalDetailRetriever.SUPPORTED_PREFIX.toArray(Prefix[]::new))
+    public void parse_validArgs_returnsGetCommand() {
+        Stream<Prefix> relevantPrefixes = Stream.of(GetCommand.SUPPORTED_PREFIX.toArray(Prefix[]::new))
                 .parallel();
         relevantPrefixes.forEach(prefix -> {
             String userInput = " " + prefix.getPrefix();
-            GetCommand expectedCommand = new GetCommand(new PersonalDetailRetriever(prefix));
+            GetCommand expectedCommand = new GetCommand(List.of(prefix), List.of());
             assertParseSuccess(parser, userInput, expectedCommand);
         });
     }
 
     @Test
-    public void parse_validArgsWithName_returnsRetrieveCommand() {
+    public void parse_validArgsWithName_returnsGetCommand() {
         Name name = getTypicalStudents().get(0).getName();
 
-        Stream<Prefix> relevantPrefixes = Stream.of(PersonalDetailRetriever.SUPPORTED_PREFIX.toArray(Prefix[]::new))
+        Stream<Prefix> relevantPrefixes = Stream.of(GetCommand.SUPPORTED_PREFIX.toArray(Prefix[]::new))
                 .parallel();
         relevantPrefixes.forEach(prefix -> {
             String userInput = " " + prefix.getPrefix() + " " + PREFIX_NAME + name.fullName;
             NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(List.of(name.fullName));
-            GetCommand expectedCommand = new GetCommand(new PersonalDetailRetriever(prefix, predicate));
+            GetCommand expectedCommand = new GetCommand(List.of(prefix), List.of(name.fullName));
             assertParseSuccess(parser, userInput, expectedCommand);
         });
     }
