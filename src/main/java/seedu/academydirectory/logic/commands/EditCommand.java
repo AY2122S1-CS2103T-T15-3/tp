@@ -6,25 +6,19 @@ import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TELEGRAM;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import seedu.academydirectory.commons.core.Messages;
 import seedu.academydirectory.commons.core.index.Index;
 import seedu.academydirectory.commons.util.CollectionUtil;
 import seedu.academydirectory.logic.commands.exceptions.CommandException;
 import seedu.academydirectory.model.VersionedModel;
-import seedu.academydirectory.model.student.Assessment;
 import seedu.academydirectory.model.student.Email;
 import seedu.academydirectory.model.student.Name;
 import seedu.academydirectory.model.student.Phone;
 import seedu.academydirectory.model.student.Student;
-import seedu.academydirectory.model.student.StudioRecord;
 import seedu.academydirectory.model.student.Telegram;
-import seedu.academydirectory.model.tag.Tag;
 
 /**
  * Edits the details of an existing student in the Academy Directory.
@@ -37,17 +31,21 @@ public class EditCommand extends Command {
             + "\n"
             + "Tutors will be able to edit their tutees.\n"
             + "\n"
-            + "Format: `edit INDEX [n/NAME] [e/EMAIL] [t/TELE_HANDLE] [p/PHONE_NUMBER]`\n"
+            + "Format: `edit INDEX "
+            + "[" + PREFIX_NAME + "NAME] "
+            + "[" + PREFIX_EMAIL + "EMAIL] "
+            + "[" + PREFIX_TELEGRAM + "TELE_HANDLE] "
+            + "[" + PREFIX_PHONE + "PHONE_NUMBER]`\n"
             + "\n"
-            + "* Edits the tutee at the specified `INDEX`. The index refers to the index number shown "
+            + "* Edits the student at the specified `INDEX`. The index refers to the index number shown "
             + "in the displayed student list. The index **must be a positive integer** 1, 2, 3, …\u200B\n"
             + "* At least one of the optional fields must be provided.\n"
             + "* Existing values will be updated to the input values.\n"
             + "\n"
             + "Examples:\n"
-            + "* `edit 1 p/91234567`  Edits the phone number "
+            + "* `edit 1 " + PREFIX_PHONE + "91234567 " + PREFIX_EMAIL + "e0425205@u.nus.edu`  Edits the phone number "
             + "of the 1st student to be `91234567` and `e0425205@u.nus.edu` respectively.\n"
-            + "* `edit 2 n/Aaron Tan`  Edits the name of the 2nd student to be Aaron Tan.\n";
+            + "* `edit 2 " + PREFIX_NAME + "Aaron Tan`  Edits the name of the 2nd student to be Aaron Tan.\n";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the student identified "
             + "by the index number used in the displayed student list. "
@@ -113,19 +111,15 @@ public class EditCommand extends Command {
         Phone updatedPhone = editStudentDescriptor.getPhone().orElse(studentToEdit.getPhone());
         Email updatedEmail = editStudentDescriptor.getEmail().orElse(studentToEdit.getEmail());
         Telegram updatedTelegram = editStudentDescriptor.getTelegram().orElse(studentToEdit.getTelegram());
-        Set<Tag> updatedTags = editStudentDescriptor.getTags().orElse(studentToEdit.getTags());
-        Assessment updatedAssessment = editStudentDescriptor.getAssessment().orElse(studentToEdit.getAssessment());
-        StudioRecord updatedStudioRecord =
-                editStudentDescriptor.getStudioRecord().orElse(studentToEdit.getStudioRecord());
 
         return new Student(
                 updatedName,
                 updatedPhone,
                 updatedEmail,
                 updatedTelegram,
-                updatedStudioRecord,
-                updatedAssessment,
-                updatedTags);
+                studentToEdit.getStudioRecord(),
+                studentToEdit.getAssessment(),
+                studentToEdit.getTags());
     }
 
     @Override
@@ -155,9 +149,6 @@ public class EditCommand extends Command {
         private Phone phone;
         private Email email;
         private Telegram telegram;
-        private Set<Tag> tags;
-        private StudioRecord studioRecord;
-        private Assessment assessment;
 
         public EditStudentDescriptor() {}
 
@@ -170,16 +161,13 @@ public class EditCommand extends Command {
             setPhone(toCopy.phone);
             setEmail(toCopy.email);
             setTelegram(toCopy.telegram);
-            setTags(toCopy.tags);
-            setAssessment(toCopy.assessment);
-            setStudioRecord(toCopy.studioRecord);
         }
 
         /**
          * Returns true if at least one field is edited.
          */
         public boolean isAnyFieldEdited() {
-            return CollectionUtil.isAnyNonNull(name, phone, email, telegram, tags);
+            return CollectionUtil.isAnyNonNull(name, phone, email, telegram);
         }
 
         public void setName(Name name) {
@@ -214,39 +202,6 @@ public class EditCommand extends Command {
             return Optional.ofNullable(telegram);
         }
 
-        public void setAssessment(Assessment assessment) {
-            this.assessment = assessment;
-        }
-
-        public Optional<Assessment> getAssessment() {
-            return Optional.ofNullable(assessment);
-        }
-
-        public void setStudioRecord(StudioRecord studioRecord) {
-            this.studioRecord = studioRecord;
-        }
-
-        public Optional<StudioRecord> getStudioRecord() {
-            return Optional.ofNullable(studioRecord);
-        }
-
-        /**
-         * Sets {@code tags} to this object's {@code tags}.
-         * A defensive copy of {@code tags} is used internally.
-         */
-        public void setTags(Set<Tag> tags) {
-            this.tags = (tags != null) ? new HashSet<>(tags) : null;
-        }
-
-        /**
-         * Returns an unmodifiable tag set, which throws {@code UnsupportedOperationException}
-         * if modification is attempted.
-         * Returns {@code Optional#empty()} if {@code tags} is null.
-         */
-        public Optional<Set<Tag>> getTags() {
-            return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
-        }
-
         @Override
         public boolean equals(Object other) {
             // short circuit if same object
@@ -265,10 +220,7 @@ public class EditCommand extends Command {
             return getName().equals(e.getName())
                     && getPhone().equals(e.getPhone())
                     && getEmail().equals(e.getEmail())
-                    && getTelegram().equals(e.getTelegram())
-                    && getTags().equals(e.getTags())
-                    && getAssessment().equals(e.getAssessment())
-                    && getStudioRecord().equals(e.getStudioRecord());
+                    && getTelegram().equals(e.getTelegram());
         }
     }
 }

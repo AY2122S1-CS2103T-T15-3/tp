@@ -35,8 +35,14 @@ public class EditCommandTest {
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
-        Student editedStudent = new StudentBuilder().build();
-        EditStudentDescriptor descriptor = new EditStudentDescriptorBuilder(editedStudent).withTags().build();
+        Student originalStudent = model.getFilteredStudentList().get(0);
+        Student defaultStudent = new StudentBuilder().build();
+        Student editedStudent = new StudentBuilder(originalStudent)
+                .withName(defaultStudent.getName().fullName)
+                .withPhone(defaultStudent.getPhone().toString())
+                .withEmail(defaultStudent.getEmail().toString())
+                .withTelegram(defaultStudent.getTelegram().toString()).build();
+        EditStudentDescriptor descriptor = new EditStudentDescriptorBuilder(editedStudent).build();
         EditCommand editCommand = new EditCommand(INDEX_FIRST_STUDENT, descriptor);
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_STUDENT_SUCCESS, editedStudent);
@@ -59,7 +65,7 @@ public class EditCommandTest {
 
         EditStudentDescriptor descriptor = new EditStudentDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB)
-                .withTags().build();
+                .build();
         EditCommand editCommand = new EditCommand(indexLastStudent, descriptor);
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_STUDENT_SUCCESS, editedStudent);

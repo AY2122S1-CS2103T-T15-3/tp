@@ -63,10 +63,10 @@ public class CommandTestUtil {
     static {
         DESC_AMY = new EditStudentDescriptorBuilder().withName(VALID_NAME_AMY)
                 .withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY).withTelegram(VALID_TELEGRAM_AMY)
-                .withTags(VALID_TAG_RECURSION).build();
+                .build();
         DESC_BOB = new EditStudentDescriptorBuilder().withName(VALID_NAME_BOB).withPhone(VALID_PHONE_BOB)
                 .withEmail(VALID_EMAIL_BOB).withTelegram(VALID_TELEGRAM_BOB)
-                .withTags(VALID_TAG_STREAMS, VALID_TAG_RECURSION).build();
+                .build();
     }
 
     /**
