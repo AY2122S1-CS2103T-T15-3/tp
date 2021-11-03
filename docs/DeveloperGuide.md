@@ -13,16 +13,29 @@ title: Developer Guide
   * [Storage Component](#storage-component)
   * [Common Classes](#common-classes)
 * [Implementation](#implementation)
-  * [AddCommand](#addcommand)
-  * [EditCommand](#editcommand)
-  * [GetCommand](#getcommand)
-  * [SortCommand](#sortcommand)
-  * [AttendanceCommand](#attendancecommand)
-  * [ParticipationCommand](#participationcommand)
-  * [GradeCommand](#gradecommand)
-  * [ShowCommand](#showcommand)
-  * [HelpCommand](#helpcommand)
-  * [[Proposed] Undo/Redo](#proposed-undoredo-feature)
+  * [Managing Student's Personal Details](#managing-students-personal-details)
+    * [AddCommand](#addcommand)
+    * [DeleteCommand](#deletecommand)
+    * [TagCommand](#tagcommand)
+    * [GetCommand](#getcommand)
+    * [EditCommand](#editcommand)
+  * [Track Students' Grades, Studio Attendance, and Participation](#track-students-grades-studio-attendance-and-participation)
+    * [GradeCommand](#gradecommand)
+    * [AttendanceCommand](#attendancecommand)
+    * [ParticipationCommand](#participationcommand)
+  * [Visualize Data](#visualize-data)
+    * [ViewCommand](#viewcommand)
+    * [ShowCommand](#showcommand)
+    * [VisualizeCommand](#visualizecommand)
+    * [FilterCommand](#filtercommand)
+    * [SortCommand](#sortcommand)
+  * [Others](#others)
+    * [ListCommand](#listcommand)
+    * [ClearCommand](#clearcommand)
+    * [UndoCommand](#undocommand)
+      * [[Proposed] Undo/Redo](#proposed-undoredo-feature)
+    * [RedoCommand](#redocommand)
+    * [HelpCommand](#helpcommand)
 * [Guides](#guides)
 * [Appendix](#appendix-requirements)
   * [Requirement](#appendix-requirements)
@@ -171,6 +184,7 @@ Classes used by multiple components are in the `seedu.academydirectory.commons` 
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Managing Students' Personal Details
 ### AddCommand
 
 This command adds a new `Student` to `AcademyDirectory`.
@@ -186,20 +200,13 @@ service CS1101S Avengers, each `Studio` has approximately 10 `Students`, with th
 does not have unnecessary duplicate information (e.g same `PHONE`) is left to an Avenger.
 </div>
 
-### EditCommand
+### DeleteCommand
 
-This command edits a `Student`'s personal details such as their `NAME`, `PHONE`, `TELEGRAM` and `EMAIL`.
+#### Implementation
 
-#### Implementaion
-`EditCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
+### TagCommand
 
-Similar to `AddCommand`, `EditCommand` supports duplicate prevention by checking that the `NAME` being edited is unique in the list
-unless the `NAME` is the same  as the `Student` being edited.
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The responsibility of ensuring that `Student` 
-does not have unnecessary duplicate information (e.g same `PHONE`) is left to an Avenger.
-</div>
-
+#### Implementation
 
 ### GetCommand
 This command serves to retrieve a specific `Information` of students.
@@ -221,21 +228,36 @@ is done by using the `InformationWantedFunction` objects on all `Student` object
 
 Exactly which field of `Student` should be retrieved is determined by the `Prefix` passed into `InformationWantedFunction` during its creation.
 
-### SortCommand
+### EditCommand
 
-This command sorts the `AcademyDirectory` student list based on their `Participation`, `Assessment` and `Name`. When sorting by `Assessment`, users have the option of sorting by individual `Assessment` or by the average grade among. Users can also choose if they want to sort by ascending or descending.
+This command edits a `Student`'s personal details such as their `NAME`, `PHONE`, `TELEGRAM` and `EMAIL`.
+
+#### Implementation
+`EditCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
+
+Similar to `AddCommand`, `EditCommand` supports duplicate prevention by checking that the `NAME` being edited is unique in the list
+unless the `NAME` is the same  as the `Student` being edited.
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The responsibility of ensuring that `Student` 
+does not have unnecessary duplicate information (e.g same `PHONE`) is left to an Avenger.
+</div>
+
+### Track Students' Grades, Studio Attendance, and Participation
+
+### GradeCommand
+
+This command serves to update the `Grade` of various `Assessment` that the students will undergo in CS1101S. The assessments include RA1, Midterm, RA2, Practical Exam (PE), and Final.
 
 #### Implementation
 
-`SortCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
+`GradeCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
 
-The sorting mechanism is based on the `List` interface as it sorts the various `FilteredList` instances using `Comparator`. Based on the `attribute` of the `SortCommand` being executed, the `Comparator` differs as shown by the sequential diagram below:
+The recording of grade is facilitated by adding an `Assessment` parameter to the `Student`.
+The `Assessment` is implemented with a HashMap that stores the String representation of the assessments as the keys, and the integer `Grade` as the values.
 
-![SortCommandSequenceDiagram](images/logic/commands/sortcommand/SortCommandSequenceDiagram.png)
+The following sequence diagram describes what happens when `GradeCommand` is executed:
 
-The reference frame for GetComparator can be found below. It details the selection process based on the `attribute` of the `SortCommand`.
-
-![GetComparatorSequenceDiagram](images/logic/commands/sortcommand/GetComparatorSequenceDiagram.png)
+![GradeCommandSequenceDiagram](images/logic/commands/gradecommand/GradeCommandSequenceDiagram.png)
 
 ### AttendanceCommand
 
@@ -257,7 +279,6 @@ For `UpdateModelAttendanceSequenceDiagram`, the sequential diagrams can be found
 
 ![UpdateModelAttendanceSequenceDiagram](images/logic/commands/attendancecommand/UpdateModelAttendanceSequenceDiagram.png)
 
-
 ### ParticipationCommand
 
 This command serves to update the `Participation` score of students. Following the XP system for CS1101S, each student is awarded between 0 and 500 XP (inclusive) per Studio session.
@@ -266,7 +287,7 @@ This command serves to update the `Participation` score of students. Following t
 
 `ParticipationCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
 
-The implementation is similar to `AttendanceCommand`, with the same sequence diagram being applicable for Participation given that the proper refactoring to `Participation` is done. 
+The implementation is similar to `AttendanceCommand`, with the same sequence diagram being applicable for Participation given that the proper refactoring to `Participation` is done.
 
 `ParticipationCommand` has an additional section in the sequence diagram located above the loop in `AttendanceCommand`. The purpose of the logic below is to update a student's `Attendance` to be marked as present if the `participationUpdate` is greater than 0. This is because a student that has a positive `Participation` score would also count as having attended the `Studio`.
 
@@ -276,19 +297,11 @@ The implementation is similar to `AttendanceCommand`, with the same sequence dia
 
  </div>
 
-### GradeCommand
+### Visualize Data
 
-This command serves to update the `Grade` of various `Assessment` that the students will undergo in CS1101S. The assessments include RA1, Midterm, RA2, Practical Exam (PE), and Final.
+### ViewCommand
 
 #### Implementation
-
-`GradeCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
-
-The recording of grade is facilitated by adding an `Assessment` parameter to the `Student`. The `Assessment` is implemented with a HashMap that stores the String representation of the assessments as the keys, and the integer `Grade` as the values.
-
-The following sequence diagram describes what happens when `GradeCommand` is executed:
-
-![GradeCommandSequenceDiagram](images/logic/commands/gradecommand/GradeCommandSequenceDiagram.png)
 
 ### ShowCommand
 
@@ -298,31 +311,47 @@ This command serves to display the collated score of all students in the Academy
 
 `ShowCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
 
-The grades are collated by iterating through all the students and extracting the score from the `Assessment` HashMap using the input `Assessment` as the key. The information is formatted into a String and parsed into `CommandResult` to be returned by `ShowCommand`.
+The grades are collated by iterating through all the students and extracting the score from the `Assessment` HashMap using the input `Assessment` as the key.
+The information is formatted into a String and displayed in the AdditionalView. The success message is parsed into `CommandResult` to be returned by `ShowCommand`.
 
 The following sequence diagram describes what happens when `ShowCommand` is executed:
 
 ![ShowCommandSequenceDiagram](images/logic/commands/showcommand/ShowCommandSequenceDiagram.png)
 
-### HelpCommand
-
-This command serves to guide new users on using the application, which syntax to use and when to use them. Users can view a summary of all commands' syntax,
-or a specific guide on how to use a particular command.
+### VisualizeCommand
 
 #### Implementation
 
-`HelpCommand` will extend the `Command` class, and consequently `@Override` the `Command#execute()` method to serve its initial purposes.
+### FilterCommand
 
-The mechanism of the command is done by retrieving a `HELP_MESSAGE` field in each of the other command classes (other than HelpCommand itself). This help command will
-be displayed to the user on a separate window later on.
+#### Implementation
 
-![HelpCommandSequenceDiagram](images/logic/commands/helpcommand/HelpCommandSequenceDiagram.png)
+### SortCommand
 
-As seen from the diagram, the `HelpCommand` involves the use of conditional branches. If the optional condition is met, a `CommandException` is thrown to let
-users know that the input is invalid.
+This command sorts the `AcademyDirectory` student list based on their `Participation`, `Assessment` and `Name`. When sorting by `Assessment`, users have the option of sorting by individual `Assessment` or by the average grade among. Users can also choose if they want to sort by ascending or descending.
 
-Otherwise, the HelpCommand will use conditional branch to guide users to two different scenarios, as shown above. If it is a general help, a general help command
-will be created. If it is a specific help, then a specific help command associated with a command will be created.
+#### Implementation
+
+`SortCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to serve the aforementioned purpose.
+
+The sorting mechanism is based on the `List` interface as it sorts the various `FilteredList` instances using `Comparator`. Based on the `attribute` of the `SortCommand` being executed, the `Comparator` differs as shown by the sequential diagram below:
+
+![SortCommandSequenceDiagram](images/logic/commands/sortcommand/SortCommandSequenceDiagram.png)
+
+The reference frame for GetComparator can be found below. It details the selection process based on the `attribute` of the `SortCommand`.
+
+![GetComparatorSequenceDiagram](images/logic/commands/sortcommand/GetComparatorSequenceDiagram.png)
+
+### Others
+
+### ListCommand
+#### Implementation
+
+### ClearCommand
+#### Implementation
+
+### UndoCommand
+#### Implementation
 
 ### \[Proposed\] Undo/Redo feature
 
@@ -394,15 +423,38 @@ The following activity diagram summarizes what happens when a user executes a ne
 **Aspect: How undo & redo executes:**
 
 * **Alternative 1 (current choice):** Saves the entire academy directory.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
+    * Pros: Easy to implement.
+    * Cons: May have performance issues in terms of memory usage.
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the student being deleted).
-  * Cons: We must ensure that the implementation of each individual command are correct.
+    * Pros: Will use less memory (e.g. for `delete`, just save the student being deleted).
+    * Cons: We must ensure that the implementation of each individual command are correct.
 
 _{more aspects and alternatives to be added}_
+
+### RedoCommand
+#### Implementation
+
+### HelpCommand
+
+This command serves to guide new users on using the application, which syntax to use and when to use them. Users can view a summary of all commands' syntax,
+or a specific guide on how to use a particular command.
+
+#### Implementation
+
+`HelpCommand` will extend the `Command` class, and consequently `@Override` the `Command#execute()` method to serve its initial purposes.
+
+The mechanism of the command is done by retrieving a `HELP_MESSAGE` field in each of the other command classes (other than HelpCommand itself). This help command will
+be displayed to the user on a separate window later on.
+
+![HelpCommandSequenceDiagram](images/logic/commands/helpcommand/HelpCommandSequenceDiagram.png)
+
+As seen from the diagram, the `HelpCommand` involves the use of conditional branches. If the optional condition is met, a `CommandException` is thrown to let
+users know that the input is invalid.
+
+Otherwise, the HelpCommand will use conditional branch to guide users to two different scenarios, as shown above. If it is a general help, a general help command
+will be created. If it is a specific help, then a specific help command associated with a command will be created.
 
 ### \[Proposed\] Data archiving
 

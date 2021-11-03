@@ -1,0 +1,33 @@
+@startuml
+!include ../../../style.puml
+
+box Logic LOGIC_COLOR_T1
+participant ":ShowCommand" as ShowCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant ":Student" as Student MODEL_COLOR
+participant ":Assessment" as Assessment MODEL_COLOR
+end box
+
+[-> ShowCommand ++ : execute(model)
+
+ShowCommand -> ModelManager ++ : getFilteredStudentList
+ShowCommand <-- ModelManager -- : student list
+
+ShowCommand -> ShowCommand ++ : displayResult
+
+loop student in student list
+	ShowCommand -> Student ++ : getName
+	ShowCommand <-- Student -- : full name
+	ShowCommand -> Student ++ : getAssessment
+	Student -> Assessment ++ : getAssessmentGrade
+	Student <-- Assessment -- :
+	ShowCommand <-- Student -- : grade
+end
+deactivate ShowCommand
+
+[<-- ShowCommand -- : command result
+
+@enduml
