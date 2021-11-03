@@ -5,7 +5,6 @@ import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TELEGRAM;
-import static seedu.academydirectory.model.Model.PREDICATE_SHOW_ALL_STUDENTS;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,6 @@ import javafx.collections.ObservableList;
 import seedu.academydirectory.logic.AdditionalViewType;
 import seedu.academydirectory.logic.parser.Prefix;
 import seedu.academydirectory.model.AdditionalInfo;
-import seedu.academydirectory.model.Model;
 import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
 import seedu.academydirectory.model.student.PersonalDetail;
@@ -80,16 +78,16 @@ public class GetCommand extends Command {
                 .collect(Collectors.toList());
     }
 
-    private String executeFilter(Model model, PersonalDetailRetriever personalDetailRetriever) {
+    private String executeFilter(VersionedModel model, PersonalDetailRetriever personalDetailRetriever) {
         model.updateFilteredStudentList(nameContainsKeywordsPredicate == null
-                ? PREDICATE_SHOW_ALL_STUDENTS
+                ? VersionedModel.PREDICATE_SHOW_ALL_STUDENTS
                 : nameContainsKeywordsPredicate);
         ObservableList<PersonalDetail> view = model.getFilteredStudentList()
                 .stream().map(personalDetailRetriever)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
-        model.updateFilteredStudentList(PREDICATE_SHOW_ALL_STUDENTS);
+        model.updateFilteredStudentList(VersionedModel.PREDICATE_SHOW_ALL_STUDENTS);
 
         return view.size() == 0
                 ? null

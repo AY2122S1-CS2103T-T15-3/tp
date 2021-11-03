@@ -3,7 +3,7 @@ package seedu.academydirectory.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.academydirectory.model.Model.PREDICATE_SHOW_ALL_STUDENTS;
+import static seedu.academydirectory.model.VersionedModel.PREDICATE_SHOW_ALL_STUDENTS;
 import static seedu.academydirectory.testutil.Assert.assertThrows;
 import static seedu.academydirectory.testutil.TypicalStudents.ALICE;
 import static seedu.academydirectory.testutil.TypicalStudents.BENSON;

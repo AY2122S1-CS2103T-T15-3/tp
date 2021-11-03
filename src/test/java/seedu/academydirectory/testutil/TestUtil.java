@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import seedu.academydirectory.commons.core.index.Index;
-import seedu.academydirectory.model.Model;
+import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.model.student.Student;
 
 /**
@@ -35,21 +35,21 @@ public class TestUtil {
     /**
      * Returns the middle index of the student in the {@code model}'s student list.
      */
-    public static Index getMidIndex(Model model) {
+    public static Index getMidIndex(VersionedModel model) {
         return Index.fromOneBased(model.getFilteredStudentList().size() / 2);
     }
 
     /**
      * Returns the last index of the student in the {@code model}'s student list.
      */
-    public static Index getLastIndex(Model model) {
+    public static Index getLastIndex(VersionedModel model) {
         return Index.fromOneBased(model.getFilteredStudentList().size());
     }
 
     /**
      * Returns the student in the {@code model}'s student list at {@code index}.
      */
-    public static Student getStudent(Model model, Index index) {
+    public static Student getStudent(VersionedModel model, Index index) {
         return model.getFilteredStudentList().get(index.getZeroBased());
     }
 }

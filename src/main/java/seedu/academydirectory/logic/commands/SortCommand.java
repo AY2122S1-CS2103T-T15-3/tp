@@ -3,7 +3,7 @@ package seedu.academydirectory.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_ATTRIBUTE;
 import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_ORDER;
-import static seedu.academydirectory.model.Model.PREDICATE_SHOW_ALL_STUDENTS;
+import static seedu.academydirectory.model.VersionedModel.PREDICATE_SHOW_ALL_STUDENTS;
 
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -21,7 +21,7 @@ import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.InformationContainsKeywordsPredicate;
 
 /**
- * Contains integration tests (interaction with the Model) for {@code FilterCommand}.
+ * Contains integration tests (interaction with the VersionedModel) for {@code FilterCommand}.
  */
 public class FilterCommandTest {
     private VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());

@@ -25,7 +25,7 @@ import seedu.academydirectory.testutil.StudentBuilder;
 import seedu.academydirectory.testutil.TypicalStudents;
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for ParticipationCommand
+ * Contains integration tests (interaction with the VersionedModel) and unit tests for ParticipationCommand
  */
 public class ParticipationCommandTest {
 

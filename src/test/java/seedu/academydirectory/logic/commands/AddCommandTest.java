@@ -195,7 +195,7 @@ public class AddCommandTest {
     }
 
     /**
-     * A Model stub that contains a single student.
+     * A VersionedModel stub that contains a single student.
      */
     private class ModelStubWithStudent extends ModelStub {
         private final Student student;
@@ -213,7 +213,7 @@ public class AddCommandTest {
     }
 
     /**
-     * A Model stub that always accept the student being added.
+     * A VersionedModel stub that always accept the student being added.
      */
     private class ModelStubAcceptingStudentAdded extends ModelStub {
         final ArrayList<Student> studentsAdded = new ArrayList<>();

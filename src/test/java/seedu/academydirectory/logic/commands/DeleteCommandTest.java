@@ -19,7 +19,7 @@ import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Student;
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for
+ * Contains integration tests (interaction with the VersionedModel) and unit tests for
  * {@code DeleteCommand}.
  */
 public class DeleteCommandTest {

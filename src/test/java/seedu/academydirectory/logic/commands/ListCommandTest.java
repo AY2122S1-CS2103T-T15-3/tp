@@ -13,7 +13,7 @@ import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.model.VersionedModelManager;
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for ListCommand.
+ * Contains integration tests (interaction with the VersionedModel) and unit tests for ListCommand.
  */
 public class ListCommandTest {
 

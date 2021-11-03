@@ -48,7 +48,7 @@ public class ViewCommand extends Command {
 
     /**
      * Execute the command View
-     * @param model {@code Model} which the command should operate on.
+     * @param model {@code VersionedModel} which the command should operate on.
      * @return Command result that contains the student
      * @throws CommandException when index is not valid
      */

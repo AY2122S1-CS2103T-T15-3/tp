@@ -27,7 +27,7 @@ import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
 import seedu.academydirectory.model.student.PersonalDetail;
 
 /**
- * Contains integration tests (interaction with the Model) for {@code FindCommand}.
+ * Contains integration tests (interaction with the VersionedModel) for {@code FindCommand}.
  */
 public class GetCommandTest {
     private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());

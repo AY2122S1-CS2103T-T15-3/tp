@@ -30,7 +30,7 @@ public class LogicManager implements Logic {
     private final AcademyDirectoryParser academyDirectoryParser;
 
     /**
-     * Constructs a {@code LogicManager} with the given {@code Model} and {@code StorageManager}.
+     * Constructs a {@code LogicManager} with the given {@code VersionedModel} and {@code StorageManager}.
      */
     public LogicManager(VersionedModel model, Storage storage) {
         this.model = model;

@@ -1,7 +1,7 @@
 package seedu.academydirectory.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.academydirectory.model.Model.PREDICATE_SHOW_ALL_STUDENTS;
+import static seedu.academydirectory.model.VersionedModel.PREDICATE_SHOW_ALL_STUDENTS;
 
 import seedu.academydirectory.model.VersionedModel;
 

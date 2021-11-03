@@ -24,7 +24,7 @@ import seedu.academydirectory.testutil.StudentBuilder;
 
 
 /**
- * Contains integration tests (interaction with the Model) and unit tests for AttendanceCommand
+ * Contains integration tests (interaction with the VersionedModel) and unit tests for AttendanceCommand
  */
 public class AttendanceCommandTest {
 

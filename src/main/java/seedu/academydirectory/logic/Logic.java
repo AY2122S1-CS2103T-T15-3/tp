@@ -27,7 +27,7 @@ public interface Logic {
     /**
      * Returns the AcademyDirectory.
      *
-     * @see seedu.academydirectory.model.Model#getAcademyDirectory()
+     * @see seedu.academydirectory.model.VersionedModel#getAcademyDirectory()
      */
     ReadOnlyAcademyDirectory getAcademyDirectory();
 

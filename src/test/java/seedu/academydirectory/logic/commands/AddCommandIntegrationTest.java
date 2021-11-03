@@ -14,7 +14,7 @@ import seedu.academydirectory.model.student.Student;
 import seedu.academydirectory.testutil.StudentBuilder;
 
 /**
- * Contains integration tests (interaction with the Model) for {@code AddCommand}.
+ * Contains integration tests (interaction with the VersionedModel) for {@code AddCommand}.
  */
 public class AddCommandIntegrationTest {
 
