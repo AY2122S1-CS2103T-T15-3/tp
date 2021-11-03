@@ -15,9 +15,9 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import seedu.academydirectory.model.AcademyDirectory;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Assessment;
 import seedu.academydirectory.model.student.Email;
 import seedu.academydirectory.model.student.Name;
@@ -27,7 +27,7 @@ import seedu.academydirectory.model.student.StudioRecord;
 import seedu.academydirectory.model.student.Telegram;
 
 public class SortCommandTest {
-    private final VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
     private final Student student1 = new Student(
             new Name("Kesha"),
             new Phone("911"),
@@ -74,7 +74,7 @@ public class SortCommandTest {
         student3.getAssessment().updateAssessmentGrade("RA1", 6); // middle for RA1
         student3.getParticipation().add(10, 1); // first for participation
 
-        VersionedModel expectedModel = new ModelManager(new AcademyDirectory(), new UserPrefs());
+        VersionedModel expectedModel = new VersionedModelManager(new AcademyDirectory(), new UserPrefs());
         AcademyDirectory expectedAcademyDirectory = new AcademyDirectory();
         List<Student> expectedStudentList = Arrays.asList(student1, student2, student3);
         AcademyDirectory modelAcademyDireory = new AcademyDirectory();

@@ -13,9 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import seedu.academydirectory.commons.core.Messages;
 import seedu.academydirectory.commons.core.index.Index;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Student;
 
 /**
@@ -24,7 +24,7 @@ import seedu.academydirectory.model.student.Student;
  */
 public class DeleteCommandTest {
 
-    private VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
 
     @Test
     public void execute_validIndexUnfilteredList_success() {
@@ -33,7 +33,7 @@ public class DeleteCommandTest {
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_STUDENT_SUCCESS, studentToDelete);
 
-        ModelManager expectedModel = new ModelManager(model.getAcademyDirectory(), new UserPrefs());
+        VersionedModelManager expectedModel = new VersionedModelManager(model.getAcademyDirectory(), new UserPrefs());
         expectedModel.deleteStudent(studentToDelete);
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
@@ -56,7 +56,7 @@ public class DeleteCommandTest {
 
         String expectedMessage = String.format(DeleteCommand.MESSAGE_DELETE_STUDENT_SUCCESS, studentToDelete);
 
-        VersionedModel expectedModel = new ModelManager(model.getAcademyDirectory(), new UserPrefs());
+        VersionedModel expectedModel = new VersionedModelManager(model.getAcademyDirectory(), new UserPrefs());
         expectedModel.deleteStudent(studentToDelete);
         showNoStudent(expectedModel);
 

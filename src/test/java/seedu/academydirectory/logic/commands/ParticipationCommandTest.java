@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test;
 import seedu.academydirectory.commons.core.Messages;
 import seedu.academydirectory.commons.core.index.Index;
 import seedu.academydirectory.model.AcademyDirectory;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Attendance;
 import seedu.academydirectory.model.student.Participation;
 import seedu.academydirectory.model.student.Student;
@@ -32,7 +32,7 @@ public class ParticipationCommandTest {
     private static final Integer STUDIO_SESSION_STUB = 1;
     private static final ArrayList<Index> INDEX_ARRAYLIST_STUB = new ArrayList<>();
     private static final ArrayList<Index> INDEX_ARRAYLIST_STUB_2 = new ArrayList<>();
-    private VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
 
     @Test
     public void execute_invalidPersonIndexUnfilteredList_failure() {
@@ -48,7 +48,7 @@ public class ParticipationCommandTest {
     public void execute_updateParticipation_success() {
         INDEX_ARRAYLIST_STUB.clear();
         INDEX_ARRAYLIST_STUB.add(INDEX_FIRST_STUDENT);
-        VersionedModel expectedModel = new ModelManager(
+        VersionedModel expectedModel = new VersionedModelManager(
                 new AcademyDirectory(model.getAcademyDirectory()), new UserPrefs());
         Student editedStudent = new StudentBuilder(model.getFilteredStudentList().get(0)).build();
 

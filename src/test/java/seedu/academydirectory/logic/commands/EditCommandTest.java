@@ -19,9 +19,9 @@ import seedu.academydirectory.commons.core.Messages;
 import seedu.academydirectory.commons.core.index.Index;
 import seedu.academydirectory.logic.commands.EditCommand.EditStudentDescriptor;
 import seedu.academydirectory.model.AcademyDirectory;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Student;
 import seedu.academydirectory.testutil.EditStudentDescriptorBuilder;
 import seedu.academydirectory.testutil.StudentBuilder;
@@ -31,7 +31,7 @@ import seedu.academydirectory.testutil.StudentBuilder;
  */
 public class EditCommandTest {
 
-    private final VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
@@ -41,7 +41,7 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_STUDENT_SUCCESS, editedStudent);
 
-        VersionedModel expectedModel = new ModelManager(
+        VersionedModel expectedModel = new VersionedModelManager(
                 new AcademyDirectory(model.getAcademyDirectory()), new UserPrefs());
         expectedModel.setStudent(model.getFilteredStudentList().get(0), editedStudent);
 
@@ -64,7 +64,7 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_STUDENT_SUCCESS, editedStudent);
 
-        VersionedModel expectedModel = new ModelManager(
+        VersionedModel expectedModel = new VersionedModelManager(
                 new AcademyDirectory(model.getAcademyDirectory()), new UserPrefs());
         expectedModel.setStudent(lastStudent, editedStudent);
 
@@ -78,7 +78,7 @@ public class EditCommandTest {
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_STUDENT_SUCCESS, editedStudent);
 
-        VersionedModel expectedModel = new ModelManager(
+        VersionedModel expectedModel = new VersionedModelManager(
                 new AcademyDirectory(model.getAcademyDirectory()), new UserPrefs());
 
         assertCommandSuccess(editCommand, model, expectedMessage, expectedModel);
@@ -94,7 +94,7 @@ public class EditCommandTest {
                 new EditStudentDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
         String expectedMessage = String.format(EditCommand.MESSAGE_EDIT_STUDENT_SUCCESS, editedStudent);
-        VersionedModel expectedModel = new ModelManager(
+        VersionedModel expectedModel = new VersionedModelManager(
                 new AcademyDirectory(model.getAcademyDirectory()), new UserPrefs());
         showStudentAtIndex(expectedModel, INDEX_FIRST_STUDENT);
         expectedModel.setStudent(model.getFilteredStudentList().get(0), editedStudent);

@@ -17,16 +17,16 @@ import org.junit.jupiter.api.Test;
 import seedu.academydirectory.commons.core.Messages;
 import seedu.academydirectory.commons.core.index.Index;
 import seedu.academydirectory.model.AcademyDirectory;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Student;
 import seedu.academydirectory.model.tag.Tag;
 import seedu.academydirectory.testutil.StudentBuilder;
 
 class TagCommandTest {
 
-    private final VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
     private final Set<Tag> tagSet = new HashSet<>();
     private final String validTagName1 = "mission";
     private final String validTagName2 = "streams2";
@@ -45,7 +45,7 @@ class TagCommandTest {
                 new TagCommand(INDEX_FIRST_STUDENT, tagSet);
         String expectedMessage =
                 String.format(TagCommand.MESSAGE_SUCCESS, editedStudent.getName());
-        VersionedModel expectedModel = new ModelManager(
+        VersionedModel expectedModel = new VersionedModelManager(
                 new AcademyDirectory(model.getAcademyDirectory()), new UserPrefs());
         expectedModel.setStudent(firstStudent, editedStudent);
         assertCommandSuccess(addTagCommand, model, expectedMessage, expectedModel);

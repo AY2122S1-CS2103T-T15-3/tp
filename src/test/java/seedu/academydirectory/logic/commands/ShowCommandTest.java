@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test;
 import seedu.academydirectory.commons.core.Messages;
 import seedu.academydirectory.commons.core.index.Index;
 import seedu.academydirectory.model.AcademyDirectory;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 
 public class ShowCommandTest {
 
-    private final VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
     private final String validAssessmentName1 = "RA1";
     private final String validAssessmentName2 = "MIDTERM";
     private final Integer validGrade = 10;
@@ -33,7 +33,7 @@ public class ShowCommandTest {
         ShowCommand showCommand = new ShowCommand(validAssessmentName1);
         String content = ShowCommand.displayResult(model.getFilteredStudentList(), validAssessmentName1);
         String expectedMessage = String.format(ShowCommand.MESSAGE_SUCCESS, validAssessmentName1);
-        VersionedModel expectedModel = new ModelManager(
+        VersionedModel expectedModel = new VersionedModelManager(
                 new AcademyDirectory(model.getAcademyDirectory()), new UserPrefs());
         assertCommandSuccess(showCommand, model, expectedMessage, expectedModel);
     }

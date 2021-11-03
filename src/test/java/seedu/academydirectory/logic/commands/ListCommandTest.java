@@ -8,9 +8,9 @@ import static seedu.academydirectory.testutil.TypicalStudents.getTypicalAcademyD
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListCommand.
@@ -22,8 +22,8 @@ public class ListCommandTest {
 
     @BeforeEach
     public void setUp() {
-        model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
-        expectedModel = new ModelManager(model.getAcademyDirectory(), new UserPrefs());
+        model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+        expectedModel = new VersionedModelManager(model.getAcademyDirectory(), new UserPrefs());
     }
 
     @Test

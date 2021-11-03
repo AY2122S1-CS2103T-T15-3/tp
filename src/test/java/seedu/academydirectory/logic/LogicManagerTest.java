@@ -23,10 +23,10 @@ import seedu.academydirectory.logic.commands.ListCommand;
 import seedu.academydirectory.logic.commands.exceptions.CommandException;
 import seedu.academydirectory.logic.parser.exceptions.ParseException;
 import seedu.academydirectory.model.Model;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.ReadOnlyAcademyDirectory;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Student;
 import seedu.academydirectory.storage.JsonAcademyDirectoryStorage;
 import seedu.academydirectory.storage.JsonUserPrefsStorage;
@@ -39,7 +39,7 @@ public class LogicManagerTest {
     @TempDir
     public Path temporaryFolder;
 
-    private final VersionedModel model = new ModelManager();
+    private final VersionedModel model = new VersionedModelManager();
     private Logic logic;
 
     @BeforeEach
@@ -86,7 +86,7 @@ public class LogicManagerTest {
         String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY + EMAIL_DESC_AMY
                 + TELEGRAM_DESC_AMY;
         Student expectedStudent = new StudentBuilder(AMY).withTags().build();
-        ModelManager expectedModel = new ModelManager();
+        VersionedModelManager expectedModel = new VersionedModelManager();
         expectedModel.addStudent(expectedStudent);
         String expectedMessage = LogicManager.FILE_OPS_ERROR_MESSAGE + DUMMY_IO_EXCEPTION;
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);
@@ -133,7 +133,7 @@ public class LogicManagerTest {
      */
     private void assertCommandFailure(String inputCommand, Class<? extends Throwable> expectedException,
             String expectedMessage) {
-        Model expectedModel = new ModelManager(model.getAcademyDirectory(), new UserPrefs());
+        Model expectedModel = new VersionedModelManager(model.getAcademyDirectory(), new UserPrefs());
         assertCommandFailure(inputCommand, expectedException, expectedMessage, expectedModel);
     }
 

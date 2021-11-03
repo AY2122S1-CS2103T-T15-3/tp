@@ -21,8 +21,8 @@ import seedu.academydirectory.versioncontrol.utils.HashMethod;
 /**
  * Represents the in-memory model of the academy directory data.
  */
-public class ModelManager implements VersionedModel {
-    private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
+public class VersionedModelManager implements VersionedModel {
+    private static final Logger logger = LogsCenter.getLogger(VersionedModelManager.class);
 
     private final AcademyDirectory academyDirectory;
     private final UserPrefs userPrefs;
@@ -33,9 +33,9 @@ public class ModelManager implements VersionedModel {
     private final AdditionalViewModel additionalViewModel;
 
     /**
-     * Initializes a ModelManager with the given academyDirectory and userPrefs.
+     * Initializes a VersionedModelManager with the given academyDirectory and userPrefs.
      */
-    public ModelManager(ReadOnlyAcademyDirectory academyDirectory, ReadOnlyUserPrefs userPrefs) {
+    public VersionedModelManager(ReadOnlyAcademyDirectory academyDirectory, ReadOnlyUserPrefs userPrefs) {
         super();
         requireAllNonNull(academyDirectory, userPrefs);
 
@@ -52,7 +52,7 @@ public class ModelManager implements VersionedModel {
         this.additionalViewModel = new AdditionalViewModel(AdditionalViewType.DEFAULT, AdditionalInfo.empty());
     }
 
-    public ModelManager() {
+    public VersionedModelManager() {
         this(new AcademyDirectory(), new UserPrefs());
     }
 
@@ -151,12 +151,12 @@ public class ModelManager implements VersionedModel {
         }
 
         // instanceof handles nulls
-        if (!(obj instanceof ModelManager)) {
+        if (!(obj instanceof VersionedModelManager)) {
             return false;
         }
 
         // state check
-        ModelManager other = (ModelManager) obj;
+        VersionedModelManager other = (VersionedModelManager) obj;
         return academyDirectory.equals(other.academyDirectory)
                 && userPrefs.equals(other.userPrefs)
                 && filteredStudents.equals(other.filteredStudents);

@@ -16,11 +16,11 @@ import seedu.academydirectory.commons.util.StringUtil;
 import seedu.academydirectory.logic.Logic;
 import seedu.academydirectory.logic.LogicManager;
 import seedu.academydirectory.model.AcademyDirectory;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.ReadOnlyAcademyDirectory;
 import seedu.academydirectory.model.ReadOnlyUserPrefs;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.util.SampleDataUtil;
 import seedu.academydirectory.storage.AcademyDirectoryStorage;
 import seedu.academydirectory.storage.JsonAcademyDirectoryStorage;
@@ -70,10 +70,10 @@ public class MainApp extends Application {
     }
 
     /**
-     * Returns a {@code ModelManager} with the data from {@code storage}'s academy directory and {@code userPrefs}.
-     * <br> The data from the sample academy directory will be used instead if {@code storage}'s academy directory
-     * is not found, or an empty academy directory will be used instead if errors occur when reading {@code storage}'s
-     * academy directory.
+     * Returns a {@code VersionedModelManager} with the data from {@code storage}'s academy directory and
+     * {@code userPrefs}. <br> The data from the sample academy directory will be used instead if {@code storage}'s
+     * academy directory is not found, or an empty academy directory will be used instead if errors occur when reading
+     * {@code storage}'s academy directory.
      */
     private VersionedModel initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         Optional<ReadOnlyAcademyDirectory> academyDirectoryOptional;
@@ -96,7 +96,7 @@ public class MainApp extends Application {
         } catch (IOException e) {
             logger.warning("Unable to save to disk. Will not be able to revert properly..");
         }
-        return new ModelManager(initialData, userPrefs);
+        return new VersionedModelManager(initialData, userPrefs);
     }
 
     private void initLogging(Config config) {

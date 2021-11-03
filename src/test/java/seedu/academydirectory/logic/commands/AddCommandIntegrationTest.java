@@ -7,9 +7,9 @@ import static seedu.academydirectory.testutil.TypicalStudents.getTypicalAcademyD
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Student;
 import seedu.academydirectory.testutil.StudentBuilder;
 
@@ -22,14 +22,14 @@ public class AddCommandIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+        model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
     }
 
     @Test
     public void execute_newStudent_success() {
         Student validStudent = new StudentBuilder().build();
 
-        VersionedModel expectedModel = new ModelManager(model.getAcademyDirectory(), new UserPrefs());
+        VersionedModel expectedModel = new VersionedModelManager(model.getAcademyDirectory(), new UserPrefs());
         expectedModel.addStudent(validStudent);
 
         assertCommandSuccess(new AddCommand(validStudent), model,

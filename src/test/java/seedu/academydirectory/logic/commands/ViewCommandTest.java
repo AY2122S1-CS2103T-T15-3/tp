@@ -13,12 +13,12 @@ import static seedu.academydirectory.testutil.TypicalStudents.getTypicalAcademyD
 import org.junit.jupiter.api.Test;
 
 import seedu.academydirectory.commons.core.Messages;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 
 public class ViewCommandTest {
-    private final VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
 
     @Test
     public void valid_view_command() {

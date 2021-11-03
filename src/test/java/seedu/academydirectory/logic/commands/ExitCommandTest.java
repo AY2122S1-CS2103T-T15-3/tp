@@ -5,12 +5,12 @@ import static seedu.academydirectory.logic.commands.ExitCommand.MESSAGE_EXIT_ACK
 
 import org.junit.jupiter.api.Test;
 
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 
 public class ExitCommandTest {
-    private VersionedModel model = new ModelManager();
-    private VersionedModel expectedModel = new ModelManager();
+    private VersionedModel model = new VersionedModelManager();
+    private VersionedModel expectedModel = new VersionedModelManager();
 
     @Test
     public void execute_exit_success() {

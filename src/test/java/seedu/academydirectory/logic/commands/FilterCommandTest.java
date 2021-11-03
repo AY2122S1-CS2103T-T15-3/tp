@@ -15,17 +15,17 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.InformationContainsKeywordsPredicate;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FilterCommand}.
  */
 public class FilterCommandTest {
-    private VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
-    private VersionedModel expectedModel = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private VersionedModel expectedModel = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
 
     @Test
     public void equals() {

@@ -19,9 +19,9 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.academydirectory.logic.parser.Prefix;
-import seedu.academydirectory.model.ModelManager;
 import seedu.academydirectory.model.UserPrefs;
 import seedu.academydirectory.model.VersionedModel;
+import seedu.academydirectory.model.VersionedModelManager;
 import seedu.academydirectory.model.student.Information;
 import seedu.academydirectory.model.student.InformationWantedFunction;
 import seedu.academydirectory.model.student.Name;
@@ -31,8 +31,9 @@ import seedu.academydirectory.model.student.NameContainsKeywordsPredicate;
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
  */
 public class GetCommandTest {
-    private final VersionedModel model = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
-    private final VersionedModel expectedModel = new ModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
+    private final VersionedModel expectedModel = new VersionedModelManager(getTypicalAcademyDirectory(),
+            new UserPrefs());
 
     @Test
     public void equals() {
@@ -107,7 +108,7 @@ public class GetCommandTest {
 
     @Test
     public void execute_singlePrefixEmptyModel() {
-        VersionedModel emptyModel = new ModelManager();
+        VersionedModel emptyModel = new VersionedModelManager();
 
         InformationWantedFunction.SUPPORTED_PREFIX.forEach(prefix -> {
             InformationWantedFunction function = new InformationWantedFunction(prefix);
