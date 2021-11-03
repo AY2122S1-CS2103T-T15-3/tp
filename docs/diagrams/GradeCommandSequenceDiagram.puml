@@ -1,0 +1,37 @@
+@startuml
+!include style.puml
+
+box Logic LOGIC_COLOR_T1
+participant ":GradeCommand" as GradeCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant ":Student" as Student MODEL_COLOR
+participant ":Student" as EditedStudent MODEL_COLOR
+participant ":Assessment" as Assessment MODEL_COLOR
+end box
+
+[-> GradeCommand ++ : execute(model)
+
+GradeCommand -> ModelManager ++ : getFilteredStudentList
+ModelManager --> GradeCommand -- : student list
+
+GradeCommand -> Student ++ : get(index)
+Student --> GradeCommand : studentToEdit
+GradeCommand -> Student : getAssessment
+Student -> Assessment ++ : getCopy
+Assessment --> Student -- : copy of assessment
+Student --> GradeCommand -- : assessmentToEdit
+GradeCommand -> Assessment ++ : updateAssessmentGrade(assessment, grade)
+Assessment --> GradeCommand -- :
+
+create EditedStudent
+GradeCommand -> EditedStudent ++ : Student(name, phone, email, telegram, studioRecord, editedAssessment, tags)
+EditedStudent --> GradeCommand -- : editedStudent
+GradeCommand -> ModelManager ++ : setStudent(studentToEdit, editedStudent)
+ModelManager --> GradeCommand -- :
+
+[<-- GradeCommand -- : command result
+
+@enduml
