@@ -6,6 +6,7 @@ import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import seedu.academydirectory.commons.core.Messages;
@@ -78,7 +79,8 @@ public class TagCommand extends Command {
                 studentToEdit.getAssessment(), editedTagSet);
         model.setStudent(studentToEdit, editedStudent);
         model.updateFilteredStudentList(VersionedModel.PREDICATE_SHOW_ALL_STUDENTS);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, studentToEdit.getName()));
+        return new CommandResult(String.format(MESSAGE_SUCCESS, studentToEdit.getName()),
+                Optional.of(String.format(MESSAGE_SUCCESS, studentToEdit.getName())));
     }
 
     @Override
