@@ -14,7 +14,7 @@ import seedu.academydirectory.versioncontrol.objects.StageArea;
 import seedu.academydirectory.versioncontrol.objects.Tree;
 import seedu.academydirectory.versioncontrol.utils.HashMethod;
 
-public class VersionControl {
+public class VersionControl implements Version {
     public static final String HEAD_LABEL_STRING = "HEAD";
     public static final String OLD_LABEL_STRING = "OLD";
     public static final String CURRENT_LABEL_STRING = "CURRENT";
