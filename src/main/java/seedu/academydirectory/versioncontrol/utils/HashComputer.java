@@ -85,9 +85,10 @@ public class HashComputer {
                     commit.getMessage(), commit.getParentSupplier(), commit.getTreeSupplier()));
         } else if (vcObject instanceof Tree && !((Tree) vcObject).isEmpty()) {
             Tree tree = (Tree) vcObject;
-            versionControlGeneralWriter.writeTree(Tree.of(tmpFilename,
-                    tree.getHashMap().keySet().stream().map(x
-                            -> tree.getHashMap().get(x)).collect(Collectors.toList()),
+            versionControlGeneralWriter.writeTree(Tree.of(
+                    tmpFilename,
+                    tree.getHashMap().keySet().stream().map(x -> tree.getHashMap().get(x))
+                            .collect(Collectors.toList()),
                     Arrays.stream(tree.getHashMap().keySet().toArray(String[]::new))
                             .collect(Collectors.toList())));
         } else if (vcObject instanceof Label && !((Label) vcObject).isEmpty()) {
