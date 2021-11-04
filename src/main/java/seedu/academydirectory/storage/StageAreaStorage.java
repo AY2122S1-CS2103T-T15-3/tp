@@ -8,14 +8,10 @@ import seedu.academydirectory.versioncontrol.objects.Label;
 import seedu.academydirectory.versioncontrol.objects.StageArea;
 import seedu.academydirectory.versioncontrol.objects.Tree;
 import seedu.academydirectory.versioncontrol.objects.VcObject;
-import seedu.academydirectory.versioncontrol.storage.CommitStorageManager;
-import seedu.academydirectory.versioncontrol.storage.LabelStorageManager;
-import seedu.academydirectory.versioncontrol.storage.TreeStorageManager;
+import seedu.academydirectory.versioncontrol.writer.VersionControlGeneralWriter;
 
 public class StageAreaStorage {
-    private final TreeStorageManager treeStorageManager;
-    private final CommitStorageManager commitStorageManager;
-    private final LabelStorageManager labelStorageManager;
+    private final VersionControlGeneralWriter versionControlGeneralWriter;
 
     /**
      * Creates a storage for {@code StageArea}. This class defines how StageArea should be stored in disk e.g.
@@ -23,9 +19,7 @@ public class StageAreaStorage {
      * @param vcPath Path to save VcObject to
      */
     public StageAreaStorage(Path vcPath) {
-        this.treeStorageManager = new TreeStorageManager(vcPath);
-        this.commitStorageManager = new CommitStorageManager(vcPath, treeStorageManager);
-        this.labelStorageManager = new LabelStorageManager(vcPath, commitStorageManager);
+        this.versionControlGeneralWriter = new VersionControlGeneralWriter(vcPath);
     }
 
     /**
@@ -41,7 +35,7 @@ public class StageAreaStorage {
         for (VcObject vcObject : stageArea.getVcObjectList()) {
             try {
                 write(vcObject);
-            } catch (IOException e) {
+            } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
                 nothingWrong = false;
             }
@@ -53,18 +47,18 @@ public class StageAreaStorage {
         }
     }
 
-    private void write(VcObject vcObject) throws IOException {
+    private void write(VcObject vcObject) throws NullPointerException, IOException {
         if (vcObject instanceof Commit && !((Commit) vcObject).isEmpty()) {
             Commit commit = (Commit) vcObject;
-            commitStorageManager.write(commit.getHash(), commit);
+            versionControlGeneralWriter.writeCommit(commit);
         } else if (vcObject instanceof Tree && !((Tree) vcObject).isEmpty()) {
             Tree tree = (Tree) vcObject;
-            treeStorageManager.write(tree.getHash(), tree);
+            versionControlGeneralWriter.writeTree(tree);
         } else if (vcObject instanceof Label && !((Label) vcObject).isEmpty()) {
             Label label = (Label) vcObject;
-            labelStorageManager.write(label.getName(), label);
+            versionControlGeneralWriter.writeLabel(label);
         } else {
-            throw new IOException("Unable to write given VcObject");
+            throw new NullPointerException("NULL vcObject encountered");
         }
     }
 }

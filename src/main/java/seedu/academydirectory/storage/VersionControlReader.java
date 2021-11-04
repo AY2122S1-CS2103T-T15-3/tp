@@ -3,11 +3,9 @@ package seedu.academydirectory.storage;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Objects.requireNonNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,18 +15,14 @@ import java.util.stream.Collectors;
 import seedu.academydirectory.versioncontrol.objects.Commit;
 import seedu.academydirectory.versioncontrol.objects.Label;
 import seedu.academydirectory.versioncontrol.objects.Tree;
-import seedu.academydirectory.versioncontrol.storage.CommitStorageManager;
-import seedu.academydirectory.versioncontrol.storage.LabelStorageManager;
-import seedu.academydirectory.versioncontrol.storage.TreeStorageManager;
-import seedu.academydirectory.versioncontrol.utils.HashGenerator;
+import seedu.academydirectory.versioncontrol.reader.VersionControlGeneralReader;
+import seedu.academydirectory.versioncontrol.utils.HashComputer;
 import seedu.academydirectory.versioncontrol.utils.HashMethod;
 
 public class VersionControlReader {
-    private final TreeStorageManager treeStorageManager;
-    private final LabelStorageManager labelStorageManager;
-    private final CommitStorageManager commitStorageManager;
+    private final VersionControlGeneralReader versionControlGeneralReader;
+    private final HashComputer hashComputer;
     private final Path vcPath;
-    private final HashGenerator hashGenerator;
 
     /**
      * Constructs a VersionControlReader which can load version control files in disk for use programmatically
@@ -36,11 +30,10 @@ public class VersionControlReader {
      * @param vcPath Path to load version control files from
      */
     public VersionControlReader(HashMethod hashMethod, Path vcPath) {
-        this.hashGenerator = new HashGenerator(hashMethod);
         this.vcPath = vcPath;
-        this.treeStorageManager = new TreeStorageManager(vcPath);
-        this.commitStorageManager = new CommitStorageManager(vcPath, this.treeStorageManager);
-        this.labelStorageManager = new LabelStorageManager(vcPath, this.commitStorageManager);
+
+        this.versionControlGeneralReader = new VersionControlGeneralReader(vcPath);
+        this.hashComputer = new HashComputer(hashMethod);
     }
 
     /**
@@ -59,21 +52,12 @@ public class VersionControlReader {
         String author = System.getProperty("user.name");
         Date date = new Date();
         Commit temp = Commit.of(commitFileName, author, date, message, parentCommitSupplier, treeSupplier);
-        Path commitPath = vcPath.resolve(Paths.get(commitFileName));
 
-        try {
-            // Write a temporary commit to disk
-            commitStorageManager.write(commitFileName, temp);
-
-            // Delete temporarily created Commit
-            String commitHash = hashGenerator.generateHashFromFile(commitPath);
-            boolean deletedSuccessfully = commitPath.toFile().delete();
-
-            // Return final commit
-            return Commit.of(commitHash, author, date, message, parentCommitSupplier, treeSupplier);
-        } catch (IOException e) {
+        String commitHash = hashComputer.generateHashForObject(temp);
+        if (commitHash == null) {
             return Commit.emptyCommit();
         }
+        return Commit.of(commitHash, author, date, message, parentCommitSupplier, treeSupplier);
     }
 
     /**
@@ -89,17 +73,11 @@ public class VersionControlReader {
         String labelFileName = "temp";
         Label temp = Label.of(labelFileName, name, () -> commit);
 
-        Path labelPath = this.vcPath.resolve(Path.of(labelFileName));
-        try {
-            labelStorageManager.write(labelFileName, temp);
-
-            String labelHash = hashGenerator.generateHashFromFile(labelPath);
-            assert labelPath.toFile().delete();
-
-            return Label.of(labelHash, name, () -> commit);
-        } catch (IOException e) {
+        String labelHash = hashComputer.generateHashForObject(temp);
+        if (labelHash == null) {
             return Label.emptyLabel();
         }
+        return Label.of(labelHash, name, () -> commit);
     }
 
     /**
@@ -111,10 +89,8 @@ public class VersionControlReader {
         // Make a blob snapshot
         ArrayList<Path> blobTargetPaths = new ArrayList<>();
         for (Path blobPath: blobPaths) {
-            String blobHash;
-            try {
-                blobHash = hashGenerator.generateHashFromFile(blobPath);
-            } catch (IOException e) {
+            String blobHash = hashComputer.generateHashFromFile(blobPath);
+            if (blobHash == null) {
                 return Tree.emptyTree();
             }
             Path blobTargetPath = this.vcPath.resolve(Path.of(blobHash));
@@ -132,21 +108,14 @@ public class VersionControlReader {
         Tree temp = Tree.of(treeFileName,
                 blobPaths.stream().map(String::valueOf).collect(Collectors.toList()),
                 blobTargetPaths.stream().map(String::valueOf).collect(Collectors.toList()));
-        Path treePath = this.vcPath.resolve(Path.of(treeFileName));
-        try {
-            treeStorageManager.write(treeFileName, temp);
 
-            // Delete temporarily created Tree
-            String treeHash = hashGenerator.generateHashFromFile(treePath);
-            assert treePath.toFile().delete();
-
-            // Return final tree
-            return Tree.of(treeHash,
-                    blobPaths.stream().map(String::valueOf).collect(Collectors.toList()),
-                    blobTargetPaths.stream().map(String::valueOf).collect(Collectors.toList()));
-        } catch (IOException e) {
+        String treeHash = hashComputer.generateHashForObject(temp);
+        if (treeHash == null) {
             return Tree.emptyTree();
         }
+        return Tree.of(treeHash,
+                blobPaths.stream().map(String::valueOf).collect(Collectors.toList()),
+                blobTargetPaths.stream().map(String::valueOf).collect(Collectors.toList()));
     }
 
     public Tree createNewTree(Path path) {
@@ -159,17 +128,7 @@ public class VersionControlReader {
      * @return Commit object of the given hash
      */
     public Commit fetchCommitByHash(String hash) {
-        // Allow for 5 digit hash to be used
-        File f = vcPath.toFile();
-        String finalHash = hash.trim();
-        File[] matchingFiles = requireNonNull(f.listFiles((x, name) -> name.startsWith(finalHash)));
-        if (matchingFiles.length == 0) {
-            return Commit.emptyCommit();
-        }
-
-        // Pick first match
-        Path filePath = matchingFiles[0].toPath();
-        return commitStorageManager.read(String.valueOf(filePath.getFileName()));
+        return versionControlGeneralReader.readCommit(hash);
     }
 
     /**
@@ -178,15 +137,7 @@ public class VersionControlReader {
      * @return Label object of the given hash
      */
     public Label fetchLabelByName(String labelName) {
-        File f = new File(String.valueOf(vcPath));
-        File[] matchingFiles = requireNonNull(f.listFiles((x, name) -> name.startsWith(labelName)));
-        if (matchingFiles.length == 0) {
-            return Label.emptyLabel();
-        }
-
-        // Pick first match
-        Path labelPath = matchingFiles[0].toPath();
-        return labelStorageManager.read(String.valueOf(labelPath.getFileName()));
+        return versionControlGeneralReader.readLabel(labelName);
     }
 
     /**
@@ -195,16 +146,7 @@ public class VersionControlReader {
      * @return Commit object of the given hash
      */
     public Tree fetchTreeByHash(String hash) {
-        // Allow for 5 digit hash to be used
-        File f = new File(String.valueOf(vcPath));
-        File[] matchingFiles = requireNonNull(f.listFiles((x, name) -> name.startsWith(hash)));
-        if (matchingFiles.length == 0) {
-            return Tree.emptyTree();
-        }
-
-        // Pick first match
-        Path filePath = matchingFiles[0].toPath();
-        return treeStorageManager.read(String.valueOf(filePath.getFileName()));
+        return versionControlGeneralReader.readTree(hash);
     }
 }
 

@@ -1,4 +1,4 @@
-package seedu.academydirectory.versioncontrol.storage;
+package seedu.academydirectory.storage;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import seedu.academydirectory.commons.util.FileUtil;
-import seedu.academydirectory.storage.StageAreaStorage;
 import seedu.academydirectory.testutil.TypicalCommits;
 import seedu.academydirectory.testutil.TypicalTrees;
 import seedu.academydirectory.versioncontrol.objects.Commit;

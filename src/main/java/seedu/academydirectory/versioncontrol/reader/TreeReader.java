@@ -1,29 +1,15 @@
-package seedu.academydirectory.versioncontrol.storage;
+package seedu.academydirectory.versioncontrol.reader;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import seedu.academydirectory.versioncontrol.objects.Tree;
 
-public class TreeStorageManager extends StorageManager<Tree> {
-    public TreeStorageManager(Path vcPath) {
+public class TreeReader extends VersionControlObjectReader<Tree> {
+    public TreeReader(Path vcPath) {
         super(vcPath);
-    }
-
-    @Override
-    public List<String> getWriteableFormat(Tree tree) {
-        if (tree.isEmpty()) {
-            throw new IllegalArgumentException("Cannot get writeable format of NULL!");
-        }
-
-        HashMap<String, String> hashMap = tree.getHashMap();
-        return hashMap.keySet().stream()
-                .map(key -> key + " " + hashMap.get(key))
-                .collect(Collectors.toList());
     }
 
     @Override

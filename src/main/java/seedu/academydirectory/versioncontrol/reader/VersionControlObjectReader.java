@@ -1,8 +1,7 @@
-package seedu.academydirectory.versioncontrol.storage;
+package seedu.academydirectory.versioncontrol.reader;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -13,41 +12,15 @@ import java.util.stream.Stream;
 
 import seedu.academydirectory.versioncontrol.objects.VcObject;
 
-public abstract class StorageManager<T extends VcObject> {
-    public static final String[] NULL_PARSE = null;
+public abstract class VersionControlObjectReader<T extends VcObject> {
     protected final Path vcPath;
 
     /**
-     * Creates a StorageManager to build
+     * Creates a VersionControlObjectReader to build
      * @param vcPath path to load and save files to
      */
-    protected StorageManager(Path vcPath) {
+    protected VersionControlObjectReader(Path vcPath) {
         this.vcPath = vcPath;
-    }
-
-    protected abstract List<String> getWriteableFormat(T vcObject) throws IllegalArgumentException;
-    protected abstract T getProgrammableFormat(List<String> vcObject);
-
-    /**
-     * Writes a given VcObject to file, with filename being the given name
-     * @param name Filename
-     * @param vcObject to be written to file
-     * @throws IOException Unable to write to file
-     */
-    public void write(String name, T vcObject) throws IOException {
-        Path commitPath = this.vcPath.resolve(Path.of(name));
-        FileWriter writer = new FileWriter(String.valueOf(commitPath));
-
-        List<String> writeableVcObject = this.getWriteableFormat(vcObject);
-        writeableVcObject.forEach(x -> {
-            try {
-                writer.append(x).append(System.lineSeparator());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
-        writer.close();
     }
 
     /**
@@ -70,4 +43,6 @@ public abstract class StorageManager<T extends VcObject> {
         }
         return Optional.of(result);
     }
+
+    protected abstract T getProgrammableFormat(List<String> vcObject);
 }

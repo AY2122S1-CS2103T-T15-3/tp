@@ -1,6 +1,5 @@
 package seedu.academydirectory.versioncontrol.utils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -45,33 +44,5 @@ public class HashGenerator {
         digest.update(Files.readAllBytes(path));
         byte[] hash = digest.digest();
         return String.format("%0" + numHex + "x", new BigInteger(1, hash));
-    }
-
-    /**
-     * Generates a hash for a given file
-     * @param path Path to the given file
-     * @return String which represents hash of the given file
-     * @throws IOException Path not found
-     */
-    public String generateHashFromFileV2(Path path) throws IOException {
-        FileInputStream inputStream = new FileInputStream(path.toFile());
-
-        byte[] byteArray = new byte[1024];
-        int bytesCount = 0;
-
-        digest.reset();
-        while ((bytesCount = inputStream.read(byteArray)) != -1) {
-            digest.update(byteArray, 0, bytesCount);
-        };
-
-        inputStream.close();
-
-        byte[] bytes = digest.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte aByte : bytes) {
-            sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-        }
-
-        return sb.toString();
     }
 }
