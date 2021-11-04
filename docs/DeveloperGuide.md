@@ -209,6 +209,8 @@ filenames and actual filename of tracked blobs.
   - points to a `Commit` object which represents the parent of the current `Commit` object
 - `Label`:
   - labels a `Commit`
+  - relevant labels are `HEAD` which represents the current commit, `CURRENT` which represents
+current branch, and `OLD` which represents the most recent branch before the current branch.
 
 Note that in the actual implementation, a `VcObject` does not actually hold a reference to 
 another `VcObject`; rather it has a `Supplier` of the `VcObject` that it's supposed to have
@@ -446,91 +448,101 @@ This command clears all `Student` entries from `AcademyDirectory`.
 
 {Add more details on implementation}
 
-### UndoCommand
+### HistoryCommand
+This command shows the commit history. Each commit will be shown with its five character hash, 
+author, date, and commit message. Only commands that are _version controllable_ will result in a commit
+being created and thus shown by `HistoryCommand`. Commands which can be undone are referred to as _version controllable_ (read [here](#glossary)
+for details on what this means).
+
+This command is meant for:
+* reminding users what changes were made to the underlying AcademyDirectory Data
+* revealing (five character) hash of commits that can be used with `RevertCommand`.
+
 #### Implementation
+`HistoryCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to
+serve the aforementioned purpose.
 
-### \[Proposed\] Undo/Redo feature
+The `HistoryCommand` makes use of the following set of invariance:
+- The most recent commit that belongs to the current branch is always labelled as `CURRENT`
+- The most recent commit that belongs to the second-most-recent branch is always labelled
+as `OLD`
 
-#### Proposed Implementation
+These guarantees are assured by the `VersionedModel#commit` method. Note that `HEAD` and `CURRENT` need not
+refer to the same commit e.g. if the user reverts to a previous commit then `CURRENT` and `HEAD` will refer to 
+different commits. 
 
-The proposed undo/redo mechanism is facilitated by `VersionedAcademyDirectory`. It extends `AcademyDirectory` with an undo/redo history, stored internally as an `academyDirectoryStateList` and `currentStatePointer`. Additionally, it implements the following operations:
+Because this set of invariance are respected, thus `HistoryCommand` can show commit history by doing the following: 
+- fetch commit labelled as `CURRENT` and `OLD` from disk (methods to do this exposed by `VersionedModel`)
+- find the lowest common ancestor between `CURRENT` and `OLD` (`Commit#LCA` method used here)
+- show all commits from initial commit until the lowest common ancestor found above normally
+- show all commits from the lowest common ancestor until `CURRENT` and `OLD` as per the desired
+formatting
 
-* `VersionedAcademyDirectory#commit()` — Saves the current academy directory state in its history.
-* `VersionedAcademyDirectory#undo()` — Restores the previous academy directory state from its history.
-* `VersionedAcademyDirectory#redo()` — Restores a previously undone academy directory state from its history.
+The following sequence diagram shows the above implementation:
 
-These operations are exposed in the `Model` interface as `Model#commitAcademyDirectory()`, `Model#undoAcademyDirectory()` and `Model#redoAcademyDirectory()` respectively.
+{Add IMAGE}
 
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
+#### Limitation
+The current implementation can only show two commit branches: `CURRENT` and `OLD`. While this is
+sufficient in most cases, the ability to show arbitrary number of commit branches to give users
+the ability to revert to any previous commits easily without having to look for the commit's hash
+manually in disk. However, due to the implementer's inability to figure out how best to show
+arbitrary number of commit branches, the current `HistoryCommand` thus can only show two branches. 
 
-Step 1. The user launches the application for the first time. The `VersionedAcademyDirectory` will be initialized with the initial academy directory state, and the `currentStatePointer` pointing to that single academy directory state.
+### RevertCommand
+This command reverts the underlying `AcademyDirectory` data to a previous commit, as identified by the commit's hash.
+Commands which can be undone are referred to as _version controllable_ (read [here](#glossary) 
+for details on what this means). The following is true regarding `RevertCommand`:
 
-![UndoRedoState0](images/UndoRedoState0.png)
+- If any of the following occurs which leads to a failure in parsing commit file in disk, no changes
+are made to the underlying disk: 
+  - provided hash cannot be found on disk
+  - commit file with the given hash exists, but is corrupted
+  - commit file with the given hash exists, but no read access is given to AcademyDirectory
+  - other reasons which leads to failure in reading commmit file
+- Otherwise, the `AcademyDirectory` storage data will be restored according to the target commit
+to be reverted to. 
 
-Step 2. The user executes `delete 5` command to delete the 5th student in the academy directory. The `delete` command calls `Model#commitAcademyDirectory()`, causing the modified state of the academy directory after the `delete 5` command executes to be saved in the `academyDirectoryStateList`, and the `currentStatePointer` is shifted to the newly inserted academy directory state.
+#### Implementation
+`RevertCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to
+serve the aforementioned purpose.
 
-![UndoRedoState1](images/UndoRedoState1.png)
+`RevertCommand` reverts state of AcademyDirectory data by doing the following:
+- fetch commit identified by the given hash
+- shift `VersionedModel`'s `HEAD` pointer to the commit
+- restores the academy directory data according to the tree that the fetched commit points to
 
-Step 3. The user executes `add n/David …​` to add a new student. The `add` command also calls `Model#commitAcademyDirectory()`, causing another modified academy directory state to be saved into the `academyDirectoryStateList`.
+The following sequence diagram shows the above implementation:
 
-![UndoRedoState2](images/UndoRedoState2.png)
+{Add IMAGE}
+#### Limitation
+Because `RevertCommand` has to restore academy directory data which is the responsibility of the
+`Storage` component, `RevertCommand` reinitialize a `Storage` and `VersionedModel` and changes the 
+current `VersionedModel` reference to the newly created `VersionedModel`. This is (highly) not 
+ideal, but the implementer has no idea how to do this properly without the ungodly reinitialization
+of `Storage` and `VersionedModel`...
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If a command fails its execution, it will not call `Model#commitAcademyDirectory()`, so the academy directory state will not be saved into the `academyDirectoryStateList`.
+### UndoCommand
+This command undoes a change done to the underlying `AcademyDirectory` data. Note that this is
+different from the _view_ of the data e.g. when the `ViewCommand` is used, the _view_ visible to 
+the user changes, but the underlying data does not change. Commands which can be undone are referred to 
+as _version controllable_ (read [here](#glossary) for details on what this means).
 
-</div>
-
-Step 4. The user now decides that adding the student was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAcademyDirectory()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous academy directory state, and restores the academy directory to that state.
-
-![UndoRedoState3](images/UndoRedoState3.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index 0, pointing to the initial AcademyDirectory state, then there are no previous AcademyDirectory states to restore. The `undo` command uses `Model#canUndoAcademyDirectory()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</div>
-
-The following sequence diagram shows how the undo operation works:
-
-![UndoSequenceDiagram](images/UndoSequenceDiagram.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `UndoCommand` should end at the destroy marker (X) but due to a limitation of PlantUML, the lifeline reaches the end of diagram.
-
-</div>
-
-The `redo` command does the opposite — it calls `Model#redoAcademyDirectory()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the academy directory to that state.
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index `academyDirectoryStateList.size() - 1`, pointing to the latest academy directory state, then there are no undone AcademyDirectory states to restore. The `redo` command uses `Model#canRedoAcademyDirectory()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</div>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the academy directory, such as `list`, will usually not call `Model#commitAcademyDirectory()`, `Model#undoAcademyDirectory()` or `Model#redoAcademyDirectory()`. Thus, the `academyDirectoryStateList` remains unchanged.
-
-![UndoRedoState4](images/UndoRedoState4.png)
-
-Step 6. The user executes `clear`, which calls `Model#commitAcademyDirectory()`. Since the `currentStatePointer` is not pointing at the end of the `academyDirectoryStateList`, all academy directory states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
-
-![UndoRedoState5](images/UndoRedoState5.png)
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-![Commit Activity Diagram](images/misc/CommitActivityDiagram.png)
-
-#### Design considerations:
-
-**Aspect: How undo & redo executes:**
-
-* **Alternative 1 (current choice):** Saves the entire academy directory.
-    * Pros: Easy to implement.
-    * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-    * Pros: Will use less memory (e.g. for `delete`, just save the student being deleted).
-    * Cons: We must ensure that the implementation of each individual command are correct.
-
-_{more aspects and alternatives to be added}_
+#### Implementation
+`UndoCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to
+serve the aforementioned purpose. Internally, the `UndoCommand` makes use of the `RevertCommand`. 
+Hence `UndoCommand` serves as _syntactic sugar_ for the `RevertCommand`.
 
 ### RedoCommand
+This command redoes a change done to the underlying `AcademyDirectory` data. Note that this is
+different from the _view_ of the data e.g. when the `ViewCommand` is used, the _view_ visible to
+the user changes, but the underlying data does not change. Commands which can be redone are referred to
+as _version controllable_ (read [here](#glossary) for details on what this means).
+
 #### Implementation
+`RedoCommand` will extend the `Command` class and will consequently `@Override` the `Command#execute()` method to
+serve the aforementioned purpose. Internally, the `RedoCommand` makes use of the `RevertCommand`.
+Hence `RedoCommand` serves as _syntactic sugar_ for the `RevertCommand`.
 
 ### HelpCommand
 
