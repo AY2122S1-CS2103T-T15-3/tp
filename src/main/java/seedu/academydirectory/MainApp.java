@@ -63,6 +63,9 @@ public class MainApp extends Application {
         initLogging(config);
 
         model = initModelManager(storage, userPrefs);
+        if (!model.getStageArea().isEmpty()) {
+            storage.saveStageArea(model.getStageArea());
+        }
 
         logic = new LogicManager(model, storage);
 
