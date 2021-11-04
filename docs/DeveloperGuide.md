@@ -71,13 +71,16 @@ Given below is a quick overview of main components and how they interact with ea
 
 [**`Commons`**](#common-classes) represents a collection of classes used by multiple other components.
 
-The rest of the App consists of four components.
+The rest of the App consists of four main components.
 
 * [**`UI`**](#ui-component): The UI of the App.
 * [**`Logic`**](#logic-component): The command executor.
 * [**`VersionedModel`**](#versionedmodel-component): Holds the data of the App in memory.
 * [**`Storage`**](#storage-component): Reads data from, and writes data to, the hard disk.
 
+On top of the above four main components, there is also an additional [`VersionControl`](#versioncontrol-component) which 
+provides common API for `VersionedModel` and `Storage` to implement version control. Because of this, the `VersionControl` component is usually left out in the diagrams in this 
+developer guide. For more information regarding the `VersionControl` component, read [here](#versioncontrol-component)
 
 **How the architecture components interact with each other**
 
@@ -157,22 +160,13 @@ and thus gives the `VersionedModel` component the ability to interface with vers
 The above implementation is chosen because it makes _turning off_ version control relatively simple; a stub `VersionControlController`
 can be used instead.
 
+For more information regarding `VersionControl`, read [here](#versioncontrol-component).
+
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AcademyDirectory`, which `Student` references. This allows `AcademyDirectory` to only require one `Tag` object per unique tag, instead of each `Student` needing their own `Tag` objects.<br>
 
 ![Better Model Class Diagram](images/dg/architecture/model/BetterModelClassDiagram.png)
 
 </div>
-
-#### Version API
-**API** : [`Version.java`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/model/Version.java)
-
-The `Version` component,
-
-* stores version control entities such as current HEAD commit and `StageArea`
-* depends on `VersionControlReader`, because the `Version` API requires frequent read access from disk to read
-version control objects
-
-For more elaboration on the `Version` API and the related `VersionControl` package, read [here](#versioncontrol-component)
 
 ### Storage component
 

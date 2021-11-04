@@ -11,22 +11,28 @@ Package " "<<Rectangle>>{
     Class VersionedModel MODEL_COLOR
     Class Main #grey
     Class Commons LOGIC_COLOR_T2
+    Class VersionControl VERSIONCONTROL_COLOR
 }
 
 Class "<$user>" as User MODEL_COLOR_T2
 Class "<$documents>" as File UI_COLOR_T1
 
+VersionedModel =[#maroon]> VersionControl
 
 UI -[#green]> Logic
 UI -right[#green]-> VersionedModel
+
 Logic -[#blue]-> Storage
 Logic -down[#blue]-> VersionedModel
+
 Main -[#grey]-> UI
 Main -[#grey]-> Logic
 Main -[#grey]-> Storage
 Main -up[#grey]-> VersionedModel
 Main -down[hidden]-> Commons
+Main -down[#grey]-> VersionControl
 
+Storage -up[STORAGE_COLOR]-> VersionControl
 Storage -up[STORAGE_COLOR].> VersionedModel
 Storage .right[STORAGE_COLOR].>File
 User ..> UI
