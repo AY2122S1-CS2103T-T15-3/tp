@@ -235,10 +235,16 @@ Gets personal detail of student/s. Personal detail refers to:
 
 Format: `get [p/] [e/] [te/] [n/NAME]`
 
+* At least one of the supported prefix i.e. `p/`, `e/` or `te/` must be passed in.
 * If `NAME` is provided, only personal detail of the student/s whose name contain the given `NAME` will be shown.
 The behavior here is similar to the [filter command](#filtering-academy-directory-by-name-or-tag-filter)
 * If `NAME` is not provided, the personal detail of all students in AcademyDirectory will be shown
 * Multiple prefixes can be supplied at the same time, and personal detail corresponding to all the given prefixes will be shown
+* The order in which personal details will be shown is as follows, regardless of the order of the
+prefixes passed to `get` command:
+  * Phone Number (p/)
+  * Email (e/)
+  * Telegram Handle (te/)
 
 Examples:
 * `get p/` shows the phone number of all students in Academy Directory
@@ -391,22 +397,24 @@ Clears all students from Academy Directory. This will result in an empty Academy
 Format: `clear`
 
 #### Undo changes to Academy Directory: `undo`
-Undo changes made to Academy Directory
+Undo changes made to Academy Directory data
 
 Format: `undo`
 
 * `undo` only reverts changes made 
 * `undo` will display an error message if there are no changes to be undone
+* To see the list of commands that can be undone using `undo`, read [here](#appendix-a-version-controlled-commands)
 
 **Include an interactive GUI version where Avengers can click on the menu to undo the most recent changes as well.**
 
 #### Redo changes to Academy Directory: `redo`
-Redo changes made to Academy Directory
+Redo changes made to Academy Directory data
 
 Format: `redo`
 
 * `redo` only reverts changes made
 * `redo` will display an error message if there are no changes to be redone
+* To see the list of commands that can be redone using `redo`, read [here](#appendix-a-version-controlled-commands)
 
 **Include an interactive GUI version where Avengers can click on the menu to redo the most recent changes as well.**
 
@@ -455,14 +463,17 @@ Shows local commit history.
 Format: `history`
 
 - Only commands that result in a state change in Academy Directory will be committed. Such commands include
-  `add`, `edit`, `delete`, `clear`, and more.
+  `add`, `edit`, `delete`, `clear`, and more. For a full list, refer to the [appendix](#appendix-a-version-controlled-commands).
 - Commits are sorted based on time, with the most recent commit shown at the top and the initial commit shown
   at the bottom
 - The commit corresponding to current Academy Directory state is labelled with "(HEAD)"
-- The commit corresponding to old branch is labelled with "(CURRENT)"
+- The commit corresponding to current branch is labelled with "(CURRENT)"
 - The commit corresponding to old branch is labelled with "(OLD)"
 - Old branch is shown at the left, current branch at the right
 - The corresponding commit hash is the five character string displayed
+- Note that current implementation of `history` command can only show 2 branches: "OLD" and 
+"CURRENT". If there are already two branches and a third branch is going to be made, then the 
+oldest branch will not be visible.
 
 **Include an interactive GUI version where Avengers can click on the menu to see usage history as well.**
 
@@ -581,6 +592,24 @@ Command Box | A part of the Academy Directory's GUI which can be used by users t
 Field | Additional information that can be provided to a command for correct command execution. | May or may not have an associated prefix
 Parameter | Part of the command which provides additional information provided by the user. | Actual values for the fields
 Prefix | An abbreviation of a field. | Always ends with a backslash ('/')
+
+## Appendix
+### Appendix A: Version Controlled Commands
+The following list is a list of commands that are version controlled i.e. they can be undone and
+redone using the `undo` command and the `redo` command. Furthermore, the use of these commands
+will be reflected in the commit history, using the `history` command.
+- [`add`](#adding-a-student-add)
+- [`delete`](#deleting-a-student-delete)
+- [`tag`](#tagging-a-student--tag)
+- [`edit`](#editing-a-students-detail--edit)
+- [`grade`](#adding-grades-for-an-assessment--grade)
+- [`attendance`](#editing-a-students-studio-attendance-attendance)
+- [`participation`](#editing-a-students-studio-participation-participation)
+- [`sort`](#sorting-student-list--sort)
+- [`clear`](#clearing-all-students--clear)
+
+Commands not shown in the above list _will not_ appear in the commit history, and thus
+cannot be reverted to and / or be undone or redone.
 
 ## Links
 ### Academy Directory Resources
