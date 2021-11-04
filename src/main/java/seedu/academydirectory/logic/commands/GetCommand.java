@@ -68,6 +68,7 @@ public class GetCommand extends Command {
         assert !prefixList.isEmpty();
 
         this.nameContainsKeywordsPredicate = keywordList.isEmpty()
+                || (keywordList.size() == 1 && keywordList.contains(""))
                 ? null
                 : new NameContainsKeywordsPredicate(keywordList);
 
@@ -79,15 +80,11 @@ public class GetCommand extends Command {
     }
 
     private String executeFilter(VersionedModel model, PersonalDetailRetriever personalDetailRetriever) {
-        model.updateFilteredStudentList(nameContainsKeywordsPredicate == null
-                ? VersionedModel.PREDICATE_SHOW_ALL_STUDENTS
-                : nameContainsKeywordsPredicate);
         ObservableList<PersonalDetail> view = model.getFilteredStudentList()
                 .stream().map(personalDetailRetriever)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
-        model.updateFilteredStudentList(VersionedModel.PREDICATE_SHOW_ALL_STUDENTS);
 
         return view.size() == 0
                 ? null
@@ -97,13 +94,16 @@ public class GetCommand extends Command {
     @Override
     public CommandResult execute(VersionedModel model) {
         requireNonNull(model);
-
-        List<String> result = functionList.stream().parallel().map(x -> executeFilter(model, x))
+        model.updateFilteredStudentList(nameContainsKeywordsPredicate == null
+                ? VersionedModel.PREDICATE_SHOW_ALL_STUDENTS
+                : nameContainsKeywordsPredicate);
+        List<String> result = functionList.stream().map(x -> executeFilter(model, x))
                 .collect(Collectors.toList());
         String feedbackMessage = result.contains(null) ? MESSAGE_FAILED : MESSAGE_SUCCESS;
         String resultString = result.stream().allMatch(Objects::isNull)
                 ? MESSAGE_NOTHING_TO_SHOW
                 : result.stream().filter(x -> !Objects.isNull(x)).collect(Collectors.joining("\n"));
+        model.updateFilteredStudentList(VersionedModel.PREDICATE_SHOW_ALL_STUDENTS);
 
         model.setAdditionalViewType(AdditionalViewType.TEXT);
         model.setAdditionalInfo(AdditionalInfo.of(resultString));

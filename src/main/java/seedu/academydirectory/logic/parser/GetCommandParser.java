@@ -43,12 +43,11 @@ public class GetCommandParser implements Parser<GetCommand> {
         // Check at least one relevant prefix is provided
         boolean noPrefix = prefixList.size() == 0;
 
-        if (noPrefix) {
+        if (noPrefix || (keywordList.size() == 1 && keywordList.contains(""))) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, GetCommand.MESSAGE_USAGE));
         }
 
         return new GetCommand(prefixList, keywordList);
     }
-
 }

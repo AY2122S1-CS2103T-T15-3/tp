@@ -68,11 +68,21 @@ public class VersionControlController implements Version {
         currLabel = versionControlReader.createNewLabel(CURRENT_LABEL_STRING, this.headCommit);
 
         stageArea.resetStage();
-        stageArea.stage(headLabel);
-        stageArea.stage(oldLabel);
-        stageArea.stage(currLabel);
-        stageArea.stage(this.headCommit);
-        stageArea.stage(blobTree);
+        if (!headLabel.isEmpty()) {
+            stageArea.stage(headLabel);
+        }
+        if (!oldLabel.isEmpty()) {
+            stageArea.stage(oldLabel);
+        }
+        if (!currLabel.isEmpty()) {
+            stageArea.stage(currLabel);
+        }
+        if (!this.headCommit.isEmpty()) {
+            stageArea.stage(this.headCommit);
+        }
+        if (!blobTree.isEmpty()) {
+            stageArea.stage(blobTree);
+        }
     }
 
     private Label handleCommitBranch(Label oldLabel, Label currLabel) {
