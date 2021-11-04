@@ -79,8 +79,14 @@ public class VersionControlGeneralReader {
     public Label readLabel(String name) {
         requireNonNull(name);
 
-        File[] matchingFiles = getExactMatchFile(name);
-        if (matchingFiles.length == 0) {
+        File[] matchingFiles;
+        try {
+            matchingFiles = getExactMatchFile(name);
+            if (matchingFiles.length == 0) {
+                return Label.emptyLabel();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
             return Label.emptyLabel();
         }
 

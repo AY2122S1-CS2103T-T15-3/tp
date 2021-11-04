@@ -63,9 +63,6 @@ public class MainApp extends Application {
         initLogging(config);
 
         model = initModelManager(storage, userPrefs);
-        if (!model.getStageArea().isEmpty()) {
-            storage.saveStageArea(model.getStageArea());
-        }
 
         logic = new LogicManager(model, storage);
 
@@ -97,9 +94,20 @@ public class MainApp extends Application {
         try {
             storage.saveAcademyDirectory(initialData);
         } catch (IOException e) {
+            logger.warning("Unable to save data to disk. Changes done may not be saved");
+        }
+
+        VersionedModel model = new VersionedModelManager(initialData, userPrefs);
+
+        try {
+            if (!model.getStageArea().isEmpty()) {
+                storage.saveStageArea(model.getStageArea());
+            }
+        } catch (IOException e) {
             logger.warning("Unable to save to disk. Will not be able to revert properly..");
         }
-        return new VersionedModelManager(initialData, userPrefs);
+
+        return model;
     }
 
     private void initLogging(Config config) {

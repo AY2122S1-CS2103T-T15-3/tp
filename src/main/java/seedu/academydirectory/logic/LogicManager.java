@@ -48,6 +48,11 @@ public class LogicManager implements Logic {
 
         try {
             storage.saveAcademyDirectory(model.getAcademyDirectory());
+        } catch (IOException ioe) {
+            throw new CommandException(FILE_OPS_ERROR_MESSAGE + ioe, ioe);
+        }
+
+        try {
             if (commandResult.getCommitMessage().isPresent()) {
                 String commitMessage = commandResult.getCommitMessage().get();
                 model.commit(commitMessage);
