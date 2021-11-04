@@ -25,7 +25,7 @@ For now, let’s keep `RemarkCommand` as simple as possible and print some outpu
 ``` java
 package seedu.academydirectory.logic.commands;
 
-import seedu.academydirectory.model.Model;
+import seedu.academydirectory.model.VersionedModel;
 
 /**
  * Changes the remark of an existing student in the address book.

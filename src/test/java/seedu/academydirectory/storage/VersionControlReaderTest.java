@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import seedu.academydirectory.model.VersionControlReader;
 import seedu.academydirectory.versioncontrol.objects.Commit;
 import seedu.academydirectory.versioncontrol.objects.Label;
 import seedu.academydirectory.versioncontrol.objects.Tree;

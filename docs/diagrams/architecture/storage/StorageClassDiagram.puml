@@ -4,24 +4,30 @@ skinparam arrowThickness 1.1
 skinparam arrowColor STORAGE_COLOR
 skinparam classBackgroundColor STORAGE_COLOR
 
-package Storage{
+package Storage {
 
-package "UserPrefs Storage" #F4F6F6{
-Interface UserPrefsStorage <<Interface>>
-Class JsonUserPrefsStorage
+    package "UserPrefs Storage" #F4F6F6{
+        Interface UserPrefsStorage <<Interface>>
+        Class JsonUserPrefsStorage
+    }
+
+    Interface Storage <<Interface>>
+    Class StorageManager
+
+    package "AcademyDirectory Storage" #F4F6F6 {
+        Interface AcademyDirectoryStorage <<Interface>>
+        Class JsonAcademyDirectoryStorage
+        Class JsonSerializableAcademyDirectory
+        Class JsonAdaptedStudent
+        Class JsonAdaptedTag
+    }
+
+    package "VersionControl Storage" #F4F6F6 {
+        Class StageAreaStorage
+    }
 }
 
-Interface Storage <<Interface>>
-Class StorageManager
-
-package "AcademyDirectory Storage" #F4F6F6{
-Interface AcademyDirectoryStorage <<Interface>>
-Class JsonAcademyDirectoryStorage
-Class JsonSerializableAcademyDirectory
-Class JsonAdaptedStudent
-Class JsonAdaptedTag
-}
-
+package VersionControl {
 }
 
 Class HiddenOutside #FFFFFF
@@ -30,6 +36,7 @@ HiddenOutside ..> Storage
 StorageManager .up.|> Storage
 StorageManager -up-> "1" UserPrefsStorage
 StorageManager -up-> "1" AcademyDirectoryStorage
+StorageManager --> "1" StageAreaStorage
 
 Storage -left-|> UserPrefsStorage
 Storage -right-|> AcademyDirectoryStorage
@@ -40,4 +47,5 @@ JsonAcademyDirectoryStorage ..> JsonSerializableAcademyDirectory
 JsonSerializableAcademyDirectory --> "*" JsonAdaptedStudent
 JsonAdaptedStudent --> "*" JsonAdaptedTag
 
+StageAreaStorage --> VersionControl
 @enduml

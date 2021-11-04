@@ -1,0 +1,20 @@
+@startuml
+!include ../../style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+Interface VcObject <<interface>>
+Class Commit
+Class Tree
+Class Label
+
+Commit .up.|> VcObject
+Tree .up.|> VcObject
+Label .up.|> VcObject
+
+Label "*" --> "1" Commit :> labels
+Commit "*" --> "1" Commit :> child of
+Commit "*" --> "1" Tree
+
+@enduml

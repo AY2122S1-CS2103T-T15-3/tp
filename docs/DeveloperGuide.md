@@ -118,7 +118,6 @@ The `UI` component,
 **API** : [`Logic.java`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/logic/Logic.java)
 
 Here's a (partial) class diagram of the `Logic` component:
-
 ![Logic Class Diagram](images/dg/architecture/logic/LogicClassDiagram.png)
 
 How the `Logic` component works:
@@ -143,21 +142,21 @@ How the parsing works:
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
 
 ### VersionedModel component
-The `VersionedModel` API is a (disjoint) union of two interfaces: `Model` and `Version`. The `Model` API defines
-methods to interface with domain data entities such as `Student` and user preference data i.e. `UserPref`. The `Version`
-API defines methods to interface with version control entities such as `Commit`.
+**API** : [`VersionedModel.java`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/model/VersionedModel.java)
+![Versioned Model Class Diagram](images/dg/architecture/model/ModelClassDiagram.png)
 
-#### Model API
-**API** : [`Model.java`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/model/Model.java)
-
-![Model Class Diagram](images/dg/architecture/model/ModelClassDiagram.png)
-
-The `Model` component,
+The `VersionedModel` component,
 
 * stores the academy directory data i.e., all `Student` objects (which are contained in a `UniqueStudentList` object).
 * stores the currently 'selected' `Student` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as an unmodifiable `ObservableList<Student>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
+* interfaces with `VersionControl` via the `VersionControlController`, which implements the `Version` API
+and thus gives the `VersionedModel` component the ability to interface with version control entities such as `Commit`.
+
+The above implementation is chosen because it makes _turning off_ version control relatively simple; a stub `VersionControlController`
+can be used instead.
+
 <div markdown="span" class="alert alert-info">:information_source: **Note:** An alternative (arguably, a more OOP) model is given below. It has a `Tag` list in the `AcademyDirectory`, which `Student` references. This allows `AcademyDirectory` to only require one `Tag` object per unique tag, instead of each `Student` needing their own `Tag` objects.<br>
 
 ![Better Model Class Diagram](images/dg/architecture/model/BetterModelClassDiagram.png)
@@ -173,7 +172,7 @@ The `Version` component,
 * depends on `VersionControlReader`, because the `Version` API requires frequent read access from disk to read
 version control objects
 
-Here's a (partial) class diagram of the Version component
+For more elaboration on the `Version` API and the related `VersionControl` package, read [here](#versioncontrol-component)
 
 ### Storage component
 
@@ -185,13 +184,62 @@ The `Storage` component,
 * can save both academy directory data and user preference data in json format, and read them back into corresponding objects.
 * inherits from both `AcademyDirectoryStorage` and `UserPrefStorage`, which means it can be treated as either one (if only the functionality of only one is needed).
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`)
+* can write version control objects to disk
 
 ### Common classes
 
 Classes used by multiple components are in the `seedu.academydirectory.commons` package.
 
-### More Design Details of Version
+### VersionControl Component
+The internal version control system in AcademyDirectory is inspired by Git. As such, `VersionControl` 
+keeps track of AcademyDirectory data state by using `VcObject` which corresponds to Git objects.
 
+#### VersionControl Objects
+Shown below is the corresponding class diagram:
+
+![VCObjectClassDiagram](images/dg/architecture/version/VcObjectClassDiagram.png)
+
+Explanation of the objects shown above:
+- `Tree`: 
+  - represents a snapshot of `data` directory of AcademyDirectory.  It maintains a mapping between version-controlled
+filenames and actual filename of tracked blobs.
+  - Version controlled name is by default `SHA-1` hash of the blob. However, it is possible 
+  to change this to `SHA-256` or even `MD5`. 
+  - Supported hash functions are present in `HashMethod`
+- `Commit`:
+  - saves information regarding the changes to AcademyDirectory data:
+    - who makes the change
+    - when was the change made
+    - what change was made exactly. 
+  - points to a `Tree` which represents the snapshot of data _after_ the change is made
+  - points to a `Commit` object which represents the parent of the current `Commit` object
+- `Label`:
+  - labels a `Commit`
+
+Note that in the actual implementation, a `VcObject` does not actually hold a reference to 
+another `VcObject`; rather it has a `Supplier` of the `VcObject` that it's supposed to have
+a reference to. This is to defer read operations to avoid memory overhead. 
+
+#### Interfacing with other components
+Both the `Storage` component and `VersionedModel` component interfaces with `VersionControl`
+for different reasons:
+- `Storage`: needs to be able to write `VcObjects` to disk
+- `VersionedModel`:
+  - needs to be able to read `VcObjects` from disk.
+  - needs to be able to create new `VcObjects` from disk. However, this requires computing 
+  file hash i.e. `VersionedModel` needs minimum write access to disk to be able to compute hash
+
+As such, `VersionControl` provides three facade classes, each represents one of the above requirements. The following
+class diagram shows this:
+![VersionControlClassDiagram](images/dg/architecture/version/VersionControlClassDiagram.png)
+
+The facade classes are: 
+- `VersionControlGeneralReader`: to read `VcObject` from disk
+- `VersionControlGeneralWriter`: to read `VcObject` to disk
+- `HashComputer`: to compute hash of a file or hash of a `VcObject`
+
+To modify disk representation of a particular instance of `VcObject`, modify both its `Reader`
+and `Writer`.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -248,7 +296,7 @@ An empty list of keywords is interpreted as retrieving personal details of all s
 The specifics are shown in the sequence diagram below:
 
 A `PersonalDetailRetriever` object can be constructed by passing a `Prefix` and a `Name
-![GetCommandSequenceDiagram](images/logic/commands/getcommand/GetCommandSequenceDiagram.png)
+![GetCommandSequenceDiagram](images/dg/logic/commands/getcommand/GetCommandSequenceDiagram.png)
 
 ### EditCommand
 

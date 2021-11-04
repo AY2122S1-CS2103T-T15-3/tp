@@ -1,6 +1,6 @@
 package seedu.academydirectory.logic.commands;
 
-import static seedu.academydirectory.model.VersionControl.CURRENT_LABEL_STRING;
+import static seedu.academydirectory.model.VersionControlController.CURRENT_LABEL_STRING;
 
 import seedu.academydirectory.logic.commands.exceptions.CommandException;
 import seedu.academydirectory.model.VersionedModel;

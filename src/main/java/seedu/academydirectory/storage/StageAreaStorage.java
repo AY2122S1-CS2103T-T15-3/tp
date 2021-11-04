@@ -3,9 +3,9 @@ package seedu.academydirectory.storage;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import seedu.academydirectory.model.StageArea;
 import seedu.academydirectory.versioncontrol.objects.Commit;
 import seedu.academydirectory.versioncontrol.objects.Label;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 import seedu.academydirectory.versioncontrol.objects.Tree;
 import seedu.academydirectory.versioncontrol.objects.VcObject;
 import seedu.academydirectory.versioncontrol.writer.VersionControlGeneralWriter;

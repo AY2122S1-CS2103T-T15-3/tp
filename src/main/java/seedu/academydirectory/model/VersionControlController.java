@@ -7,14 +7,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import seedu.academydirectory.commons.util.FileUtil;
-import seedu.academydirectory.storage.VersionControlReader;
 import seedu.academydirectory.versioncontrol.objects.Commit;
 import seedu.academydirectory.versioncontrol.objects.Label;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 import seedu.academydirectory.versioncontrol.objects.Tree;
 import seedu.academydirectory.versioncontrol.utils.HashMethod;
 
-public class VersionControl implements Version {
+public class VersionControlController implements Version {
     public static final String HEAD_LABEL_STRING = "HEAD";
     public static final String OLD_LABEL_STRING = "OLD";
     public static final String CURRENT_LABEL_STRING = "CURRENT";
@@ -31,7 +29,7 @@ public class VersionControl implements Version {
      * @param vcPath Path to save version control related files
      * @param storagePath Path to file to be version controlled
      */
-    public VersionControl(HashMethod hashMethod, Path vcPath, Path storagePath) {
+    public VersionControlController(HashMethod hashMethod, Path vcPath, Path storagePath) {
         this.versionControlReader = new VersionControlReader(hashMethod, vcPath);
 
         this.storagePath = storagePath;

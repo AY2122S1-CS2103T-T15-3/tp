@@ -3,7 +3,6 @@ package seedu.academydirectory.model;
 import java.io.IOException;
 
 import seedu.academydirectory.versioncontrol.objects.Commit;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 
 /**
  * Wraps all version control related data

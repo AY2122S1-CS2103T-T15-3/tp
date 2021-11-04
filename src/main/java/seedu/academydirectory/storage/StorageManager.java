@@ -9,8 +9,8 @@ import seedu.academydirectory.commons.core.LogsCenter;
 import seedu.academydirectory.commons.exceptions.DataConversionException;
 import seedu.academydirectory.model.ReadOnlyAcademyDirectory;
 import seedu.academydirectory.model.ReadOnlyUserPrefs;
+import seedu.academydirectory.model.StageArea;
 import seedu.academydirectory.model.UserPrefs;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 
 /**
  * Manages storage of AcademyDirectory data in local storage.

@@ -15,7 +15,6 @@ import seedu.academydirectory.commons.core.LogsCenter;
 import seedu.academydirectory.logic.AdditionalViewType;
 import seedu.academydirectory.model.student.Student;
 import seedu.academydirectory.versioncontrol.objects.Commit;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 import seedu.academydirectory.versioncontrol.utils.HashMethod;
 
 /**
@@ -28,7 +27,7 @@ public class VersionedModelManager implements VersionedModel {
     private final UserPrefs userPrefs;
     private final FilteredList<Student> filteredStudents;
 
-    private final VersionControl versionControl;
+    private final VersionControlController versionControlController;
 
     private final AdditionalViewModel additionalViewModel;
 
@@ -45,7 +44,7 @@ public class VersionedModelManager implements VersionedModel {
         this.userPrefs = new UserPrefs(userPrefs);
         filteredStudents = new FilteredList<>(this.academyDirectory.getStudentList());
 
-        this.versionControl = new VersionControl(HashMethod.SHA1,
+        this.versionControlController = new VersionControlController(HashMethod.SHA1,
                 userPrefs.getVersionControlPath(),
                 userPrefs.getAcademyDirectoryFilePath());
 
@@ -170,26 +169,26 @@ public class VersionedModelManager implements VersionedModel {
      */
     @Override
     public void commit(String message) {
-        versionControl.commit(message);
+        versionControlController.commit(message);
     }
 
     @Override
     public Commit revert(String fiveCharHash) throws IOException {
-        return versionControl.revert(fiveCharHash);
+        return versionControlController.revert(fiveCharHash);
     }
 
     @Override
     public StageArea getStageArea() {
-        return versionControl.getStageArea();
+        return versionControlController.getStageArea();
     }
 
     @Override
     public Commit getHeadCommit() {
-        return versionControl.getHeadCommit();
+        return versionControlController.getHeadCommit();
     }
 
     public Commit fetchCommitByLabel(String labelName) {
-        return versionControl.fetchCommitByLabel(labelName);
+        return versionControlController.fetchCommitByLabel(labelName);
     }
 
     //=========== Additional Information View =============================================================

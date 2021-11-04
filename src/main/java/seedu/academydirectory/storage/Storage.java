@@ -7,8 +7,8 @@ import java.util.Optional;
 import seedu.academydirectory.commons.exceptions.DataConversionException;
 import seedu.academydirectory.model.ReadOnlyAcademyDirectory;
 import seedu.academydirectory.model.ReadOnlyUserPrefs;
+import seedu.academydirectory.model.StageArea;
 import seedu.academydirectory.model.UserPrefs;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 
 /**
  * API of the StorageManager component

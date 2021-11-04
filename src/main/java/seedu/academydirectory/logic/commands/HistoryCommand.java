@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import seedu.academydirectory.logic.AdditionalViewType;
 import seedu.academydirectory.logic.commands.exceptions.CommandException;
 import seedu.academydirectory.model.AdditionalInfo;
-import seedu.academydirectory.model.VersionControl;
+import seedu.academydirectory.model.VersionControlController;
 import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.versioncontrol.objects.Commit;
 
@@ -43,8 +43,8 @@ public class HistoryCommand extends Command {
 
     private List<String> retrieveHistory(VersionedModel model) {
         Commit headCommit = model.getHeadCommit();
-        Commit currLatestCommit = model.fetchCommitByLabel(VersionControl.CURRENT_LABEL_STRING);
-        Commit oldLatestCommit = model.fetchCommitByLabel(VersionControl.OLD_LABEL_STRING);
+        Commit currLatestCommit = model.fetchCommitByLabel(VersionControlController.CURRENT_LABEL_STRING);
+        Commit oldLatestCommit = model.fetchCommitByLabel(VersionControlController.OLD_LABEL_STRING);
 
         Commit lca = currLatestCommit.findLca(oldLatestCommit);
 

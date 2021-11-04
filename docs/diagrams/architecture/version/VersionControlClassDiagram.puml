@@ -1,0 +1,86 @@
+@startuml
+!include ../../style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor MODEL_COLOR
+skinparam classBackgroundColor MODEL_COLOR
+
+package VersionControl {
+    package Reader {
+        abstract Class VersionControlObjectReader
+        Class VersionControlGeneralReader
+        Class LabelReader
+        Class TreeReader
+        Class CommitReader
+
+        LabelReader --|> VersionControlObjectReader
+        CommitReader --|> VersionControlObjectReader
+        TreeReader --|> VersionControlObjectReader
+
+        VersionControlGeneralReader --> LabelReader
+        VersionControlGeneralReader --> TreeReader
+        VersionControlGeneralReader --> CommitReader
+    }
+
+    package Writer {
+        abstract Class VersionControlObjectWriter
+        Class VersionControlGeneralWriter
+        Class LabelWriter
+        Class TreeWriter
+        Class CommitWriter
+
+        LabelWriter --|> VersionControlObjectWriter
+        CommitWriter --|> VersionControlObjectWriter
+        TreeWriter --|> VersionControlObjectWriter
+
+        VersionControlGeneralWriter --> LabelWriter
+        VersionControlGeneralWriter --> TreeWriter
+        VersionControlGeneralWriter --> CommitWriter
+    }
+
+    package Utils {
+        Class HashGenerator
+        Class HashComputer
+
+        HashComputer --> HashGenerator
+    }
+    HashComputer --> VersionControlGeneralWriter
+
+    package Objects {
+        Interface VcObject <<interface>>
+        Class Commit
+        Class Tree
+        Class Label
+
+        Commit ..|> VcObject
+        Tree ..|> VcObject
+        Label ..|> VcObject
+    }
+}
+
+package Storage  {
+    Class StorageManager STORAGE_COLOR
+    Class StageAreaStorage STORAGE_COLOR
+
+    StorageManager --> StageAreaStorage
+}
+
+package VersionedModel #F4F6F6 {
+    Class VersionedModelManager
+    Class VersionControlController
+    Class VersionControlReader
+    VersionedModelManager --> VersionControlController
+    VersionControlController --> VersionControlReader
+    VersionControlReader--> VersionControlGeneralReader
+    VersionControlReader --> HashComputer
+}
+
+StageAreaStorage --> VersionControlGeneralWriter
+
+CommitWriter ..> Commit
+CommitReader ..> Commit
+TreeWriter ..> Tree
+TreeReader ..> Tree
+LabelWriter ..> Label
+LabelReader ..> Label
+
+@enduml

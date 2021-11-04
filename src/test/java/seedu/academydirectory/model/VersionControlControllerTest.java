@@ -27,8 +27,8 @@ import seedu.academydirectory.versioncontrol.objects.Tree;
 import seedu.academydirectory.versioncontrol.objects.VcObject;
 import seedu.academydirectory.versioncontrol.utils.HashMethod;
 
-// Integration Test of VersionControl with other components
-class VersionControlTest {
+// Integration Test of VersionControlController with other components
+class VersionControlControllerTest {
     private static final Path RELEVANT_DIR = Paths.get("src", "test",
             "data", "VersionControlTest", "VersionControlTest");
     private static final Path COMMIT_DIR = RELEVANT_DIR.resolve(Paths.get("Commit"));
@@ -44,11 +44,12 @@ class VersionControlTest {
             return;
         }
 
-        VersionControl versionControl = new VersionControl(HashMethod.SHA1, COMMIT_DIR, tempPath);
+        VersionControlController versionControlController = new VersionControlController(HashMethod.SHA1, COMMIT_DIR,
+                tempPath);
         String commitHash = "70e794b5c26973d17a17b83d2ff2a30b0669c920";
         String commitMessage = "Edited Student: Bernice Yu";
 
-        Commit fetchedHeadCommit = versionControl.getHeadCommit();
+        Commit fetchedHeadCommit = versionControlController.getHeadCommit();
         assertEquals(commitHash, fetchedHeadCommit.getHash());
         assertEquals(commitMessage, fetchedHeadCommit.getMessage());
     }
@@ -61,10 +62,11 @@ class VersionControlTest {
         }
 
         Date dateBeforeCommit = new Date();
-        VersionControl versionControl = new VersionControl(HashMethod.SHA1, tempPath, tempPath);
+        VersionControlController versionControlController = new VersionControlController(HashMethod.SHA1, tempPath,
+                tempPath);
         Date dateAfterCommit = new Date();
 
-        Commit fetchedHeadCommit = versionControl.getHeadCommit();
+        Commit fetchedHeadCommit = versionControlController.getHeadCommit();
         assertEquals(System.getProperty("user.name"), fetchedHeadCommit.getAuthor());
         assertEquals("Initial Commit", fetchedHeadCommit.getMessage());
         assertTrue(fetchedHeadCommit.getDate().compareTo(dateBeforeCommit) >= 0);
@@ -83,35 +85,39 @@ class VersionControlTest {
         }
         Path dataDir = tempPath.resolve(Paths.get("Data"));
         assertDoesNotThrow(() -> FileUtil.createFile(dataDir));
-        VersionControl versionControl = new VersionControl(HashMethod.SHA1, tempPath, dataDir);
+        VersionControlController versionControlController = new VersionControlController(HashMethod.SHA1, tempPath,
+                dataDir);
 
-        Commit prevHeadCommit = versionControl.getHeadCommit();
+        Commit prevHeadCommit = versionControlController.getHeadCommit();
 
         String commitMessage = "TESTING";
-        versionControl.commit(commitMessage);
+        versionControlController.commit(commitMessage);
 
         // internal head tracker should be shifted
-        assertNotEquals(prevHeadCommit, versionControl.getHeadCommit());
+        assertNotEquals(prevHeadCommit, versionControlController.getHeadCommit());
 
         StageAreaStorage stageAreaStorage = new StageAreaStorage(tempPath);
-        assertDoesNotThrow(() -> stageAreaStorage.saveStageArea(versionControl.getStageArea()));
-        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControl.OLD_LABEL_STRING)));
-        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControl.CURRENT_LABEL_STRING)));
-        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControl.HEAD_LABEL_STRING)));
+        assertDoesNotThrow(() -> stageAreaStorage.saveStageArea(versionControlController.getStageArea()));
+        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControlController.OLD_LABEL_STRING)));
+        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControlController.CURRENT_LABEL_STRING)));
+        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControlController.HEAD_LABEL_STRING)));
 
         // Labels should be understandable
-        Commit fetchedHeadCommit = versionControl.fetchCommitByLabel(VersionControl.HEAD_LABEL_STRING);
-        assertEquals(versionControl.getHeadCommit(), fetchedHeadCommit);
+        Commit fetchedHeadCommit = versionControlController.fetchCommitByLabel(
+                VersionControlController.HEAD_LABEL_STRING);
+        assertEquals(versionControlController.getHeadCommit(), fetchedHeadCommit);
         assertEquals(prevHeadCommit, fetchedHeadCommit.getParentSupplier().get());
         assertEquals(System.getProperty("user.name"), fetchedHeadCommit.getAuthor());
         assertEquals(commitMessage, fetchedHeadCommit.getMessage());
         assertEquals(prevHeadCommit, fetchedHeadCommit.getParentSupplier().get());
         assertTrue(FileUtil.isFileExists(tempPath.resolve(fetchedHeadCommit.getHash())));
 
-        Commit fetchedCurrentCommit = versionControl.fetchCommitByLabel(VersionControl.CURRENT_LABEL_STRING);
+        Commit fetchedCurrentCommit = versionControlController.fetchCommitByLabel(
+                VersionControlController.CURRENT_LABEL_STRING);
         assertEquals(fetchedHeadCommit, fetchedCurrentCommit);
 
-        Commit fetchedOldCommit = versionControl.fetchCommitByLabel(VersionControl.OLD_LABEL_STRING);
+        Commit fetchedOldCommit = versionControlController.fetchCommitByLabel(
+                VersionControlController.OLD_LABEL_STRING);
         assertEquals(prevHeadCommit, fetchedOldCommit);
 
         // Check committed tree
@@ -131,37 +137,41 @@ class VersionControlTest {
         for (File file : Objects.requireNonNull(COMMIT_DIR.toFile().listFiles())) {
             assertDoesNotThrow(() -> Files.copy(file.toPath(), tempPath.resolve(file.toPath().getFileName())));
         }
-        VersionControl versionControl = new VersionControl(HashMethod.SHA1, tempPath, tempPath);
+        VersionControlController versionControlController = new VersionControlController(HashMethod.SHA1, tempPath,
+                tempPath);
 
-        Commit prevHeadCommit = versionControl.getHeadCommit();
+        Commit prevHeadCommit = versionControlController.getHeadCommit();
 
         String commitMessage = "TESTING";
-        versionControl.commit(commitMessage);
+        versionControlController.commit(commitMessage);
 
         // internal head tracker should be shifted
-        assertNotEquals(prevHeadCommit, versionControl.getHeadCommit());
+        assertNotEquals(prevHeadCommit, versionControlController.getHeadCommit());
 
         // Tree.NULL -> unable to write tree
         StageAreaStorage stageAreaStorage = new StageAreaStorage(tempPath);
-        assertThrows(IOException.class, () -> stageAreaStorage.saveStageArea(versionControl.getStageArea()));
+        assertThrows(IOException.class, () -> stageAreaStorage.saveStageArea(versionControlController.getStageArea()));
 
         // Everything else should still be correct
-        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControl.OLD_LABEL_STRING)));
-        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControl.CURRENT_LABEL_STRING)));
-        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControl.HEAD_LABEL_STRING)));
+        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControlController.OLD_LABEL_STRING)));
+        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControlController.CURRENT_LABEL_STRING)));
+        assertTrue(FileUtil.isFileExists(tempPath.resolve(VersionControlController.HEAD_LABEL_STRING)));
 
-        Commit fetchedHeadCommit = versionControl.fetchCommitByLabel(VersionControl.HEAD_LABEL_STRING);
-        assertEquals(versionControl.getHeadCommit(), fetchedHeadCommit);
+        Commit fetchedHeadCommit = versionControlController.fetchCommitByLabel(
+                VersionControlController.HEAD_LABEL_STRING);
+        assertEquals(versionControlController.getHeadCommit(), fetchedHeadCommit);
         assertEquals(prevHeadCommit, fetchedHeadCommit.getParentSupplier().get());
         assertEquals(System.getProperty("user.name"), fetchedHeadCommit.getAuthor());
         assertEquals(commitMessage, fetchedHeadCommit.getMessage());
         assertEquals(prevHeadCommit, fetchedHeadCommit.getParentSupplier().get());
         assertTrue(FileUtil.isFileExists(tempPath.resolve(fetchedHeadCommit.getHash())));
 
-        Commit fetchedCurrentCommit = versionControl.fetchCommitByLabel(VersionControl.CURRENT_LABEL_STRING);
+        Commit fetchedCurrentCommit = versionControlController.fetchCommitByLabel(
+                VersionControlController.CURRENT_LABEL_STRING);
         assertEquals(fetchedHeadCommit, fetchedCurrentCommit);
 
-        Commit fetchedOldCommit = versionControl.fetchCommitByLabel(VersionControl.OLD_LABEL_STRING);
+        Commit fetchedOldCommit = versionControlController.fetchCommitByLabel(
+                VersionControlController.OLD_LABEL_STRING);
         assertEquals(prevHeadCommit, fetchedOldCommit);
 
         // Tree is Null
@@ -179,13 +189,15 @@ class VersionControlTest {
         for (File file : Objects.requireNonNull(REVERT_DIR.toFile().listFiles())) {
             assertDoesNotThrow(() -> Files.copy(file.toPath(), tempPath.resolve(file.toPath().getFileName())));
         }
-        VersionControl versionControl = new VersionControl(HashMethod.SHA1, tempPath, tempPath);
+        VersionControlController versionControlController = new VersionControlController(HashMethod.SHA1, tempPath,
+                tempPath);
 
         // Reverting to current hash -> Returns null commit
-        assertTrue(assertDoesNotThrow(() -> versionControl.revert(versionControl.getHeadCommit().getHash())).isEmpty());
+        assertTrue(assertDoesNotThrow(() -> versionControlController.revert(
+                versionControlController.getHeadCommit().getHash())).isEmpty());
 
         // Reverting to a commit that is not present -> Returns null commit
-        assertTrue(assertDoesNotThrow(() -> versionControl.revert("MISSING")).isEmpty());
+        assertTrue(assertDoesNotThrow(() -> versionControlController.revert("MISSING")).isEmpty());
     }
 
     @Test
@@ -207,19 +219,20 @@ class VersionControlTest {
 
         Path dataDir = tempPath.resolve(Paths.get("Data"));
         assertDoesNotThrow(() -> FileUtil.createFile(dataDir));
-        VersionControl versionControl = new VersionControl(HashMethod.SHA1, tempPath, dataDir);
-        Commit currHead = versionControl.getHeadCommit();
+        VersionControlController versionControlController = new VersionControlController(HashMethod.SHA1, tempPath,
+                dataDir);
+        Commit currHead = versionControlController.getHeadCommit();
 
         // Reverting to a commit that is present -> Returns that commit
         String correctHash = "6b8dca90ac26ec6f2f4fc3b7f820bc57f462fcf9";
-        Commit revertedCommit = assertDoesNotThrow(() -> versionControl.revert(correctHash));
+        Commit revertedCommit = assertDoesNotThrow(() -> versionControlController.revert(correctHash));
 
         assertFalse(revertedCommit.isEmpty());
         assertNotEquals(currHead, revertedCommit);
-        assertEquals(revertedCommit, versionControl.getHeadCommit());
+        assertEquals(revertedCommit, versionControlController.getHeadCommit());
 
         // HEAD label is staged
-        List<VcObject> vcObjectList = versionControl.getStageArea().getVcObjectList();
+        List<VcObject> vcObjectList = versionControlController.getStageArea().getVcObjectList();
         assertEquals(1, vcObjectList.size());
         assertTrue(vcObjectList.get(0) instanceof Label);
         assertEquals(revertedCommit, ((Label) vcObjectList.get(0)).getCommitSupplier().get());

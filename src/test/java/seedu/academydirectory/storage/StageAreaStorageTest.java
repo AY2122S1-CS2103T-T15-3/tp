@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import seedu.academydirectory.commons.util.FileUtil;
+import seedu.academydirectory.model.StageArea;
 import seedu.academydirectory.testutil.TypicalCommits;
 import seedu.academydirectory.testutil.TypicalTrees;
 import seedu.academydirectory.versioncontrol.objects.Commit;
 import seedu.academydirectory.versioncontrol.objects.Label;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 import seedu.academydirectory.versioncontrol.objects.Tree;
 import seedu.academydirectory.versioncontrol.objects.VcObject;
 

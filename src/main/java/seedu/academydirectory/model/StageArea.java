@@ -1,7 +1,9 @@
-package seedu.academydirectory.versioncontrol.objects;
+package seedu.academydirectory.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import seedu.academydirectory.versioncontrol.objects.VcObject;
 
 public class StageArea {
     private List<VcObject> stageArea;

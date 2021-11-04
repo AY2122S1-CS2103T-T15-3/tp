@@ -4,14 +4,18 @@ skinparam arrowThickness 1.1
 skinparam arrowColor MODEL_COLOR
 skinparam classBackgroundColor MODEL_COLOR
 
-Package Model <<Rectangle>>{
+Package VersionedModel <<Rectangle>> {
 Interface ReadOnlyAcademyDirectory <<Interface>>
 Interface ReadOnlyUserPrefs <<Interface>>
-Interface Model <<Interface>>
+Interface Version <<Interface>>
+Interface VersionedModel <<Interface>>
+
 Class AcademyDirectory
 Class ReadOnlyAcademyDirectory
-Class Model
-Class ModelManager
+Class VersionedModel
+Class VersionedModelManager
+Class VersionControlController
+Class VersionControlReader
 Class UserPrefs
 Class ReadOnlyUserPrefs
 
@@ -25,20 +29,29 @@ Class Name
 Class Phone
 Class Tag
 Class Assessment
+}
+
+Package VersionControl {
 
 }
 
 Class HiddenOutside #FFFFFF
-HiddenOutside ..> Model
+HiddenOutside ..> VersionedModel
+
+VersionedModel .right.> ReadOnlyUserPrefs
+VersionedModel .left.> ReadOnlyAcademyDirectory
+VersionedModel .up.|> Version
 
 AcademyDirectory .up.|> ReadOnlyAcademyDirectory
-
-ModelManager .up.|> Model
-Model .right.> ReadOnlyUserPrefs
-Model .left.> ReadOnlyAcademyDirectory
-ModelManager -left-> "1" AcademyDirectory
-ModelManager -right-> "1" UserPrefs
+VersionedModelManager .up.|> VersionedModel
 UserPrefs .up.|> ReadOnlyUserPrefs
+VersionControlController .up.|> Version
+VersionControlController -down-> "1" VersionControlReader
+VersionControlReader --> VersionControl
+
+VersionedModelManager -left-> "1" AcademyDirectory
+VersionedModelManager -right-> "1" UserPrefs
+VersionedModelManager -left-> "1" VersionControlController
 
 AcademyDirectory *--> "1" UniqueStudentList
 UniqueStudentList --> "~* all" Student
@@ -55,5 +68,5 @@ Phone -[hidden]right-> StudioRecord
 StudioRecord -[hidden]right-> Email
 Email -[hidden]right-> Telegram
 
-ModelManager -->"~* filtered" Student
+VersionedModelManager -->"~* filtered" Student
 @enduml

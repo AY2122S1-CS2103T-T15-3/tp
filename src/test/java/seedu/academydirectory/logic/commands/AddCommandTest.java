@@ -23,11 +23,11 @@ import seedu.academydirectory.model.AdditionalInfo;
 import seedu.academydirectory.model.AdditionalViewModel;
 import seedu.academydirectory.model.ReadOnlyAcademyDirectory;
 import seedu.academydirectory.model.ReadOnlyUserPrefs;
+import seedu.academydirectory.model.StageArea;
 import seedu.academydirectory.model.VersionedModel;
 import seedu.academydirectory.model.student.Student;
 import seedu.academydirectory.testutil.StudentBuilder;
 import seedu.academydirectory.versioncontrol.objects.Commit;
-import seedu.academydirectory.versioncontrol.objects.StageArea;
 
 public class AddCommandTest {
 

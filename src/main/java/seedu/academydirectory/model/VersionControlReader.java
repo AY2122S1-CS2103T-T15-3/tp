@@ -1,4 +1,4 @@
-package seedu.academydirectory.storage;
+package seedu.academydirectory.model;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Objects.requireNonNull;
