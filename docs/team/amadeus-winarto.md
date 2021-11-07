@@ -5,8 +5,7 @@ title: Amadeus Aristo Winarto's Project Portfolio Page
 
 ### Project: Academy Directory
 
-Academy Directory is a desktop application that aims to assist CS1101S tutors in the process of teaching Programming Methodology I in NUS, with features of recording student personal contacts, recording student participation and grades, visualizing and analyzing student data
-from the grades recorded
+Academy Directory is a desktop address book application used for CS1101S tutors to keep track of information related to their students. The user interacts with it using a CLI and mouse, and it has a GUI created with JavaFX. It is written in Java, and has about 14 kLoC.
 
 Given below are my contributions to the project.
 
@@ -15,7 +14,7 @@ Given below are my contributions to the project.
 * **New Feature**: Add the ability to get personal details of students (GetCommand)
   * What it does: Allows user to get personal details of student/s easily. Personal details refer to email address, telegram handle, or phone number (if any) 
   * Justification: This feature allows the user to easily retrieve students contact details, thus facilitating easy broadcasts to students e.g. 
-  when trying to send email to everyone, no need to wait for outlook to retrieve email address and risk getting a person with 
+  when trying to send email to everyone, no need to wait for Outlook to retrieve email address and risk getting a person with 
   a similar name's email address. Instead, the user can use the command to get all emails and copy-paste into their email client. Output of GetCommand
   is formatted with this in mind. 
   * Highlights: This feature can handle retrieval of personal detail of a specific student or specific students who are matched by provided keywords with student names in the AcademyDirectory.
@@ -46,15 +45,13 @@ Given below are my contributions to the project.
 * **Code contributed**: [RepoSense link](https://nus-cs2103-ay2122s1.github.io/tp-dashboard/?search=Amadeus&sort=groupTitle&sortWithin=title&timeframe=commit&mergegroup=&groupSelect=groupByRepos&breakdown=true&checkedFileTypes=docs~functional-code~test-code~other&since=2021-09-17&tabOpen=true&zFR=false&tabAuthor=Amadeus-Winarto&tabRepo=AY2122S1-CS2103T-T15-3%2Ftp%5Bmaster%5D&authorshipIsMergeGroup=false&authorshipFileTypes=docs~functional-code~test-code&authorshipIsBinaryFileTypeChecked=false&tabType=authorship)
 
 * **Project management**:
-  * Proposed and enforced the use of Github Projects for better weekly sprints
-  * Proposed and enforced code reviews and feature freeze to maintain code quality
+  * Proposed and enforced the use of Github Projects for better weekly sprints and code reviews to maintain code quality
   * Wrote several meeting notes to keep track of meeting outcomes and weekly deliverables
 
 * **Documentation**:
   * User Guide:
     * Heavily refactored User Guide from original AB3 format to its current form
     * Added documentation details of the `get`, `revert`, `history`, `undo`, and `redo`
-    * Proofread other parts and review writing of my teammates
   * Developer Guide:
     * Added implementation details of the `get`, `revert`, `history`, `undo`, and `redo`
     * Added architectural implementation of Model component, which is now the VersionedModel component
