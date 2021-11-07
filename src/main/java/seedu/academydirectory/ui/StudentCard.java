@@ -76,7 +76,7 @@ public class StudentCard extends UiPart<Region> {
 
         student.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.toString())));
+                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
 
         container.getChildren().remove(telegram);
     }

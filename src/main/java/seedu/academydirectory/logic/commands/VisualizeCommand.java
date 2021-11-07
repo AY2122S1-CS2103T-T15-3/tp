@@ -2,6 +2,7 @@ package seedu.academydirectory.logic.commands;
 
 import static seedu.academydirectory.model.VersionedModel.PREDICATE_SHOW_ALL_STUDENTS;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,8 +54,14 @@ public class VisualizeCommand extends Command {
                                         Map.Entry::getKey,
                                         Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
 
+        LinkedHashMap<String, List<Integer>> orderedAssessmentResults = new LinkedHashMap<>();
+
+        for (String assessment: Assessment.ASSESSMENT_LIST) {
+            orderedAssessmentResults.put(assessment, classAssessmentResults.get(assessment));
+        }
+
         model.setAdditionalViewType(AdditionalViewType.VISUALIZE);
-        model.setAdditionalInfo(AdditionalInfo.of(classAssessmentResults));
+        model.setAdditionalInfo(AdditionalInfo.of(orderedAssessmentResults));
 
         return new CommandResult(MESSAGE_VISUALIZE_SUCCESS);
     }

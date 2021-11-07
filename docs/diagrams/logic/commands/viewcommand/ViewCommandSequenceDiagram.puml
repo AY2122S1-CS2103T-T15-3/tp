@@ -38,5 +38,5 @@ commandResult --> viewCommand
 deactivate commandResult
 
 [<-- viewCommand: result
-
+deactivate viewCommand
 @enduml

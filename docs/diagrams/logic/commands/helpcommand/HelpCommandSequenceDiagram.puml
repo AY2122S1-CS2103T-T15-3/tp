@@ -8,27 +8,26 @@ end box
 
 box VersionedModel MODEL_COLOR_T1
 participant ":VersionedModel" as versionedModel MODEL_COLOR
-participant ":AdditionalViewModel" as addViewModel MODEL_COLOR
 end box
 
 -> helpCommand: execute(model)
 activate helpCommand
 helpCommand -> versionedModel : setAdditionalViewType(AdditionalViewType.HELP)
-versionedModel -> addViewModel: setAdditionalViewType(HELP)
-
-helpCommand -> versionedModel : setAdditionalInfo(AdditionalInfo.of(helpMessage))
-versionedModel -> addViewModel: setAdditionalInfo(AdditionalInfo.of(helpMessage))
-
+helpCommand -> versionedModel : setAdditionalInfo(AdditionalInfo.of(helpMessage))SS
 alt isGeneralHelp
 create commandResult
-helpCommand -> commandResult ++ : CommandResult(MESSAGE_HELP_SUCCESS_GENERAL, true, false)
-commandResult --> helpCommand -- : commandResult
+helpCommand -> commandResult: CommandResult(MESSAGE_HELP_SUCCESS_GENERAL, true, false)
+activate commandResult
+commandResult --> helpCommand : commandResult
+deactivate commandResult
 
 else
 
 create commandResult
-helpCommand -> commandResult ++ : CommandResult(String.format(MESSAGE_HELP_SUCCESS_SPECIFIC, this.commandWord), true, false)
-commandResult --> helpCommand -- : commandResult
+helpCommand -> commandResult : CommandResult(String.format(MESSAGE_HELP_SUCCESS_SPECIFIC, this.commandWord), true, false)
+activate commandResult
+commandResult --> helpCommand : commandResult
+deactivate commandResult
 
 end
 <-- helpCommand -- : commandResult

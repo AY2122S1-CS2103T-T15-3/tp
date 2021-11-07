@@ -1,7 +1,7 @@
 package seedu.academydirectory.ui.creator;
 
 import java.awt.Color;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +26,7 @@ public class GraphCreator extends Creator {
 
     private static final String FXML = "creator/GraphCreator.fxml";
 
-    private final Map<String, List<Integer>> studentAssessmentResults;
+    private final LinkedHashMap<String, List<Integer>> studentAssessmentResults;
 
     @FXML
     private StackPane placeHolder;
@@ -38,7 +38,7 @@ public class GraphCreator extends Creator {
     @SuppressWarnings("unchecked")
     public GraphCreator(AdditionalInfo<?> additionalInfo) {
         super(additionalInfo, FXML);
-        Map<String, List<Integer>> rawResults = (HashMap<String, List<Integer>>) additionalInfo.get();
+        LinkedHashMap<String, List<Integer>> rawResults = (LinkedHashMap<String, List<Integer>>) additionalInfo.get();
         this.studentAssessmentResults = this.cleanAssessmentResults(rawResults);
 
         BoxAndWhiskerCategoryDataset dataset = this.createDataset();
@@ -51,13 +51,17 @@ public class GraphCreator extends Creator {
         return list.stream().filter(num -> num >= 0).collect(Collectors.toList());
     }
 
-    private Map<String, List<Integer>> cleanAssessmentResults(Map<String, List<Integer>> assessmentResults) {
+    private LinkedHashMap<String, List<Integer>> cleanAssessmentResults(
+            LinkedHashMap<String, List<Integer>> assessmentResults) {
         return assessmentResults
             .entrySet()
             .stream()
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
-                entrySet -> filterNegative(entrySet.getValue())));
+                entrySet -> filterNegative(entrySet.getValue()), (u, v) -> {
+                    throw new IllegalStateException(String.format("Duplicate key %s", u));
+                },
+                LinkedHashMap::new));
     }
 
     private BoxAndWhiskerCategoryDataset createDataset() {

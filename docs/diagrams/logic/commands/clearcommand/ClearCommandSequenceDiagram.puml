@@ -31,5 +31,5 @@ commandResult --> clearCommand
 deactivate commandResult
 
 <-- clearCommand: result
-
+deactivate clearCommand
 @enduml

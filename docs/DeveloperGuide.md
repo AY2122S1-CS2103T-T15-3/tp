@@ -153,8 +153,7 @@ The UI consists of a `MainWindow` that is made up of parts smaller UI-part compo
 except for the Help Window which can be shown or hide depending on the results of user command.
 
 Some classes of the UI, notably `CommandBox` and `AppMenu`, keeps a reference of a functional interface called `CommandExecutor` that
-executes a Command from the Logic `component`. In consideration of this design - it is done allow components of UI to execute user commands 
-while still maximizing abstraction and reducing reliance of UI on the Logic component - rather it will be dependent on an intermediate component within UI.
+executes a Command from the Logic `component`.
 
 The `UI` component uses the JavaFx UI framework. The layout of these UI parts are defined in their respective matching `.fxml` files stored in the `src/main/resources/view` folder. For example, the layout of the 
 [`MainWindow`](https://github.com/AY2122S1-CS2103T-T15-3/tp/blob/master/src/main/java/seedu/academydirectory/ui/MainWindow.java) is 
@@ -162,8 +161,8 @@ specified in [`MainWindow.fxml`](https://github.com/AY2122S1-CS2103T-T15-3/tp/bl
 
 The `UI` component,
 
-* executes user commands using the `Logic` component.
-* listens for changes to `VersionedModel` data so that the UI can be updated with the modified data.
+* executes user commands using the `Logic` component, through the MainWindow object.
+* listens for changes in `VersionedModel` data so that the UI can be updated with the modified data.
 * keeps a reference (for Main Window) or depends (for AppMenu) on the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
 * keeps a reference of some classes in the `VersionedModel` component, particularly the Student class, as it displays `Student` object residing in 
   the `VersionedModel` and requires grades statistics from `Student` object in the `VersionedModel`.
@@ -171,8 +170,20 @@ The `UI` component,
 ![Creator Class Diagram](images/dg/architecture/ui/CreatorClassDiagram.png)
 
 One important component of the UI is the specialized Creator class which extends the abstract class UiPart - for the purpose of reusing the Visualizer Display
-to show users the result of a command execution. The Creator class takes in an AdditionalInfo object from Versioned Model, and convert it to the specific view
-for displaying to users in the Visualizer Display.
+to show users the result of a command execution. After information is sent from Main Window to the Visualizer Display, the Visualizer Display then send the Additional
+Info Object to the Creator classes, which will be used to convert it for user view in the Visualizer Display itself.
+
+**Design Considerations**
+
+CommandExecutor Functional Interface
+   * Initial design of AB3: Keeping the CommandExecutor functional Interface inside CommandBox
+     - Cons: This design initially is supposed to encapsulate the CommandBox UI object, that the command box is able to execute user's command on behalf of the 
+       Logic component. However, the disadvantage of this design is that if there are future extensions requiring more components that can execute commands, like another
+       input box or GUI functionalities, then another interface must be used.
+   * Current design: Separate CommandExecutor from CommandBox
+     - Pros: Allows other components of the UI to use the CommandExecutor interface for command execution, and better abstract out the design of Academy Directory, hence making CommandExecutor a medium
+       of communication between the Logic and the UI component. In addition, it serves as a basis for any future extension of Academy Directory.
+     - Cons: It makes the implementation of the UI segment more complicated in return.
 
 ### Logic component
 
@@ -824,10 +835,11 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | CS1101S Avenger           | retrieve specific details of a student                             | view and analyse the data                                              |
 | `* * *`  | CS1101S Avenger           | keep track of my students' tutorial performance                    | accurately reward class participation marks                            |
 | `* * *`  | CS1101S Avenger           | record my students' assessment results                             | monitor my students' progress and provide timely assistance to them    |
-| `* * *`  | first time user           | access the relevant commands with a "help" command                 | learn how to use the app more easily                                   |
+| `* * *`  | First time user           | access the relevant commands with a "help" command                 | learn how to use the app more easily                                   |
 | `* *`    | CS1101S Avenger           | view the average scores of my students for specific assessments    | focus on the aspects to improve on during tutorial                     |
 | `* *`    | CS1101S Avenger           | visualize the class scores for specific assessments                | gauge how well my students are doing in assessments                    |
 | `* *`    | CS1101S Avenger           | add tags to certain students to take note of their weaker topics   | focus on topics that they are struggling with                          |
+| `* *`    | CS1101S Avenger           | view all information relating to one student in one go             | have an overview of my student status                                  |
 | `* * `   | CS1101S Avenger           | see history of changes to Academy Directory data                   | easily revert accidental changes to data                               |
 | `* * `   | CS1101S Avenger           | undo changes made to Academy Directory data                        | easily revert accidental changes to data                               |
 | `* * `   | CS1101S Avenger           | redo changes made to Academy Directory data                        | easily revert accidental undos to data                                 |
@@ -851,7 +863,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 3b. User requests for help in a command that does not exist
   * 3b1. Academy Directory shows an error message
     
-    Use case resumes at step 2.
+    Use case resumes at step 3.
 
 **Use case: Delete a student**
 
@@ -1056,19 +1068,20 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS**
 
-1. User enter a command to view all information of one student
+1. User enter a command to view all information of one student by index
 2. Academy Directory fetches all related data of one student
-3. Academy Directory displays all these information to users.
+3. Academy Directory displays all information to users.
 
 **Extensions**
-* 1a. The index number entered exceeds the size of the list
+* 1a. Users request information of a student whose index exceeds the student list size
     * 1a1. Academy Directory informs users that the index is invalid via an error message
-    
-    Use case resumes at step 1
-* 1a. The argument followed is not a positive integer
-    * 1a1. Academy Directory informs users that the index must be a positive integer for the command to be executed
+      
+      Use case resumes at step 1
+  
+* 1a. The index number is invalid (not a positive integer)
+    * 1a1. Academy Directory informs users that the index is invalid and must be a positive integer for the command to be executed
      
-    Use case resumes at step 1
+      Use case resumes at step 1
 
 ### Non-Functional Requirements
 
@@ -1533,17 +1546,19 @@ and open the "View Test Score" tab to view the changes in the grade.
 1. View all related information of a student
   1. Prerequisite: List all student using the `list` command. Multiple students are shown in the list. **List should have exactly 6 students at the time of testing**
   2. Test case: `view 1`
-     Expected: All related information of the first student is shown on the result display visualizer on the right side. This includes: Student name, current tags, all academic-related information (assessment score, studio participation, studio attendance), and personal contact information (phone, email, telegram)
-     Expected: No information is modified, Academy Directory runs as normal
-     Expected: Status message is that users are viewing student at position 1 of the list
+     Expected: All related information of the first student is shown on the result display visualizer on the right side. 
+     This includes: Student name, current tags, all academic-related information (assessment score, studio participation, studio attendance), 
+     and personal contact information (phone, email, telegram). No information is modified, Academy Directory runs as normal. Status message is that users are viewing student at position 1 of the list
   3. Test case: `view 6`
-     Expected: All related information of the last student is shown on the result display visualizer on the right side. This includes: Student name, current tags, all academic-related information (assessment score, studio participation, studio attendance), and personal contact information (phone, email, telegram)
-     Expected: No information is modified, Academy Directory runs as normal
-     Expected: Status message is that users are viewing student at position 6 of the list
+     Expected: This includes: Student name, current tags, all academic-related information (assessment score, studio participation, studio attendance),
+     and personal contact information (phone, email, telegram). No information is modified, Academy Directory runs as normal. Status message is that users are viewing student at position 1 of the list
   4. Test case: `view 7`
      Expected: No view is shown on the result display. An error message is shown stating that index number is invalid
-  5. Test case: `view 0`, `view add`, `view myself in front of the mirror as a failure of society`
+  5. Test case: `view add`
      Expected: No view is shown on the result display. An error message is shown stating that index number is invalid (in a sense that it must be a positive integer)
+     
+    Other valid test cases: `view 3`, `view 4`
+    Other invalid test cases: `view 0`, `view -1`
 
 2. View students when list is altered
   1. Prerequisite: Using filter to reduce the list view to 1 student only. List should only have one student.
@@ -1700,11 +1715,11 @@ and open the "View Test Score" tab to view the changes in the grade.
 #### Clear Student List
 
 1. List all students on Academy Directory
-  1. Prerequisite: Application database is not empty (meaning that the `clear` command has not been executed, or that there are student entries on the student list)
-  2. Test case: `clear`
-     Expected: Student list panel on the left is emptied, with a status message stating that the entries have been cleared.
-  3. Test case: `clear 3`
-     Expected: Error message is shown on the status message display stating that there is an invalid usage detected, no other argument should follow, and that the command is highlighted in red.
+   1. Prerequisite: Application database is not empty (meaning that the `clear` command has not been executed, or that there are student entries on the student list)
+   2. Test case: `clear`
+      Expected: Student list panel on the left is emptied, with a status message stating that the entries have been cleared.
+   3. Test case: `clear 3`
+      Expected: Error message is shown on the status message display stating that there is an invalid usage detected, no other argument should follow, and that the command is highlighted in red.
 ***
 
 #### Undo Changes
@@ -1726,24 +1741,24 @@ and open the "View Test Score" tab to view the changes in the grade.
    2. Test case: `help`
       Expected: A pop-up window is shown summarizing the format of all commands for users, as well as a link to the web User Guide of Academy Directory
       Expected: All commands used in Academy Directory are shown, and the summary table does not lack any command. To assert this, compare the table to the
-      actual User Guide web version and see the matched commands.
+      actual User Guide web version and see the matched commands, whether it includes `visualize`, `view`, and `sort`.
 2. Test specific help
    1. Prerequisite: Application is started
    2. Test case: `help edit`
       Expected: A pop-up window is shown with a customized help message (based on the User Guide of `edit` command) on how to use `edit`, including significance, format, and example.
    3. Test case: `help visualize`
       Expected: A pop-up window is shown with a customized help message (based on the User Guide of `visualize` command) on how to use `visualize`, including significance, format, and example.
+   4. Test case: `help help`
+      Expected: A pop-up window is shown summarizing the format of all commands for users, as well as a link to the Web User Guide of Academy Directory.
    4. Test case: `help ad`
       Expected: No pop-up window is shown, and an error message is shown as status message explaining that there exists no instruction for command `ad`. 
       Significance of the test case is that specific `help` can only be useful when the command is typed in full rather than in partial - to view help for command `add`, users need to type in `help add` exactly.
    5. Test case: `help r230thg4b0p2nnbtpbgetbi03`
       Expected: No pop-up window is shown, and an error message is shown as status message explaining that there exists no instruction for the command.
-3. Test functionality of pop-up window
-   1. Prerequisite: Help window is already opened before by any mean, and is kept opened for testing
-   2. Test case: Focus on the Main Window, do not close Help Window, and type in `help add` or any other equivalent command
-      Expected: The help window is refocused with its content change to the new `help` instead.
-   3. Test case: Click on the `Copy UG Guide` button on the right side, and access the link
-      Expected: The User Guide web-version of Academy Directory can be accessed, meaning that the link is indeed copied.
+   <br><br>
+   Other valid test cases: `help view`, `help grade`, `help participation`,...<br>
+   Other invalid test cases: `help addd`, `help viw`, `help 3`, `help me please I'm dying right now`, `help me please this is a serious call for help, can someone end me`,...
+
 ***
 
 #### Saving data
@@ -1758,66 +1773,62 @@ and open the "View Test Score" tab to view the changes in the grade.
 
 ### Graphical User Interface (GUI) Testing
 
-   1. Test application visual design
-      1. Prerequisite: Application is started, the Main Window is opened, users have not entered any command or cleared any data previously, and there are
-         some students on the records.
-      2. Test case: Assert that Academy Directory has a student list with the various student cards inside.
-         Expected: Student list and student cards are shown to the users
-      3. Test case: Assert that Academy Directory has 4 menus in the top left corner of the Main Window.
-         Expected: There are 4 menus, one with grade logo, one with statistics logo, one with clock logo, and one with question logo
-      4. Test case: Click on the first menu item with the Grade logo
-         Expected: 5 entries will pop up, showing users different options to show grades.
-      5. Test case: Assert that Academy Directory has an opaque rectangle in the top-right corner of the Main Window.
-         Expected: The rectangle is shown to the user, and users cannot edit it or remove it.
-      6. Test case: Assert that Academy Directory has an opaque rectangle in the bottom-right corner of the Main Window.
-         Expected: The rectangle is shown to the user, and users cannot edit it or remove it.
-      7. Test case: Assert that Academy Directory has a command box at the bottom of Main Window
-         Expected: The command box is shown to users, with a placeholder message `Enter something`, and users can edit the command box.
-      8. Test case: Type in `this is a test message`
-         Expected: The command box shows `this is a test message` - meaning that the command box is able to received user's request
-      9. Test case: Expand Academy Directory to full screen
-         Expected: Background image also expanded, alongside other components of the internal controls (result display, student list, and status message)
-         Expected: No other visual misbehavior of the User Interface (image is cropped, whitespace exists, or lacking in any visual design)
-      10. Test case: Shrink Academy Directory to the smallest possible size
-         Expected: Academy Directory is not minimized completely as there is a minimal size for users to still see the data
-         
-   2. Test Main Window User Interface functionality
-      1. Execute the command `help`
-         Expected: Status logger displays a message that informs user a general help message is being shown
-         Expected: Help Window is popped up
-      2. Test case: Resize the Help Window by expand it to full screen
-         Expected: Help Window is expanded to full screen without compromising the content inside (the message is not being minimized or expanded, users are able to view the message regardless of the size).
-         Expected: All commands are inside the help message. To check, scroll the window and see whether commands `participation`, or `revert`, or `visualize` are in the table
-      3. Test case: Close the help window
-         Expected: Help Window is closed successfully, without the Main Window being closed or affected as well
-      4. Test case: Click on the logger display and try to edit the message
-         Expected: Users cannot edit the message or remove the message. Reason is to avoid confusion in usage of the application
-      5. Test case: Enter `visualize` to the command box, and press enter.
-         Expected: A box-whisker plot is shown to the users visualizing relative performance on student exam.
-      6. Test case: Attempt to click on the bottom-right rectangle and remove the data visualization
-         Expected: Users cannot remove or manipulated the shown data.
-      7. Test case: Enter `view 1` to the command box, and press enter
-         Expected: A visualized view of the student is shown in the bottom-right corner
-      8. Test case: Click on the drop-down menu with "View Participation" on the current view
-         Expected: The menu is dropped, and users can see the summary of student participation and attendance of CS1101S studio
-      9. Test case: Click on the drop-down menu with "View Test Score" on the current view
-         Expected: The previous menu is closed, the clicked menu is dropped, and users can see the summary of student test score of CS1101S
-      10. Test case: Enter `list` to the command box, and press enter
-         Expected: The `view` visualization of student information does not disappear even when the application is working at the background
-      11. Test case: Click on the first menu, then click on `Show RA1` entry
-         Expected: The equivalent to user input `show RA1` will be executed on Academy Directory
-      12. Test case: Click on the first student card of the student list
-         Expected: A visualized view of the student is shown in the bottom right corner.  
-          
+1. Test application visual design
+   1. Prerequisite: Application is started, the Main Window is opened, users have not entered any command or cleared any data previously, and there are
+      some students on the records.
+   2. Test case: Assert that Academy Directory has a student list with the various student cards inside.<br>
+      Expected: Student list and student cards are shown to the users
+   3. Test case: Assert that Academy Directory has 4 menus in the top left corner of the Main Window.<br>
+      Expected: There are 4 menus, one with grade logo, one with statistics logo, one with clock logo, and one with question logo
+   4. Test case: Click on the first menu item with the Grade logo<br>
+      Expected: 5 entries will pop up, showing users different options to show grades.
+   5. Test case: Assert that Academy Directory has an opaque rectangle in the top-right corner of the Main Window.<br>
+      Expected: The rectangle is shown to the user, and users cannot edit it or remove it.
+   6. Test case: Assert that Academy Directory has an opaque rectangle in the bottom-right corner of the Main Window.<br>
+      Expected: The rectangle is shown to the user, and users cannot edit it or remove it.
+   7. Test case: Assert that Academy Directory has a command box at the bottom of Main Window<br>
+      Expected: The command box is shown to users, with a placeholder message `Enter something`, and users can edit the command box.
+   8. Test case: Type in `this is a test message`<br>
+      Expected: The command box shows `this is a test message` - meaning that the command box is able to received user's request
+   9. Test case: Expand Academy Directory to full screen<br>
+      Expected: Background image also expanded, alongside other components of the internal controls (result display, student list, and status message). No other visual misbehavior of the User Interface (image is cropped, whitespace exists, or lacking in any visual design)
+   10. Test case: Shrink Academy Directory to the smallest possible size<br>
+       Expected: Academy Directory is not minimized completely as there is a minimal size for users to still see the data
+      
+     
+2. Test Main Window User Interface functionality
+   1. Test case: Enter `visualize` to the command box, and press enter.<br>
+      Expected: A box-whisker plot is shown to the users visualizing relative performance on student exam.
+   2. Test case: Attempt to click on the bottom-right rectangle and remove the data visualization<br>
+      Expected: Users cannot remove or manipulated the shown data.
+   3. Test case: Enter `view 1` to the command box, and press enter<br>
+      Expected: A visualized view of the student is shown in the bottom-right corner
+   4. Test case: Click on the drop-down menu with "View Participation" on the current view<br>
+      Expected: The menu is dropped, and users can see the summary of student participation and attendance of CS1101S studio
+   5. Test case: Click on the drop-down menu with "View Test Score" on the current view<br>
+      Expected: The previous menu is closed, the clicked menu is dropped, and users can see the summary of student test score of CS1101S
+   6. Test case: Enter `list` to the command box, and press enter<br>
+      Expected: The `view` visualization of student information does not disappear even when the application is working at the background
+   7. Test case: Click on the message in the status message logger, and attempt to edit it<br>
+      Expected: Users cannot edit the text
+   8. Test case: Enter `invalid` to the command box, and press enter<br>
+      Expected: The text `invalid` on the Command Box turns to red, indicating that there is an error.
+   9. Test case: Click on the first menu, then click on `Show RA1` entry<br>
+      Expected: The equivalent to user input `show RA1` will be executed on Academy Directory
+   10. Test case: Click on the first student card of the student list<br>
+      Expected: A visualized view of the student is shown in the bottom right corner.
 
-### System testing
 
-#### Performance testing
-    
-Purpose: Test and record the average time of which Academy Directory execute users' command
-
-#### Compatibility testing
-#### Portability testing
+3. Test functionality of pop-up window
+   1. Prerequisite: The command `help` is executed before, and the help window is opened.
+   2. Test case: Resize the Help Window by expand it to full screen<br>
+      Expected: Help Window is expanded to full screen without compromising the content inside (the message is not being minimized or expanded, users are able to view the message regardless of the size).
+   4. Test case: Scroll the Help Window and assert that all command formats are there<br>
+      Expected: Help Message is scrollable, information are wrapped and not cropped, all command formats are shown to users.
+   3. Test case: Focus on the Main Window, do not close Help Window, and type in `help add`<br>
+      Expected: The help window is refocused with its content change to the new `help` instead.
+   4. Test case: Click on the `Copy UG Guide` button on the right side, and access the link<br>
+      Expected: The User Guide web-version of Academy Directory can be accessed, meaning that the link is indeed copied.
 
 ## **Appendix C: Version Controlled Commands**
 The following list is a list of commands that are version controlled i.e. they can be undone and

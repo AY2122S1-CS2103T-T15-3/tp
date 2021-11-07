@@ -25,4 +25,5 @@ activate commandResult
 commandResult --> listCommand: commandResult
 deactivate commandResult
 <-- listCommand: result
+deactivate listCommand
 @enduml

@@ -13,11 +13,12 @@ end box
 -> exitCommand: execute(model)
 
 create commandResult
+activate exitCommand
 exitCommand -> commandResult:  CommandResult(MESSAGE_EXIT_ACKNOWLEDGEMENT, false, true)
 activate commandResult
 commandResult --> exitCommand: command result
 deactivate commandResult
 
 <-- exitCommand: result
-
+deactivate exitCommand
 @enduml

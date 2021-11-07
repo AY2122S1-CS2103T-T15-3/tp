@@ -7,6 +7,7 @@ title: User Guide
   * [Purpose of User Guide](#purpose)
   * [Target Audience of User Guide](#target-audience)
 * [Quick Start](#quick-start)
+* [Preview](#preview)
 * [Features](#features)
   * [Manage Students' Personal Details](#managing-students-personal-details)
     * [Add Student](#adding-a-student-add)
@@ -119,18 +120,13 @@ Have you installed Academy Directory successfully? Let us now walk you through y
 
 ![Ui](images/ui-explained.png)
 
-Point of View: You are an Avenger sitting behind the control table, supervising your students through the transparent glass while physically interacting with the system to manage your tutee's grades and participation.
-
-Don't get us wrong though. We are not mad space scientists doing controlled
-experiment on students. *Or are we?...*
-
 Components of UI | Functionality
 --- | ---
-Menu bar | Provides an immediate mean to execute commands relating to student academic data, or relating to usage history. There are 4 menus for you to choose from.
-Student list | Shows the current list of students in your class, along with their tags
-Command box | This is where you will enter your command and press Enter to use Academy Directory CLI
-Status message display | This is where Academy Directory will inform you of what has happened after your command
-Result visualizer display | This is where Academy Directory will visualize your data or results for better usage.
+Menu bar | Provides an immediate mean to execute commands relating to student academic data or usage history. There are 4 menus to choose from.
+Student list | Shows the current list of students in your class, along with their tags and contact number. You can scroll through the list to see more students. Each student will be shown only their name, phone number (if have), email address, and tags (if have)
+Command box | This is where you will enter your command and press Enter to use Academy Directory Command Line Interface
+Status message display | This is where Academy Directory will inform you of what is happening after the commands you entered
+Result visualizer display | This is where Academy Directory will visualize your data or results, on your request.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -679,9 +675,18 @@ cannot be reverted to and / or be undone or redone.
 - This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org/).
 - The formatting and content of this User Guide is referenced from [AY2122S1-CS2103T-w17-1/tp](https://ay2122s1-cs2103t-w17-1.github.io/tp/).
 - Design of the internal version control system is heavily inspired by [Git](https://github.com/git/git).
-- Certain code implementations may have been inspired by [Baeldung tutorials](https://www.baeldung.com/)
+- Certain code implementations may have been inspired by [Baeldung tutorials](https://www.baeldung.com/) or [StackOverflow answers](https://stackoverflow.com)
+- Application logo were designed with the assistance of [Tailor Brand](https://studio.tailorbrands.com/brands/6276554147/downloads) and [Adobe Spark](https://spark.adobe.com/express-apps/logo-maker/preview)
 - Libraries used:
   - [JavaFX](https://openjfx.io/) for the amazing GUI
   - [Jackson](https://github.com/FasterXML/jackson) to save your data
   - [JUnit5](https://github.com/junit-team/junit5) so that we can deliver to you bug-free!
   - [MDFX](https://github.com/JPro-one/markdown-javafx-renderer) so that you can see User Guide in help without internet
+- Background and icons used:
+  - Source Academy classroom front page, taken from the [Asset page in Source Academy front-end](https://github.com/source-academy/frontend/tree/master/src/assets)
+    License for reuse and distribution [here](https://github.com/source-academy/frontend/blob/master/LICENSE)
+  - Slides Carnival background [here](https://www.slidescarnival.com/iris-free-presentation-template/3923)
+  - External icons used on the UI
+    - [Student icon](https://icons8.com/icon/iZBBn0SF22gW/programmer) taken from IconS8
+    - [Grade icon](https://pngtree.com/freepng/test-papers-stationery-illustration_4652639.html) taken from PNGTree
+    - [Statistic icon](https://pngtree.com/freepng/vector-statistics-icon_3782961.html) taken from PNGTree
