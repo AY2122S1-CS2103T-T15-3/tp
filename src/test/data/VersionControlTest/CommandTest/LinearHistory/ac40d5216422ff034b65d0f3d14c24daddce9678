@@ -1,0 +1,48 @@
+{
+  "students" : [ {
+    "name" : "David Li",
+    "phone" : "91031282",
+    "email" : "lidavid@example.com",
+    "telegram" : "@lidavid",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : 54,
+      "FINAL" : 44,
+      "RA1" : 47,
+      "MIDTERM" : 5,
+      "PE" : 57
+    },
+    "tagged" : [ "higherOrderFunctions" ]
+  }, {
+    "name" : "Irfan Ibrahim",
+    "phone" : "92492021",
+    "email" : "irfan@example.com",
+    "telegram" : "@irfan",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : -1,
+      "RA1" : -1,
+      "MIDTERM" : -1,
+      "PE" : -1,
+      "FINAL" : -1
+    },
+    "tagged" : [ "genius" ]
+  }, {
+    "name" : "Roy Balakrishnan",
+    "phone" : "92624417",
+    "email" : "royb@example.com",
+    "telegram" : "@royb",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : -1,
+      "RA1" : -1,
+      "MIDTERM" : -1,
+      "PE" : -1,
+      "FINAL" : -1
+    },
+    "tagged" : [ "abstractions" ]
+  } ]
+}

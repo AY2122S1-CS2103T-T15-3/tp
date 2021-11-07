@@ -1,0 +1,48 @@
+{
+  "students" : [ {
+    "name" : "Charlotte Oliveiro",
+    "phone" : "93210283",
+    "email" : "charlotte@example.com",
+    "telegram" : "@charlotte",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : 5,
+      "RA1" : 30,
+      "MIDTERM" : 24,
+      "PE" : 12,
+      "FINAL" : 48
+    },
+    "tagged" : [ "wishfulThinking", "recursion" ]
+  }, {
+    "name" : "David Li",
+    "phone" : "91031282",
+    "email" : "lidavid@example.com",
+    "telegram" : "@lidavid",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : 54,
+      "RA1" : 47,
+      "MIDTERM" : 5,
+      "PE" : 57,
+      "FINAL" : 44
+    },
+    "tagged" : [ "higherOrderFunctions" ]
+  }, {
+    "name" : "Roy Balakrishnan",
+    "phone" : "92624417",
+    "email" : "royb@example.com",
+    "telegram" : "@royb",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : -1,
+      "RA1" : -1,
+      "MIDTERM" : -1,
+      "PE" : -1,
+      "FINAL" : -1
+    },
+    "tagged" : [ "abstractions" ]
+  } ]
+}

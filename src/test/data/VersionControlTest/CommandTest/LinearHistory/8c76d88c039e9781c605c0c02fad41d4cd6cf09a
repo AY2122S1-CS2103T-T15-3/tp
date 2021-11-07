@@ -1,0 +1,93 @@
+{
+  "students" : [ {
+    "name" : "Alex Yeoh",
+    "phone" : "87438807",
+    "email" : "alexyeoh@example.com",
+    "telegram" : "@alexyeoh",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : 60,
+      "FINAL" : 33,
+      "RA1" : 35,
+      "MIDTERM" : 26,
+      "PE" : 47
+    },
+    "tagged" : [ "streams" ]
+  }, {
+    "name" : "Bernice Yu",
+    "phone" : "99272758",
+    "email" : "berniceyu@example.com",
+    "telegram" : "@berniceyu",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : 4,
+      "FINAL" : 50,
+      "RA1" : 34,
+      "MIDTERM" : 13,
+      "PE" : 59
+    },
+    "tagged" : [ "recursion" ]
+  }, {
+    "name" : "Charlotte Oliveiro",
+    "phone" : "93210283",
+    "email" : "charlotte@example.com",
+    "telegram" : "@charlotte",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : 5,
+      "FINAL" : 48,
+      "RA1" : 30,
+      "MIDTERM" : 24,
+      "PE" : 12
+    },
+    "tagged" : [ "wishfulThinking", "recursion" ]
+  }, {
+    "name" : "David Li",
+    "phone" : "91031282",
+    "email" : "lidavid@example.com",
+    "telegram" : "@lidavid",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : 54,
+      "FINAL" : 44,
+      "RA1" : 47,
+      "MIDTERM" : 5,
+      "PE" : 57
+    },
+    "tagged" : [ "higherOrderFunctions" ]
+  }, {
+    "name" : "Irfan Ibrahim",
+    "phone" : "92492021",
+    "email" : "irfan@example.com",
+    "telegram" : "@irfan",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : -1,
+      "RA1" : -1,
+      "MIDTERM" : -1,
+      "PE" : -1,
+      "FINAL" : -1
+    },
+    "tagged" : [ "genius" ]
+  }, {
+    "name" : "Roy Balakrishnan",
+    "phone" : "92624417",
+    "email" : "royb@example.com",
+    "telegram" : "@royb",
+    "attendance" : [ false, false, false, false, false, false, false, false, false, false, false, false ],
+    "participation" : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    "assessment" : {
+      "RA2" : -1,
+      "RA1" : -1,
+      "MIDTERM" : -1,
+      "PE" : -1,
+      "FINAL" : -1
+    },
+    "tagged" : [ "abstractions" ]
+  } ]
+}

@@ -11,10 +11,13 @@ import static seedu.academydirectory.logic.parser.CliSyntax.PREFIX_TELEGRAM;
 import static seedu.academydirectory.testutil.TypicalStudents.getTypicalAcademyDirectory;
 import static seedu.academydirectory.testutil.TypicalStudents.getTypicalStudents;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,9 +33,15 @@ import seedu.academydirectory.model.student.PersonalDetail;
  * Contains integration tests (interaction with the VersionedModel) for {@code FindCommand}.
  */
 public class GetCommandTest {
-    private final VersionedModel model = new VersionedModelManager(getTypicalAcademyDirectory(), new UserPrefs());
-    private final VersionedModel expectedModel = new VersionedModelManager(getTypicalAcademyDirectory(),
-            new UserPrefs());
+    @TempDir
+    public static Path tempPath;
+
+    private static final Function<Path, VersionedModel> modelSupplier = (Path path) -> new VersionedModelManager(
+            getTypicalAcademyDirectory(),
+            getTempUserPref(path));
+    private final Function<Path, VersionedModel> expectedModelSupplier = (Path path) -> new VersionedModelManager(
+            getTypicalAcademyDirectory(),
+            getTempUserPref(path));;
 
     @Test
     public void equals() {
@@ -61,18 +70,22 @@ public class GetCommandTest {
 
     @Test
     public void execute_singlePrefixNoNameNonEmptyModel() {
-        GetCommand.SUPPORTED_PREFIX.forEach(prefix -> execute_singlePrefix(prefix, model, null));
+        VersionedModel model = modelSupplier.apply(tempPath);
+        VersionedModel expectedModel = modelSupplier.apply(tempPath);
+        GetCommand.SUPPORTED_PREFIX.forEach(prefix -> execute_singlePrefix(prefix, model, null, expectedModel));
     }
 
     @Test
     public void execute_singlePrefixWithNameNonEmptyModel() {
+        VersionedModel model = modelSupplier.apply(tempPath);
+        VersionedModel expectedModel = expectedModelSupplier.apply(tempPath);
         getTypicalStudents()
                 .forEach(student -> GetCommand.SUPPORTED_PREFIX
-                        .forEach(prefix -> execute_singlePrefix(prefix, model, student.getName())));
+                        .forEach(prefix -> execute_singlePrefix(prefix, model, student.getName(), expectedModel)));
         ;
     }
 
-    private void execute_singlePrefix(Prefix prefix, VersionedModel model, Name name) {
+    private void execute_singlePrefix(Prefix prefix, VersionedModel model, Name name, VersionedModel expectedModel) {
         List<String> nameList = name == null
                 ? List.of()
                 : List.of(name.fullName.split("\\s"));
@@ -114,5 +127,12 @@ public class GetCommandTest {
             assertEquals(emptyModel.getAdditionalViewModel().getAdditionalInfo().get(), MESSAGE_NOTHING_TO_SHOW);
             assertCommandSuccess(command, emptyModel, GetCommand.MESSAGE_FAILED, emptyModel);
         });
+    }
+
+    private static UserPrefs getTempUserPref(Path path) {
+        UserPrefs userPrefs = new UserPrefs();
+        userPrefs.setAcademyDirectoryFilePath(path);
+        userPrefs.setVersionControlPath(path);
+        return userPrefs;
     }
 }

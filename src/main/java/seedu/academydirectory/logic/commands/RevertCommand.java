@@ -47,7 +47,7 @@ public class RevertCommand extends Command {
             if (relevantCommit.isEmpty()) {
                 throw new CommandException(REVERT_REQUEST_REJECTED + "Hash value correct (and not current state) ?");
             }
-        } catch (IOException e) {
+        } catch (NullPointerException | IOException e) {
             throw new CommandException(REVERT_REQUEST_REJECTED, e);
         }
 
