@@ -4,15 +4,22 @@ import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.function.Supplier;
 
 import seedu.academydirectory.versioncontrol.objects.Commit;
 
 public class CommitReader extends VersionControlObjectReader<Commit> {
-    private static final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private static final Supplier<SimpleDateFormat> dateFormatSupplier = () -> {
+        SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        df.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Asia/Singapore")));
+        return df;
+    };
 
     private final TreeReader treeReader;
 
@@ -44,7 +51,7 @@ public class CommitReader extends VersionControlObjectReader<Commit> {
 
         Date date;
         try {
-            date = df.parse(fields.get(1));
+            date = dateFormatSupplier.get().parse(fields.get(1));
         } catch (ParseException e) {
             return Commit.emptyCommit();
         }
@@ -54,6 +61,6 @@ public class CommitReader extends VersionControlObjectReader<Commit> {
     }
 
     public DateFormat getDateFormat() {
-        return df;
+        return dateFormatSupplier.get();
     }
 }

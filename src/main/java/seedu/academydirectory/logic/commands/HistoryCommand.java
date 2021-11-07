@@ -3,10 +3,13 @@ package seedu.academydirectory.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,7 +32,11 @@ public class HistoryCommand extends Command {
             + "\n"
             + "Format: `history`";
 
-    private static final SimpleDateFormat DF = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+    private static final Supplier<SimpleDateFormat> dateFormatSupplier = () -> {
+        SimpleDateFormat df = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+        df.setTimeZone(TimeZone.getTimeZone(ZoneId.of("Asia/Singapore")));
+        return df;
+    };
 
     @Override
     public CommandResult execute(VersionedModel model) throws CommandException {
@@ -89,7 +96,8 @@ public class HistoryCommand extends Command {
     private String getPresentableHistory(Commit commit, int idx, String label) {
         assert idx == 0 || idx == 1;
         if (idx == 0) {
-            return commit.getHash().substring(0, 5) + " - " + DF.format(commit.getDate()) + " " + label;
+            return commit.getHash().substring(0, 5) + " - " + dateFormatSupplier.get()
+                    .format(commit.getDate()) + " " + label;
         } else {
             return "\t\t" + commit.getMessage();
         }
