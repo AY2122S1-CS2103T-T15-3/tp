@@ -38,7 +38,7 @@ LogicManager --> Storage
 Storage --[hidden] VersionedModel
 Command .[hidden]up.> Storage
 Command .right.> VersionedModel
-note right of XYZCommand: XYZCommand = AddCommand, \nFindCommand, etc
+note right of XYZCommand: XYZCommand = AddCommand, \nFilterCommand, etc
 
 Logic ..> CommandResult
 LogicManager .down.> CommandResult

@@ -16,7 +16,7 @@ box Storage STORAGE_COLOR_T1
 participant "storage:StorageManager" as StorageManager STORAGE_COLOR
 end box
 
--> revertCommand: execute(model)
+-> revertCommand ++ : execute(model)
 revertCommand -> versionedModel ++ : revert(hash)
 versionedModel -> versionControlController ++ : revert(hash)
 
@@ -45,4 +45,5 @@ else
     revertCommand -> versionedModel ++ : setAcademyDirectory(academyDirectoryOptional.get())
     deactivate versionedModel
 end
+<-- revertCommand -- : commandResult
 @enduml

@@ -56,7 +56,7 @@ Well, we have good news. Academy Directory is just the application for you!
 Academy Directory (AD) is a **desktop application for CS1101S tutors to manage their students.** Its main features are as follows: 
 - [Manage students’ personal details](#managing-students-personal-details)
 - [Track students' grades, Studio attendance, and participation](#tracking-students-grades-studio-attendance-and-participation)
-- [Visualize data in Academy Directory](#visualizing-data-in-academy-directory) 
+- [Visualize data in Academy Directory](#visualization-tools) 
 
 Academy Directory is written in _Java_ and thus can be run on all major operating systems!
 It is optimized for use via a Command Line Interface (CLI), while still having the benefits of a Graphical User Interface (GUI).
@@ -520,6 +520,8 @@ Format: `history`
 "MAIN". If there are already two branches and a third branch is going to be made, then the 
 oldest branch will not be visible.
 
+The following image shows the output of `history`. Note that some commits are labelled. The label "(HEAD)" is used
+to indicate current state.
 ![historyCommand1](images/ug/historyCommand1.PNG)
 
 **Includes an interactive GUI version where Avengers can click on the menu to see usage history as well.**
@@ -531,7 +533,11 @@ Format: `revert HASH`
 
 - `HASH` refers to the commit hash of the commit to be reverted to
 - `HASH` can be obtained using the `history` command
+- Error message will be shown if attempting to revert to the current commit. This is because reverting to current
+commit is unlikely to be intentional. 
 
+The following image shows the output of `history`. The commit hashes are labelled. We can pick which commit
+to revert to, and then type `revert <CORRESPONDING_HASH>` to revert to that commit. 
 ![historyCommand](images/ug/historyCommand.PNG)
 
 Example:

@@ -444,7 +444,7 @@ to be retrieved, and a list of `String` which represents the keywords that will 
 the names of students in Academy Directory. List of `Prefix` cannot be empty, but list of keywords can be.
 An empty list of keywords is interpreted as retrieving personal details of all students in the model. If 
 list of keywords is not empty, then the pattern-matching behavior for name in `GetCommand` is similar to that
-of the [`FilterCommnd`](#filtercommand).
+of the [`FilterCommand`](#filtercommand).
 
 The specifics are shown in the sequence diagram below:
 

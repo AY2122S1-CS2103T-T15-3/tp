@@ -19,6 +19,8 @@ loop for all Prefix
 end
 create result
 rc -> result ++ :CommandResult(feedbackMessage)
-return commandResult
+result --> rc --: commandResult
+
+rc -> mm : setAdditionalViewModel(result)
 return commandResult
 @enduml

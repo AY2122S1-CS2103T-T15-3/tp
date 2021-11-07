@@ -3,6 +3,7 @@
 
 box Logic LOGIC_COLOR_T1
 participant ":HistoryCommand" as historyCommand LOGIC_COLOR
+participant ":CommandResult" as commandResult LOGIC_COLOR
 end box
 
 box VersionedModel MODEL_COLOR_T1
@@ -12,7 +13,7 @@ participant "old:Commit" as oldCommit MODEL_COLOR
 participant "lca:Commit" as lcaCommit MODEL_COLOR
 end box
 
--> historyCommand: execute(model)
+-> historyCommand ++ : execute(model)
 historyCommand -> versionedModel ++ : fetchCommitByLabel("MAIN")
 versionedModel --> historyCommand -- : mainCommit
 historyCommand -> versionedModel ++ : fetchCommitByLabel("OLD")
@@ -31,6 +32,10 @@ mainCommit --> historyCommand --
 historyCommand -> oldCommit ++ : getHistory(lca)
 oldCommit --> historyCommand --
 
-historyCommand -> historyCommand ++ : getPresentableHistory()
+historyCommand -> historyCommand ++-- : getPresentableHistory()
+historyCommand -> versionedModel : setAdditionalViewModel(presentableHistory)
+create commandResult
+historyCommand -> commandResult ++ : new CommandResult(MESSAGE_SUCCESS)
+commandResult --> historyCommand -- : commandResult
 <-- historyCommand -- : commandResult
 @enduml
