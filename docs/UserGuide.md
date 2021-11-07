@@ -696,4 +696,3 @@ cannot be reverted to and / or be undone or redone.
     - [Student icon](https://icons8.com/icon/iZBBn0SF22gW/programmer) taken from IconS8
     - [Grade icon](https://pngtree.com/freepng/test-papers-stationery-illustration_4652639.html) taken from PNGTree
     - [Statistic icon](https://pngtree.com/freepng/vector-statistics-icon_3782961.html) taken from PNGTree
-    
