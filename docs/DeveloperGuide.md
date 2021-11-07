@@ -4,7 +4,7 @@ title: Developer Guide
 
 ### Table of Contents
 * [Information About this Developer Guide](#information-about-this-developer-guide)
-  * [Purpose of User Guide](#purpose)
+  * [Purpose of Developer Guide](#purpose)
   * [Target Audience of Developer Guide](#target-audience)
 * [Acknowledgements](#acknowledgements)
 * [Setting Up, Getting Started](#setting-up-getting-started)
@@ -68,11 +68,11 @@ are or formerly were CS1101S Avengers. As such, the following assumptions are ma
 - Is familiar with CS1101S module structure and teaching pedagogy.
 
 Technical background is assumed. We also provide the definitions for
-certain technical terms commonly used in this user guide [here](#glossary).
+certain technical terms commonly used in this developer guide [here](#glossary).
 
 ## **Acknowledgements**
 - This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org/).
-- The formatting and content of this User Guide is referenced from [AY2122S1-CS2103T-w17-1/tp](https://ay2122s1-cs2103t-w17-1.github.io/tp/).
+- The formatting and content of the User Guide is referenced from [AY2122S1-CS2103T-w17-1/tp](https://ay2122s1-cs2103t-w17-1.github.io/tp/).
 - Design of the internal version control system is heavily inspired by [Git](https://github.com/git/git).
 - Certain code implementations may have been inspired by [Baeldung tutorials](https://www.baeldung.com/)
 - Libraries used:
