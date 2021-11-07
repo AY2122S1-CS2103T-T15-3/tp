@@ -73,15 +73,23 @@ certain technical terms commonly used in this developer guide [here](#glossary).
 
 ## **Acknowledgements**
 - This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org/).
-- The formatting and content of the User Guide is referenced from [AY2122S1-CS2103T-w17-1/tp](https://ay2122s1-cs2103t-w17-1.github.io/tp/).
+- The formatting and content of the User Guide and Developer Guide is referenced from [AY2122S1-CS2103T-w17-1/tp](https://ay2122s1-cs2103t-w17-1.github.io/tp/).
 - Design of the internal version control system is heavily inspired by [Git](https://github.com/git/git).
-- Certain code implementations may have been inspired by [Baeldung tutorials](https://www.baeldung.com/)
+- Certain code implementations may have been inspired by [Baeldung tutorials](https://www.baeldung.com/) or [StackOverflow answers](https://stackoverflow.com)
+- Application logo were designed with the assistance of [Tailor Brand](https://studio.tailorbrands.com/brands/6276554147/downloads) and [Adobe Spark](https://spark.adobe.com/express-apps/logo-maker/preview)
 - Libraries used:
   - [JavaFX](https://openjfx.io/) for the amazing GUI
   - [Jackson](https://github.com/FasterXML/jackson) to save your data
   - [JUnit5](https://github.com/junit-team/junit5) so that we can deliver to you bug-free!
   - [MDFX](https://github.com/JPro-one/markdown-javafx-renderer) so that you can see User Guide in help without internet
-  - [JFreeChart](https://www.jfree.org/jfreechart/) for the amazing graph and data visualization tools!
+- Background and icons used:
+  - Source Academy classroom front page, taken from the [Asset page in Source Academy front-end](https://github.com/source-academy/frontend/tree/master/src/assets)
+    License for reuse and distribution [here](https://github.com/source-academy/frontend/blob/master/LICENSE)
+  - Slides Carnival background [here](https://www.slidescarnival.com/iris-free-presentation-template/3923)
+  - External icons used on the UI
+    - [Student icon](https://icons8.com/icon/iZBBn0SF22gW/programmer) taken from IconS8
+    - [Grade icon](https://pngtree.com/freepng/test-papers-stationery-illustration_4652639.html) taken from PNGTree
+    - [Statistic icon](https://pngtree.com/freepng/vector-statistics-icon_3782961.html) taken from PNGTree
 
 
 --------------------------------------------------------------------------------------------------------------------
@@ -1156,3 +1164,56 @@ will be reflected in the commit history, using the `HistoryCommand`. More concre
 
 Commands not shown in the above list _will not_ appear in the commit history, and thus
 cannot be reverted to and / or be undone or redone.
+
+## **Appendix D: Effort**
+If the effort required to create **AB3** is 10, we would place the effort level required to implement the current version
+of **AcademyDirectory** at 15.
+
+Our team has put in a significant amount of effort to get AcademyDirectory to the current version. Below, we list some notable changes overall and notable features implemented by us.
+
+### Notable Changes in General
+
+1. **Morphed existing AB3 to align with our design for AcademyDirectory**
+
+   We have put in a significant amount of effort morphing the existing code base, AB3 to support the need of our application, which is designed for CS1101S avenger to be more effective and efficient.
+
+   Firstly, we had to create new classes for components related to our application, such as <TO BE ADDED>. Each of these classes has different input format requirements and is related to different command.
+
+   Secondly, we had to remove all the irrelevant classes and update the existing test cases to fit our need.
+
+   Lastly, we had to integrate all these new classes with the existing code to save applications data to a file
+   in AcademyDirectory. This required major refactoring of existing classes to support multiple new fields and commands.
+
+
+2. **Redesigned GUI**
+
+   Compared to AB3, AcademyDirectory <TO BE ADDED> 
+
+### Notable Features
+
+Notable features we implemented from scratch include <TO BE ADDED: SOME USEFUL COMMANDS E.G. FILTER SORT ETC.>
+We came up with these features as they fit well in helping CS1101S avengers be more effective and efficient.
+
+The implementation details and design considerations for these features could be found in [Implementation](#implementation) section
+and the [Design](#design) section respectively.
+
+## **Appendix 4: Limitations and Future improvements**
+
+We acknowledge the fact that our current product is not perfect, and it still has rooms for improvement.
+Below are some limitations and future improvements of our product.
+
+### Limitations
+1. **Commands not accepting multiple fields**
+
+   Currently, our product does not support the functionality of accepting multiple fields. For example:
+  - `find c/DBS p/programmer`
+  - `soon d/7 i/20`
+
+    The above commands will produce an error message, stating that the commands are invalid. This is because our initial implementation would only take one field (e.g c/) and ignore the rest. Thus, the workaround for this issue is to not allow the users to enter multiple fields.
+
+2. **Invalid prefix resulting in an unexpected error message**
+
+   As pointed out in PE-D, our current product is not able to check for a typo in the prefixes. For example:
+  - `edit 1 c/Grab zp/Engineer`
+
+    The example above will produce an error message, stating that the company name should contain alphanumeric characters. This is because our current implementation will take `zp/Engineer` as a part of the company name.
